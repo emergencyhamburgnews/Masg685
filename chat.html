@@ -4,17 +4,17 @@
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masg685</title>
+    <title>Masg685 - Chat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Loading Screen -->
-<div id="loading-screen">
-    <div class="progress-circle">
-        <div class="progress-bar" id="progress-bar"></div>
-        <span id="percent">0%</span>
+    <div id="loading-screen">
+        <div class="progress-circle">
+            <div class="progress-bar" id="progress-bar"></div>
+            <span id="percent">0%</span>
+        </div>
     </div>
-</div>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -27,20 +27,22 @@
             <li><a href="chat.html">Chat</a></li>
         </ul>
     </nav>
-    <section class="contact">
-        <h1>Contact me</h1>
-        <form action="https://formspree.io/f/moveylzy" method="POST" id="contact-form">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <textarea name="message" placeholder="Message" required></textarea>
+
+    <!-- Chat Section -->
+    <section class="chat">
+        <h1>Chat With Me</h1>
+        <div id="chat-messages" class="chat-messages"></div>
+        <form id="chat-form">
+            <input type="text" id="chat-input" name="message" placeholder="Type a message..." required>
             <button type="submit" class="cta">Send</button>
         </form>
-        <div id="thank-you-message" style="display: none; margin-top: 1rem;"></div>
+        <div id="chat-status" style="display: none; margin-top: 1rem;"></div>
     </section>
-    <script src="javascript.js"></script>
 
     <footer>
         <p>© 2025</p>
     </footer>
+
+    <script src="javascript.js"></script>
 </body>
 </html>
