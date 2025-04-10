@@ -114,7 +114,7 @@ if (chatForm && chatMessages && chatStatus) {
         formData.append('_subject', 'New Chat Message'); // Custom email subject
 
         try {
-            const response = await fetch('https://formspree.io/f/your-unique-id', {
+            const response = await fetch('https://formspree.io/f/moveylzy', {
                 method: 'POST',
                 body: formData,
                 headers: { 'Accept': 'application/json' }
