@@ -1,0 +1,234 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: white; /* All text will be white */
+    background-color: #202020; /* or whatever dark color you used */
+}
+
+  html {
+    background-color:#202020;
+  }
+  
+
+/* Navbar */
+.navbar {
+    background: #252525;
+    outline: 1px solid rgb(63, 63, 63);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;;
+}
+
+.hamburger {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Mobile Menu */
+.nav-links {
+    display: none; /* Hidden by default */
+    list-style: none;
+    position: fixed; /* Full-screen overlay */
+    top: 0;
+    left: -100%; /* Starts off-screen to the left */
+    width: 100%; /* Takes up part of the screen */
+    height: 100%; /* Full height */
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+    padding: 4rem 1rem 1rem; /* Space from top for navbar */
+    transition: left 0.3s ease-in-out; /* Smooth slide */
+    z-index: 100; /* On top of everything */
+}
+
+.nav-links.active {
+    display: block; /* Shows when clicked */
+    left: 0; /* Slides in */
+}
+
+.nav-links li {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+/* Contact */
+.contact {
+    text-align: center;
+    padding: 2rem;
+}
+
+.contact h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+input, textarea {
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: #202020;
+}
+
+/* About */
+.about {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: left;
+    color: rgb(255, 255, 255);
+  }
+  
+.about p {
+    color: #c9c9c9;
+
+}
+
+.about h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.about-link {
+    color: #1e8ed8; /* Dark red color */
+    text-decoration: underline; /* Optional: makes it clear it’s a link */
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: 2rem;
+    background: #202020;
+}
+
+.hero-image {
+    max-width: 15%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Desktop (minimal) */
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        position: static;
+        width: auto;
+        height: auto;
+        background: none;
+        padding: 0;
+    }
+
+    .nav-links.active {
+        left: 0; /* No slide on desktop */
+    }
+
+    .nav-links li {
+        margin: 0 1rem;
+    }
+
+    .hamburger {
+        display: none;
+    }
+}
+
+/* Social Media Section */
+.social-media {
+    text-align: center;
+    padding: 2rem;
+    background: #202020; /* black background to contrast with hero */
+}
+
+.social-media h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.social-links {
+    list-style: none;
+    padding: 0;
+}
+
+.social-links li {
+    margin: 1rem 0;
+}
+
+.social-links a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Space between icon and text */
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #007bff; /* Blue on hover */
+}
+
+.social-links i {
+    font-size: 1.5rem; /* Icon size */
+}
+
+/* Desktop adjustments for social media section */
+@media (min-width: 768px) {
+    .social-media h1 {
+        font-size: 3rem;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem; /* Space between links on desktop */
+    }
+
+    .social-links li {
+        margin: 0;
+    }
+}
+
+footer {
+    padding: 10px;
+    background-color: #202020;
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+    text-align: center;
+}
