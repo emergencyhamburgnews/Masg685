@@ -64,17 +64,11 @@ html {
     z-index: 101;
 }
 
-.hamburger {
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--text-color);
-    position: relative;
-    z-index: 101;
-    transition: all 0.3s ease;
-}
-
-.hamburger.active {
+.hamburger.active::before {
     content: '✕';
+    position: fixed;
+    right: 1rem;
+    color: var(--text-color);
 }
 
 /* Mobile Menu */
