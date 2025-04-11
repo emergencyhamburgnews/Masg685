@@ -28,6 +28,7 @@ const navLinks = document.querySelector('.nav-links');
 if (hamburger && navLinks) {
     hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        hamburger.classList.toggle('active');
         console.log('Hamburger clicked! Menu is now:', navLinks.classList.contains('active') ? 'open' : 'closed');
     });
 } else {
@@ -37,13 +38,20 @@ if (hamburger && navLinks) {
 // Scroll to top functionality
 const scrollTopButton = document.querySelector('.scroll-top');
 if (scrollTopButton) {
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 100) {
+    const toggleScrollButton = () => {
+        if (window.scrollY > 100) {
             scrollTopButton.classList.add('show');
         } else {
             scrollTopButton.classList.remove('show');
         }
-    });
+    };
+
+    // Check on scroll
+    window.addEventListener('scroll', toggleScrollButton);
+    // Check on page load
+    window.addEventListener('DOMContentLoaded', toggleScrollButton);
+    // Check after content loads
+    window.addEventListener('load', toggleScrollButton);
 
     scrollTopButton.addEventListener('click', () => {
         window.scrollTo({
@@ -112,53 +120,51 @@ function closeSearch() {
 }
 
 function performSearch(query) {
-    const pages = [
-        { url: 'home.html', content: document.body.innerHTML },
-        { url: 'about.html', content: '', needsFetch: true },
-        { url: 'contact.html', content: '', needsFetch: true },
-        { url: 'chat.html', content: '', needsFetch: true }
-    ];
-
+    const searchQuery = query.trim().toLowerCase();
     searchResults.innerHTML = '';
-    if (!query.trim()) return;
+    if (!searchQuery) return;
 
+    const content = document.body.innerText.toLowerCase();
+    const matches = content.includes(searchQuery);
+
+    if (!matches) {
+        searchResults.innerHTML = `
+            <div class="no-results">
+                Hmmmm.... looks like there weren't any results for "${query}"
+            </div>
+        `;
+        return;
+    }
+
+    // Find all elements containing the search query
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, li');
     let foundResults = false;
-    
-    pages.forEach(page => {
-        if (page.needsFetch) {
-            fetch(page.url)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const matches = findMatches(doc.body.textContent, query);
-                    if (matches.length > 0) {
-                        foundResults = true;
-                        matches.forEach(match => {
-                            addSearchResult(page.url, match);
-                        });
-                    }
-                });
-        } else {
-            const matches = findMatches(page.content, query);
-            if (matches.length > 0) {
-                foundResults = true;
-                matches.forEach(match => {
-                    addSearchResult(page.url, match);
-                });
-            }
+
+    elements.forEach(element => {
+        if (element.innerText.toLowerCase().includes(searchQuery)) {
+            foundResults = true;
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.textContent = element.innerText.trim();
+            resultItem.addEventListener('click', () => {
+                element.scrollIntoView({ behavior: 'smooth' });
+                element.style.backgroundColor = '#ffeb3b50';
+                setTimeout(() => {
+                    element.style.backgroundColor = '';
+                }, 2000);
+                closeSearch();
+            });
+            searchResults.appendChild(resultItem);
         }
     });
 
-    setTimeout(() => {
-        if (!foundResults && searchResults.children.length === 0) {
-            searchResults.innerHTML = `
-                <div class="no-results">
-                    Hmmmm.... looks like there weren't any results for "${query}"
-                </div>
-            `;
-        }
-    }, 500);
+    if (!foundResults) {
+        searchResults.innerHTML = `
+            <div class="no-results">
+                Hmmmm.... looks like there weren't any results for "${query}"
+            </div>
+        `;
+    }
 }
 
 function findMatches(content, query) {

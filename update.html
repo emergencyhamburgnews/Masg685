@@ -1,12 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Updates</title>
     <link rel="stylesheet" href="styles.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Loading Screen -->
@@ -45,16 +46,36 @@
         </ul>
     </nav>
 
-    <!-- Chat Section -->
-    <section class="chat">
-        <h1>Chat With Me</h1>
-        <div id="chat-messages" class="chat-messages"></div>
-        <form id="chat-form">
-            <input type="text" id="chat-input" name="message" placeholder="Type a message..." required>
-            <button type="submit" class="cta">Send</button>
-        </form>
-        <div id="chat-status" style="display: none; margin-top: 1rem;"></div>
-    </section>
+    <div class="updates-container">
+        <h1>Latest Updates</h1>
+        <div class="update-list">
+            <div class="update-item">
+                <i class="fas fa-paint-brush"></i>
+                <h3>UI Improvements</h3>
+                <p>Enhanced user interface with better styling and animations</p>
+                <span class="update-date">March 2024</span>
+            </div>
+            <div class="update-item">
+                <i class="fas fa-search"></i>
+                <h3>Search Feature</h3>
+                <p>Added powerful search functionality across the website</p>
+                <span class="update-date">March 2024</span>
+            </div>
+            <div class="update-item">
+                <i class="fas fa-moon"></i>
+                <h3>Dark Mode</h3>
+                <p>Implemented dark/light theme toggle for better visibility</p>
+                <span class="update-date">March 2024</span>
+            </div>
+            <div class="update-item">
+                <i class="fas fa-comments"></i>
+                <h3>Chat System</h3>
+                <p>Added real-time chat functionality for better communication</p>
+                <span class="update-date">March 2024</span>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>© 2025</p>
     </footer>
