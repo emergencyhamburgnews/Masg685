@@ -1,3 +1,26 @@
+// Theme toggle functionality
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Initialize theme
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+});
+
 // Check if hamburger exists and log when clicked
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
@@ -9,6 +32,25 @@ if (hamburger && navLinks) {
     });
 } else {
     console.error('Hamburger or nav-links not found!');
+}
+
+// Scroll to top functionality
+const scrollTopButton = document.querySelector('.scroll-top');
+if (scrollTopButton) {
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 100) {
+            scrollTopButton.classList.add('show');
+        } else {
+            scrollTopButton.classList.remove('show');
+        }
+    });
+
+    scrollTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 }
 
 // Simulate loading process with a timer
@@ -51,6 +93,124 @@ if (form) {
 }
 
 // Existing code (hamburger and loading simulation) remains unchanged...
+// Search functionality
+const searchIcon = document.querySelector('.search-icon');
+const searchContainer = document.querySelector('.search-container');
+const searchInput = document.querySelector('.search-input');
+const searchResults = document.querySelector('.search-results');
+const searchClose = document.querySelector('.search-close');
+
+function openSearch() {
+    searchContainer.style.display = 'flex';
+    searchInput.focus();
+}
+
+function closeSearch() {
+    searchContainer.style.display = 'none';
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+}
+
+function performSearch(query) {
+    const pages = [
+        { url: 'home.html', content: document.body.innerHTML },
+        { url: 'about.html', content: '', needsFetch: true },
+        { url: 'contact.html', content: '', needsFetch: true },
+        { url: 'chat.html', content: '', needsFetch: true }
+    ];
+
+    searchResults.innerHTML = '';
+    if (!query.trim()) return;
+
+    let foundResults = false;
+    
+    pages.forEach(page => {
+        if (page.needsFetch) {
+            fetch(page.url)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const matches = findMatches(doc.body.textContent, query);
+                    if (matches.length > 0) {
+                        foundResults = true;
+                        matches.forEach(match => {
+                            addSearchResult(page.url, match);
+                        });
+                    }
+                });
+        } else {
+            const matches = findMatches(page.content, query);
+            if (matches.length > 0) {
+                foundResults = true;
+                matches.forEach(match => {
+                    addSearchResult(page.url, match);
+                });
+            }
+        }
+    });
+
+    setTimeout(() => {
+        if (!foundResults && searchResults.children.length === 0) {
+            searchResults.innerHTML = `
+                <div class="no-results">
+                    Hmmmm.... looks like there weren't any results for "${query}"
+                </div>
+            `;
+        }
+    }, 500);
+}
+
+function findMatches(content, query) {
+    const matches = [];
+    const regex = new RegExp(`[^.]*${query}[^.]*\\.?`, 'gi');
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+        matches.push(match[0].trim());
+    }
+    return matches;
+}
+
+function addSearchResult(url, text) {
+    const div = document.createElement('div');
+    div.className = 'search-result-item';
+    div.textContent = text;
+    div.onclick = () => {
+        window.location.href = `${url}#${encodeURIComponent(text)}`;
+        closeSearch();
+    };
+    searchResults.appendChild(div);
+}
+
+if (searchIcon) {
+    searchIcon.addEventListener('click', openSearch);
+}
+
+if (searchClose) {
+    searchClose.addEventListener('click', closeSearch);
+}
+
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        performSearch(e.target.value);
+    });
+    
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeSearch();
+        }
+    });
+}
+
+// Close search when clicking outside
+if (searchContainer) {
+    searchContainer.addEventListener('click', (e) => {
+        if (e.target === searchContainer) {
+            closeSearch();
+        }
+    });
+}
+
 const thankYouDiv = document.getElementById('thank-you-message');
 
 if (form && thankYouDiv) {

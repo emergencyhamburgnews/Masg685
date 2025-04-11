@@ -18,13 +18,27 @@
 </div>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="logo">Masg685</div>
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun"></span>
+                <span class="moon"></span>
+            </button>
+            <span class="search-icon"></span>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-close">✕</button>
+                <div class="search-results"></div>
+            </div>
+        </div>
         <div class="hamburger">☰</div>
         <ul class="nav-links">
             <li><a href="home.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="chat.html">Chat</a></li>
         </ul>
     </nav>
 
@@ -69,5 +83,6 @@
     <footer>
         <p>© 2025</p>
     </footer>
+    <button class="scroll-top" aria-label="Scroll to top"></button>
 </body>
 </html>
