@@ -420,7 +420,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 function addInteractions(postArea) {
-
+    const userName = localStorage.getItem('userName');
+    
     // Add interaction buttons
     const interactions = document.createElement('div');
     interactions.className = 'post-interactions';
@@ -443,11 +444,22 @@ function addInteractions(postArea) {
     // Create comment section
     const commentSection = document.createElement('div');
     commentSection.className = 'comment-section';
-    commentSection.innerHTML = `
-      <input type="text" class="comment-input" placeholder="Write a comment...">
-      <button class="post-button">Post Comment</button>
-      <div class="comments-list"></div>
-    `;
+    
+    // Show different content based on whether user has entered their name
+    if (!userName) {
+        commentSection.innerHTML = `
+            <div class="name-input-section">
+                <input type="text" class="name-input" placeholder="Enter your name to comment...">
+                <button class="post-button save-name-btn">Save Name</button>
+            </div>
+        `;
+    } else {
+        commentSection.innerHTML = `
+            <input type="text" class="comment-input" placeholder="Write a comment...">
+            <button class="post-button">Post Comment</button>
+            <div class="comments-list"></div>
+        `;
+    }
     postArea.appendChild(commentSection);
 
     // Like button functionality
@@ -468,20 +480,66 @@ function addInteractions(postArea) {
     const commentsList = commentSection.querySelector('.comments-list');
     let commentCount = 0;
 
-    commentButton2.addEventListener('click', () => {
-      const commentText = commentInput.value.trim();
-      if (commentText) {
-        const commentItem = document.createElement('div');
-        commentItem.className = 'comment-item';
-        commentItem.textContent = commentText;
-        commentsList.appendChild(commentItem);
-        commentInput.value = '';
-        commentCount++;
-        interactions.querySelector('.comment-count').textContent = commentCount;
-      }
-    });
+    if (!userName) {
+        const saveNameBtn = commentSection.querySelector('.save-name-btn');
+        const nameInput = commentSection.querySelector('.name-input');
+        
+        saveNameBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if (name) {
+                // Save name with 50-day expiry
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 50);
+                localStorage.setItem('userName', name);
+                localStorage.setItem('userNameExpiry', expiryDate.toISOString());
+                
+                // Update comment section to show comment input
+                commentSection.innerHTML = `
+                    <input type="text" class="comment-input" placeholder="Write a comment...">
+                    <button class="post-button">Post Comment</button>
+                    <div class="comments-list"></div>
+                `;
+                
+                // Set up comment functionality
+                setupCommentFunctionality();
+            }
+        });
+    } else {
+        setupCommentFunctionality();
+    }
+    
+    function setupCommentFunctionality() {
+        const commentInput = commentSection.querySelector('.comment-input');
+        const commentButton2 = commentSection.querySelector('.post-button');
+        const commentsList = commentSection.querySelector('.comments-list');
+        
+        commentButton2.addEventListener('click', () => {
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                const commentItem = document.createElement('div');
+                commentItem.className = 'comment-item';
+                commentItem.textContent = `${userName}: ${commentText}`;
+                commentsList.appendChild(commentItem);
+                commentInput.value = '';
+                commentCount++;
+                interactions.querySelector('.comment-count').textContent = commentCount;
+            }
+        });
+    }
 
     // Reset inputs
     document.getElementById('text-post').value = "";
     document.getElementById('image-post').value = "";
 }
+
+// Check and clean up expired username on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const userNameExpiry = localStorage.getItem('userNameExpiry');
+    if (userNameExpiry) {
+        const expiryDate = new Date(userNameExpiry);
+        if (expiryDate < new Date()) {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userNameExpiry');
+        }
+    }
+});

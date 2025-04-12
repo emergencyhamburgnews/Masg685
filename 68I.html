@@ -52,24 +52,29 @@
 
     <script>
         const responses = {
-            'hey': 'Hello! I\'m 68I, Masg685\'s AI assistant. I can tell you all about Masg685, achievements, social media, or help you navigate this website. What would you like to know?',
-            'hi': 'Hi there! I\'m here to help you learn about Masg685 and explore their website. Feel free to ask anything!',
-            'hello': 'Hello! I\'m 68I, your friendly AI guide. I can tell you about Masg685\'s background, gaming achievements, or help you explore the website. What interests you?',
+            'hey': 'Hello! I\'m 68I, Masg685\'s AI assistant. I can tell you all about Masg685, their friend Nexus, achievements, social media, or help you navigate this website. What would you like to know?',
+            'hi': 'Hi there! I\'m here to help you learn about Masg685, Nexus, and explore their website. Feel free to ask anything!',
+            'hello': 'Hello! I\'m 68I, your friendly AI guide. I can tell you about Masg685\'s background, their friend Nexus, gaming achievements, or help you explore the website. What interests you?',
             'who is masg685': 'Masg685 is a content creator and gamer from Australia, born on the beautiful island of Savai\'i in Samoa. They\'ve become one of the most successful Emergency Hamburg players and share their gaming experiences on YouTube and TikTok!',
             'where is masg685 from': 'Masg685 has an interesting background - they\'re from Australia but were born in Savai\'i, which is an island in Samoa. This multicultural background adds to their unique perspective in content creation and gaming!',
-            'how do i use this website': 'This website has several sections you can explore:\n- Home: Main page with overview and social media links\n- About: Detailed information about Masg685\n- Contact: Get in touch with Masg685\n- Updates: Latest news and updates\n\nYou can use the navigation menu at the top to move between pages, and there\'s a search feature to find specific information. Need help with anything specific?',
-            'what about emergency hamburg': 'Masg685 is a highly skilled Emergency Hamburg player with impressive stats:\n- Police XP: +312,213 XP (One of the best!)\n- Fire & Medical XP: +20,352 XP\n- Truck Driver XP: +1,721 XP\n- ADAC XP: +2,035 XP\n- Bus Driver XP: +1,454 XP\nThey\'re known for playing with a controller and joined Roblox on 22/11/2023.',
-            'what are masg685\'s social media': 'You can follow Masg685 on various platforms:\n- TikTok: @masg685 (Gaming content and updates)\n- YouTube: @masg685 (Gameplay videos and tutorials)\n- X (Twitter): @masg685_ (Latest news and interactions)\n- Roblox: User ID 5255024681 (Join them in Emergency Hamburg!)',
+            'how do i use this website': 'This website has several sections you can explore:\n- Home: Main page with overview and social media links\n- About: Detailed information about Masg685\n- Contact: Get in touch with Masg685\n- Updates: Latest news and updates\n- Posts: Check out Masg685\'s latest posts\n\nYou can use the navigation menu at the top to move between pages, and there\'s a search feature to find specific information. Need help with anything specific?',
+            'what about emergency hamburg': 'Masg685 is a highly skilled Emergency Hamburg player with impressive stats:\n- Police XP: +312,213 XP (One of the best!)\n- Fire & Medical XP: +20,352 XP\n- Truck Driver XP: +1,721 XP\n- ADAC XP: +2,035 XP\n- Bus Driver XP: +1,454 XP\nThey\'re known for playing with a controller and joined Roblox on 22/11/2023. Their friend Nexus is also a top police officer in the game!',
+            'what are masg685\'s social media': 'You can follow Masg685 on various platforms:\n- TikTok: @masg685 (Gaming content and updates)\n- YouTube: @masg685 (Gameplay videos and tutorials)\n- X (Twitter): @masg685_ (Latest news and interactions)\n- Roblox: User ID 5255024681 (Join them in Emergency Hamburg!)\nFun fact: Nexus often teams up with Masg685 in their gaming adventures!',
             'how can i contact masg685': 'You can contact Masg685 in several ways:\n1. Use the Contact form on the website (contact.html)\n2. Reach out through their social media accounts\n3. Leave comments on their YouTube videos\nThey appreciate hearing from fans and fellow gamers!',
-            'what\'s new': 'You can check the Updates page for the latest news, but Masg685 regularly posts new content on their social media channels and continues to achieve new milestones in Emergency Hamburg!',
-            'help': 'I can help you with:\n- Information about Masg685\'s background and achievements\n- Emergency Hamburg stats and gameplay\n- Finding social media links\n- Navigating the website\n- Contact information\nWhat would you like to know more about?',
-            'default': "I understand you're asking about something different! I'm knowledgeable about Masg685's background, achievements, gaming experience, social media presence, and can help you navigate this website. Would you like to know more about any of these topics?"
+            'what\'s new': 'You can check the Updates page for the latest news, but Masg685 regularly posts new content on their social media channels and continues to achieve new milestones in Emergency Hamburg, often alongside their friend Nexus!',
+            'help': 'I can help you with:\n- Information about Masg685\'s background and achievements\n- Details about Nexus, their best friend and top EH player\n- Emergency Hamburg stats and gameplay\n- Finding social media links\n- Navigating the website\n- Contact information\nWhat would you like to know more about?',
+            // New Nexus responses
+            'who is nexus': 'Nexus is one of the top police officers in Emergency Hamburg, renowned for his incredible skills, quick thinking, and dedication to keeping the city safe. Hailing from Ho Chi Minh City, Vietnam, he’s a passionate gamer who’s earned respect in the EH community for his teamwork and leadership. He’s also Masg685’s best friend, always reliable, positive, and a blast to play with!',
+            'tell me about nexus': 'Nexus, from Ho Chi Minh City, Vietnam, is a standout player in Emergency Hamburg. As a police officer, he’s mastered his role with sharp decision-making and a knack for intense situations. Beyond his skills, he’s a true friend to Masg685 and many others, known for his kindness, positivity, and willingness to help. He brings leadership and fun to every gaming session!',
+            'nexus details': 'Nexus is a legendary figure in Emergency Hamburg, excelling as a police officer with unmatched dedication. Originally from Ho Chi Minh City, Vietnam, his love for gaming shines through in his teamwork and strategic play. As Masg685’s best friend, he’s always there to support and inspire, making him a beloved member of the EH community with his infectious positivity.',
+            'who is masg685\'s friend': 'That would be Nexus! He’s an exceptional Emergency Hamburg police officer from Ho Chi Minh City, Vietnam. Known for his quick reflexes and commitment, he’s a respected player who’s built strong bonds in the community. To Masg685, he’s not just a gaming partner but a reliable, kind-hearted best friend who makes every game more fun!',
+            'default': "I understand you're asking about something different! I'm knowledgeable about Masg685's background, their friend Nexus, achievements, gaming experience, social media presence, and can help you navigate this website. Would you like to know more about any of these topics?"
         };
-
+    
         const chatMessages = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
-
+    
         function addMessage(message, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
@@ -81,7 +86,7 @@
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-
+    
         function getResponse(input) {
             const lowercaseInput = input.toLowerCase();
             
@@ -104,18 +109,33 @@
                 'navigate': 'how do i use this website',
                 'help': 'help',
                 'new': 'what\'s new',
-                'update': 'what\'s new'
+                'update': 'what\'s new',
+                // New Nexus keywords
+                'nexus': 'who is nexus',
+                'police officer': 'who is nexus',
+                'friend': 'who is masg685\'s friend',
+                'vietnam': 'who is nexus'
             };
             
             for (const [keyword, response] of Object.entries(keywords)) {
                 if (lowercaseInput.includes(keyword)) {
+                    // Randomly select a Nexus response to add variety
+                    if (response.includes('nexus') || response.includes('friend')) {
+                        const nexusResponses = [
+                            responses['who is nexus'],
+                            responses['tell me about nexus'],
+                            responses['nexus details'],
+                            responses['who is masg685\'s friend']
+                        ];
+                        return nexusResponses[Math.floor(Math.random() * nexusResponses.length)];
+                    }
                     return responses[response];
                 }
             }
             
             return responses.default;
         }
-
+    
         function handleSend() {
             const message = userInput.value.trim();
             if (message) {
@@ -127,7 +147,7 @@
                 userInput.value = '';
             }
         }
-
+    
         sendButton.addEventListener('click', handleSend);
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
