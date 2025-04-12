@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Posts</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="progress-circle">
+            <div class="progress-bar" id="progress-bar"></div>
+            <span id="percent">0%</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun"></span>
+                <span class="moon"></span>
+            </button>
+            <span class="search-icon"></span>
+        </div>
+        <div class="hamburger">☰</div>
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="post-container">
+        <h1>My Post Area</h1>
+
+        <!-- Login Section -->
+        <div id="login" class="login-section">
+            <input type="password" id="password" placeholder="Enter admin password" class="post-input">
+            <button onclick="login()" class="post-button">Login</button>
+        </div>
+
+        <!-- Post Form -->
+        <div id="post-form" class="post-form" style="display: none;">
+            <input type="text" id="post-title" placeholder="Enter post title..." class="post-input">
+            <textarea id="text-post" placeholder="Write your post here..." class="post-textarea"></textarea>
+            <div class="file-input-container">
+                <label for="image-post" class="file-label">
+                    <i class="fas fa-image"></i> Choose Image
+                </label>
+                <input type="file" id="image-post" accept="image/*" class="file-input">
+            </div>
+            <button onclick="submitPost()" class="post-button">
+                <i class="fas fa-paper-plane"></i> Post
+            </button>
+        </div>
+
+        <!-- Post Display -->
+        <div id="post-area" class="post-area">
+            <div class="post-interactions">
+                <button class="interaction-button like-button">
+                    <i class="fas fa-heart"></i> <span class="like-count">0</span>
+                </button>
+                <button class="interaction-button comment-button">
+                    <i class="fas fa-comment"></i> <span class="comment-count">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025</p>
+    </footer>
+
+    <button class="scroll-top" aria-label="Scroll to top">↑</button>
+    <script src="javascript.js"></script>
+</body>
+</html>

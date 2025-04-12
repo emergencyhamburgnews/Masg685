@@ -307,3 +307,127 @@ if (chatForm && chatMessages && chatStatus) {
         chatForm.reset();
     });
 }
+
+function login() {
+    const pw = document.getElementById('password').value;
+    if (pw === "Masg685!") { // You can change this password!
+      document.getElementById('post-form').style.display = 'block';
+      document.getElementById('login').style.display = 'none';
+    } else {
+      alert("Wrong password!");
+    }
+  }
+  
+  function submitPost() {
+    const title = document.getElementById('post-title').value;
+    const text = document.getElementById('text-post').value;
+    const imageInput = document.getElementById('image-post');
+    const postArea = document.getElementById('post-area');
+  
+    // Clear old post
+    postArea.innerHTML = "";
+  
+    const contentDiv = document.createElement('div');
+    
+    // Add title if present
+    if (title.trim() !== "") {
+      const h2 = document.createElement('h2');
+      h2.textContent = title;
+      h2.style.marginBottom = '15px';
+      contentDiv.appendChild(h2);
+    }
+  
+    // If there's text, show it
+    if (text.trim() !== "") {
+      const p = document.createElement('p');
+      p.textContent = text;
+      contentDiv.appendChild(p);
+    }
+  
+    // If there's an image, show it
+    if (imageInput.files && imageInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        contentDiv.appendChild(img);
+        
+        // Add the content and interactions after image loads
+        postArea.appendChild(contentDiv);
+        addInteractions(postArea);
+      };
+      reader.readAsDataURL(imageInput.files[0]);
+    } else {
+      // If no image, add content and interactions immediately
+      postArea.appendChild(contentDiv);
+      addInteractions(postArea);
+    }
+}
+
+function addInteractions(postArea) {
+
+    // Add interaction buttons
+    const interactions = document.createElement('div');
+    interactions.className = 'post-interactions';
+    interactions.innerHTML = `
+      <button class="interaction-button like-button">
+        <i class="fas fa-heart"></i> <span class="like-count">0</span>
+      </button>
+      <button class="interaction-button comment-button">
+        <i class="fas fa-comment"></i> <span class="comment-count">0</span>
+      </button>
+    `;
+    postArea.appendChild(interactions);
+
+    // Add click handlers
+    const likeButton = interactions.querySelector('.like-button');
+    const likeCount = interactions.querySelector('.like-count');
+    const commentButton = interactions.querySelector('.comment-button');
+    let liked = false;
+
+    // Create comment section
+    const commentSection = document.createElement('div');
+    commentSection.className = 'comment-section';
+    commentSection.innerHTML = `
+      <input type="text" class="comment-input" placeholder="Write a comment...">
+      <button class="post-button">Post Comment</button>
+      <div class="comments-list"></div>
+    `;
+    postArea.appendChild(commentSection);
+
+    // Like button functionality
+    likeButton.addEventListener('click', () => {
+      liked = !liked;
+      likeButton.classList.toggle('active');
+      likeCount.textContent = liked ? '1' : '0';
+    });
+
+    // Comment button functionality
+    commentButton.addEventListener('click', () => {
+      commentSection.classList.toggle('active');
+    });
+
+    // Add comment functionality
+    const commentInput = commentSection.querySelector('.comment-input');
+    const commentButton2 = commentSection.querySelector('.post-button');
+    const commentsList = commentSection.querySelector('.comments-list');
+    let commentCount = 0;
+
+    commentButton2.addEventListener('click', () => {
+      const commentText = commentInput.value.trim();
+      if (commentText) {
+        const commentItem = document.createElement('div');
+        commentItem.className = 'comment-item';
+        commentItem.textContent = commentText;
+        commentsList.appendChild(commentItem);
+        commentInput.value = '';
+        commentCount++;
+        interactions.querySelector('.comment-count').textContent = commentCount;
+      }
+    });
+
+    // Reset inputs
+    document.getElementById('text-post').value = "";
+    document.getElementById('image-post').value = "";
+}
+  
