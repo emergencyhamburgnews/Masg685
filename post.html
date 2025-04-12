@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Posts</title>
@@ -10,13 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="progress-circle">
-            <div class="progress-bar" id="progress-bar"></div>
-            <span id="percent">0%</span>
-        </div>
-    </div>
+    
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -60,8 +53,13 @@
             </button>
         </div>
 
-        <!-- Post Display -->
-        <div id="post-area" class="post-area">
+        <!-- Public Posts Display -->
+        <div id="all-posts" class="post-area">
+            <h2>Recent Posts</h2>
+        </div>
+
+        <!-- Admin Post Area -->
+        <div id="post-area" class="post-area" style="margin-top: 2rem;">
             <div class="post-interactions">
                 <button class="interaction-button like-button">
                     <i class="fas fa-heart"></i> <span class="like-count">0</span>

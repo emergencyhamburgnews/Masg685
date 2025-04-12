@@ -359,70 +359,7 @@ footer {
     color: var(--text-color);
 }
 
-/* Loading screen styles */
-#loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    font-family: 'Poppins', sans-serif;
-}
 
-.progress-circle {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(45deg, #007bff, #00ff88);
-    border-radius: 50%;
-    box-shadow: 0 0 30px rgba(0, 123, 255, 0.3);
-}
-
-.progress-circle::before {
-    content: '';
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    background: var(--bg-color);
-    border-radius: 50%;
-}
-
-.progress-bar {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 6px solid transparent;
-    border-top-color: #df9999;
-    animation: spin 1s linear infinite;
-}
-
-#percent {
-    position: relative;
-    font-size: 32px;
-    font-weight: 600;
-    background: linear-gradient(45deg, #007bff, #00ff88);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-#main-content {
-    display: none;
-}
 
 /* Scroll to top button */
 .scroll-top {

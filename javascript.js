@@ -61,31 +61,7 @@ if (scrollTopButton) {
     });
 }
 
-// Simulate loading process with a timer
-let progress = 0;
-const progressBar = document.getElementById('progress-bar');
-const percentText = document.getElementById('percent');
 
-function simulateLoading() {
-    const interval = setInterval(() => {
-        progress += 1;  // Increment the progress
-        const progressAngle = (progress / 100) * 360;  // Calculate the angle based on percentage
-
-        // Update the circle border to reflect progress
-        progressBar.style.transform = `rotate(${progressAngle}deg)`;
-        percentText.textContent = `${progress}%`;
-
-        if (progress >= 100) {
-            clearInterval(interval);  // Stop the interval once it's 100%
-            // After loading is complete, hide the loading screen and show the main content
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }
-    }, 50);  // Speed of loading (50ms per increment)
-}
-
-// Start the loading simulation once the page loads
-window.onload = simulateLoading;
 
 const form = document.querySelector('.contact form');
 if (form) {
@@ -200,7 +176,7 @@ if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         performSearch(e.target.value);
     });
-    
+
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSearch();
@@ -310,25 +286,53 @@ if (chatForm && chatMessages && chatStatus) {
 
 function login() {
     const pw = document.getElementById('password').value;
-    if (pw === "Masg685!") { // You can change this password!
-      document.getElementById('post-form').style.display = 'block';
-      document.getElementById('login').style.display = 'none';
+    if (pw === "Masg68525!") {
+        document.getElementById('post-form').style.display = 'block';
+        document.getElementById('login').style.display = 'none';
+        // Set session expiry to 50 days from now
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 50);
+        localStorage.setItem('adminSession', expiryDate.toISOString());
+        // Clear password field
+        document.getElementById('password').value = '';
     } else {
-      alert("Wrong password!");
+        alert("Wrong password!");
     }
-  }
-  
+}
+
+// Check admin session on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const sessionExpiry = localStorage.getItem('adminSession');
+    if (sessionExpiry) {
+        const expiryDate = new Date(sessionExpiry);
+        if (expiryDate > new Date()) {
+            document.getElementById('post-form').style.display = 'block';
+            document.getElementById('login').style.display = 'none';
+        } else {
+            localStorage.removeItem('adminSession');
+        }
+    }
+});
+
   function submitPost() {
     const title = document.getElementById('post-title').value;
     const text = document.getElementById('text-post').value;
     const imageInput = document.getElementById('image-post');
     const postArea = document.getElementById('post-area');
-  
+    const allPosts = document.getElementById('all-posts'); // Assuming this element exists
+
+    // Store post data
+    const postData = {
+        title: title,
+        text: text,
+        timestamp: new Date().toISOString()
+    };
+
     // Clear old post
     postArea.innerHTML = "";
-  
+
     const contentDiv = document.createElement('div');
-    
+
     // Add title if present
     if (title.trim() !== "") {
       const h2 = document.createElement('h2');
@@ -336,14 +340,14 @@ function login() {
       h2.style.marginBottom = '15px';
       contentDiv.appendChild(h2);
     }
-  
+
     // If there's text, show it
     if (text.trim() !== "") {
       const p = document.createElement('p');
       p.textContent = text;
       contentDiv.appendChild(p);
     }
-  
+
     // If there's an image, show it
     if (imageInput.files && imageInput.files[0]) {
       const reader = new FileReader();
@@ -351,18 +355,69 @@ function login() {
         const img = document.createElement('img');
         img.src = e.target.result;
         contentDiv.appendChild(img);
-        
-        // Add the content and interactions after image loads
+
+        postData.image = e.target.result;
+        localStorage.setItem('currentPost', JSON.stringify(postData));
+
+        // Add to public posts
+        const publicPost = contentDiv.cloneNode(true);
+        allPosts.insertBefore(publicPost, allPosts.firstChild);
+
+        // Add to admin area
         postArea.appendChild(contentDiv);
         addInteractions(postArea);
+        addInteractions(publicPost);
       };
       reader.readAsDataURL(imageInput.files[0]);
     } else {
       // If no image, add content and interactions immediately
+      localStorage.setItem('currentPost', JSON.stringify(postData));
+
+      // Add to public posts
+      const publicPost = contentDiv.cloneNode(true);
+      allPosts.insertBefore(publicPost, allPosts.firstChild);
+
+      // Add to admin area
       postArea.appendChild(contentDiv);
       addInteractions(postArea);
+      addInteractions(publicPost);
     }
 }
+
+// Load saved post on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedPost = localStorage.getItem('currentPost');
+    if (savedPost) {
+        const postData = JSON.parse(savedPost);
+        const postArea = document.getElementById('post-area');
+        postArea.innerHTML = '';
+
+        const contentDiv = document.createElement('div');
+
+        if (postData.title) {
+            const h2 = document.createElement('h2');
+            h2.textContent = postData.title;
+            h2.style.marginBottom = '15px';
+            contentDiv.appendChild(h2);
+        }
+
+        if (postData.text) {
+            const p = document.createElement('p');
+            p.textContent = postData.text;
+            contentDiv.appendChild(p);
+        }
+
+        if (postData.image) {
+            const img = document.createElement('img');
+            img.src = postData.image;
+            contentDiv.appendChild(img);
+        }
+
+        postArea.appendChild(contentDiv);
+        addInteractions(postArea);
+    }
+});
+
 
 function addInteractions(postArea) {
 
@@ -430,4 +485,3 @@ function addInteractions(postArea) {
     document.getElementById('text-post').value = "";
     document.getElementById('image-post').value = "";
 }
-  
