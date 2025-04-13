@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Player - Emergency Hamburg</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun"></span>
+                <span class="moon"></span>
+            </button>
+        </div>
+        <div class="hamburger">☰</div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="post.html"><i class="fas fa-pen-to-square"></i><span>Posts</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <h1>Report Player</h1>
+        <form id="reportForm" class="custom-form" action="https://formspree.io/f/moveylzy" method="POST">
+            <div class="form-group">
+                <label for="username">Roblox Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="violation">Rule Violation:</label>
+                <select id="violation" name="violation" required>
+                    <option value="">Select violation type</option>
+                    <option value="hacking">Hacking</option>
+                    <option value="disrespectful">Disrespectful Behavior</option>
+                    <option value="failrp">Fail Roleplay</option>
+                    <option value="teaming">Teaming</option>
+                    <option value="other">Other</option>
+                </select>
+            </div> 
+            <div class="form-group">
+                <label for="timestamp">Timestamp/Additional Information:</label>
+                <textarea id="timestamp" name="timestamp" rows="4" required></textarea>
+            </div>
+        
+            <button type="submit" class="submit-button">Submit Report</button>
+        </form>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>

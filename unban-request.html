@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unban Request - Emergency Hamburg</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun"></span>
+                <span class="moon"></span>
+            </button>
+        </div>
+        <div class="hamburger">☰</div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="post.html"><i class="fas fa-pen-to-square"></i><span>Posts</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <h1>Unban Request</h1>
+        <form id="unbanForm" class="custom-form" action="https://formspree.io/f/moveylzy" method="POST">
+            <div class="form-group">
+                <label for="banReason">Ban Reason:</label>
+                <textarea id="banReason" name="banReason" rows="4" placeholder="Please provide the ban reason shown when trying to join the private server" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="explanation">Unban Explanation:</label>
+                <textarea id="explanation" name="explanation" rows="6" placeholder="Please explain why you believe you were wrongfully banned. Note: Exploiters will not be unbanned." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">Submit Unban Request</button>
+        </form>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>

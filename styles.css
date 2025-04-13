@@ -246,7 +246,7 @@ button.cta:active {
 }
 
 .about-link {
-    color: #ebfc00; /* Keep the blue color */
+    color: #c00000; /* Keep the blue color */
     text-decoration: none; /* Remove the underline */
 }
 
@@ -1093,6 +1093,8 @@ footer {
     font-weight: bold;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 5px;
+    width: calc(100% - 10px);
 }
 
 .join-button:hover {
@@ -1101,8 +1103,14 @@ footer {
 }
 
 .rules-button {
-    margin-left: 10px;
     background: linear-gradient(45deg, #a30000, #780000);
+}
+
+@media (min-width: 768px) {
+    .join-button {
+        width: auto;
+        margin: 5px 10px;
+    }
 }
 
 /* Rules Modal */
@@ -1200,4 +1208,60 @@ footer {
     .back-button {
         display: flex;
     }
+}
+/* Form Styles */
+.form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--nav-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.custom-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submit-button {
+    padding: 1rem 2rem;
+    background: linear-gradient(45deg, #780000, #a30000);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
 }

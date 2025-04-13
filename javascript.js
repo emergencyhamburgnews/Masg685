@@ -111,6 +111,86 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initialize modal functionality
     initializeRulesModal();
 
+ // Handle report form submission
+const reportForm = document.getElementById('reportForm');
+if (reportForm) {
+    reportForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = reportForm.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+
+        try {
+            const response = await fetch(reportForm.action, {
+                method: 'POST',
+                body: new FormData(reportForm),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                submitButton.textContent = 'Sent Successfully!';
+                reportForm.reset();
+                setTimeout(() => {
+                    submitButton.textContent = originalText;
+                }, 3000);
+            } else {
+                throw new Error('Failed to send');
+            }
+        } catch (error) {
+            submitButton.textContent = 'Failed to Send';
+            setTimeout(() => {
+                submitButton.textContent = originalText;
+            }, 3000);
+        }
+        submitButton.disabled = false;
+    });
+}
+
+    // Handle unban request form submission
+    const unbanForm = document.getElementById('unbanForm');
+    if (unbanForm) {
+        unbanForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = unbanForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(unbanForm.action, {
+                    method: 'POST',
+                    body: new FormData(unbanForm),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    submitButton.textContent = 'Sent Successfully!';
+                    submitButton.style.background = '#4CAF50';
+                    unbanForm.reset();
+                    setTimeout(() => {
+                        submitButton.textContent = originalText;
+                        submitButton.style.background = '';
+                    }, 3000);
+                } else {
+                    throw new Error('Failed to send');
+                }
+            } catch (error) {
+                submitButton.textContent = 'Failed to Send';
+                submitButton.style.background = '#f44336';
+                setTimeout(() => {
+                    submitButton.textContent = originalText;
+                    submitButton.style.background = '';
+                }, 3000);
+            }
+            submitButton.disabled = false;
+        });
+    }
+
     // Private Server Join Button
     const joinButton = document.getElementById('join-server');
     if (joinButton) {
