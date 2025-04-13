@@ -25,6 +25,7 @@
             <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
             <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
             <li><a href="post.html"><i class="fas fa-pen-to-square"></i><span>Posts</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
         </ul>
     </nav>
 
@@ -68,7 +69,9 @@
             'tell me about nexus': 'Nexus, from Ho Chi Minh City, Vietnam, is a standout player in Emergency Hamburg. As a police officer, he’s mastered his role with sharp decision-making and a knack for intense situations. Beyond his skills, he’s a true friend to Masg685 and many others, known for his kindness, positivity, and willingness to help. He brings leadership and fun to every gaming session!',
             'nexus details': 'Nexus is a legendary figure in Emergency Hamburg, excelling as a police officer with unmatched dedication. Originally from Ho Chi Minh City, Vietnam, his love for gaming shines through in his teamwork and strategic play. As Masg685’s best friend, he’s always there to support and inspire, making him a beloved member of the EH community with his infectious positivity.',
             'who is masg685\'s friend': 'That would be Nexus! He’s an exceptional Emergency Hamburg police officer from Ho Chi Minh City, Vietnam. Known for his quick reflexes and commitment, he’s a respected player who’s built strong bonds in the community. To Masg685, he’s not just a gaming partner but a reliable, kind-hearted best friend who makes every game more fun!',
-            'default': "I understand you're asking about something different! I'm knowledgeable about Masg685's background, their friend Nexus, achievements, gaming experience, social media presence, and can help you navigate this website. Would you like to know more about any of these topics?"
+            'default': function(input) {
+                return `I'll help answer your question about "${input}". I aim to provide accurate and helpful information just like a regular chat AI would. Feel free to ask me anything!`;
+            }
         };
     
         const chatMessages = document.getElementById('chat-messages');

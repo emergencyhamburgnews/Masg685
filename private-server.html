@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Server - Emergency Hamburg</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun"></span>
+                <span class="moon"></span>
+            </button>
+            <span class="search-icon"></span>
+        </div>
+        <div class="hamburger">☰</div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="post.html"><i class="fas fa-pen-to-square"></i><span>Posts</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="private-server">
+        <div class="server-card">
+            <div class="server-header">
+                <div class="server-info">
+                    <span class="region">AUS</span>
+                    <span class="server-name">Australia RP</span>
+                </div>
+                <div class="player-count">
+                    <i class="fas fa-users"></i>
+                    <span id="current-players">0</span>/<span id="max-players">42</span>
+                </div>
+            </div>
+            <div class="server-details">
+                <div class="detail-item">
+                    <h3>Server Owner</h3>
+                    <div class="roblox-profile" id="roblox-profile">
+                        <img src="" alt="Roblox Avatar" id="roblox-avatar" class="roblox-avatar">
+                        <p id="roblox-username">Loading...</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <h3>Description</h3>
+                    <p>Soon</p>
+                    <ul class="role-list">
+                        <li>Firefighter</li>
+                        <li>Police Officer</li>
+                        <li>Medical Team</li>
+                        <li>Truck Driver</li>
+                        <li>Criminal</li>
+                    </ul>
+                </div>
+                <a href="#" id="join-server" class="join-button">Soon</a>
+                <button class="join-button rules-button">Rules</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="rules-modal" id="rules-modal">
+        <div class="rules-content">
+            <button class="close-button">&times;</button>
+            <h2>Private Server Rules</h2>
+            <div class="rules-list">
+                <h3>General Rules</h3>
+                <ol>
+                    <li>Respect all players and staff members</li>
+                    <li>No harassment, bullying, or toxic behavior</li>
+                    <li>No exploiting or using hacks</li>
+                    <li>Follow the chain of command</li>
+                    <li>No random arrests or kills</li>
+                    <li>Keep chat appropriate and friendly</li>
+                    <li>Listen to staff instructions</li>
+                </ol>
+                
+                <h3>Roleplay Rules</h3>
+                <ol>
+                    <li>Stay in character during roleplay</li>
+                    <li>No breaking character without reason</li>
+                    <li>Use appropriate sirens and signals</li>
+                    <li>Follow traffic laws when not responding</li>
+                    <li>Respect emergency vehicle right of way</li>
+                    <li>Maintain realistic RP scenarios</li>
+                    <li>Use proper radio communications</li>
+                </ol>
+
+                <h3>Consequences</h3>
+                <ol>
+                    <li>First offense: Warning</li>
+                    <li>Second offense: Temporary kick</li>
+                    <li>Third offense: Server ban</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>

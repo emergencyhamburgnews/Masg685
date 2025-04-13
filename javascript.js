@@ -10,10 +10,142 @@ function toggleTheme() {
     setTheme(newTheme);
 }
 
-// Initialize theme
-document.addEventListener('DOMContentLoaded', () => {
+// Roblox profile integration
+async function updateRobloxProfile() {
+    const profile = {
+        userId: '5255024681',
+        username: 'masg685'
+    };
+
+    const retryFetch = async (url, attempts = 3) => {
+        for (let i = 0; i < attempts; i++) {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                if (response.ok) return response;
+            } catch (err) {
+                console.error(`Attempt ${i + 1} failed:`, err);
+                if (i === attempts - 1) throw err;
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        throw new Error('Max retry attempts reached');
+    };
+
+    try {
+        // Fetch user data first
+        const userResponse = await retryFetch(`https://users.roblox.com/v1/users/${profile.userId}`);
+        const userData = await userResponse.json();
+
+        // Update username immediately
+        const usernameElement = document.getElementById('roblox-username');
+        if (usernameElement) {
+            usernameElement.textContent = userData.displayName || userData.name || profile.username;
+        }
+
+        // Then fetch avatar
+        const avatarResponse = await retryFetch("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + profile.userId + "&size=150x150&format=Png");
+        const avatarData = await avatarResponse.json();
+
+        // Update the profile elements
+        const avatarElement = document.getElementById('roblox-avatar');
+
+        if (avatarElement && avatarData.data && avatarData.data[0]) {
+            avatarElement.src = avatarData.data[0].imageUrl;
+        }
+
+        if (usernameElement) {
+            usernameElement.textContent = userData.displayName || userData.name;
+        }
+    } catch (error) {
+        console.error('Error fetching Roblox profile:', error);
+        const usernameElement = document.getElementById('roblox-username');
+        if (usernameElement) usernameElement.textContent = 'Failed to load profile';
+    }
+}
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', updateRobloxProfile);
+
+// Initialize theme and Roblox profile
+window.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('roblox-profile')) {
+        updateRobloxProfile();
+    }
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
+
+    // Rules Modal functionality
+    function initializeRulesModal() {
+        const rulesModal = document.getElementById('rules-modal');
+        const rulesButtons = document.querySelectorAll('.rules-button');
+        const closeButton = document.querySelector('.close-button');
+
+        if (rulesButtons && rulesModal) {
+            rulesButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    rulesModal.style.display = 'block';
+                });
+            });
+        }
+
+        if (closeButton && rulesModal) {
+            closeButton.addEventListener('click', () => {
+                rulesModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target === rulesModal) {
+                    rulesModal.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    // Initialize modal functionality
+    initializeRulesModal();
+
+    // Private Server Join Button
+    const joinButton = document.getElementById('join-server');
+    if (joinButton) {
+        joinButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'https://www.roblox.com/games/7711635737';
+        });
+    }
+
+    // Update player count from Roblox server
+    const currentPlayers = document.getElementById('current-players');
+    if (currentPlayers) {
+        async function updatePlayerCount() {
+            try {
+                // Fetch player count for Emergency Hamburg
+                const response = await fetch(`https://games.roblox.com/v1/games/7711635737/servers/Public?sortOrder=Asc&limit=100`);
+                const data = await response.json();
+
+                let totalPlayers = 0;
+                if (data.data && data.data.length > 0) {
+                    // Sum up players from all servers
+                    totalPlayers = data.data.reduce((sum, server) => sum + server.playing, 0);
+                }
+
+                currentPlayers.textContent = totalPlayers;
+            } catch (error) {
+                console.error('Error fetching player count:', error);
+                currentPlayers.textContent = '0';
+            }
+        }
+
+        // Update initially and then every 30 seconds
+        updatePlayerCount();
+        setInterval(updatePlayerCount, 30000);
+    }
 
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
@@ -421,7 +553,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function addInteractions(postArea) {
     const userName = localStorage.getItem('userName');
-    
+
     // Add interaction buttons
     const interactions = document.createElement('div');
     interactions.className = 'post-interactions';
@@ -444,7 +576,7 @@ function addInteractions(postArea) {
     // Create comment section
     const commentSection = document.createElement('div');
     commentSection.className = 'comment-section';
-    
+
     // Show different content based on whether user has entered their name
     if (!userName) {
         commentSection.innerHTML = `
@@ -483,7 +615,7 @@ function addInteractions(postArea) {
     if (!userName) {
         const saveNameBtn = commentSection.querySelector('.save-name-btn');
         const nameInput = commentSection.querySelector('.name-input');
-        
+
         saveNameBtn.addEventListener('click', () => {
             const name = nameInput.value.trim();
             if (name) {
@@ -492,14 +624,14 @@ function addInteractions(postArea) {
                 expiryDate.setDate(expiryDate.getDate() + 50);
                 localStorage.setItem('userName', name);
                 localStorage.setItem('userNameExpiry', expiryDate.toISOString());
-                
+
                 // Update comment section to show comment input
                 commentSection.innerHTML = `
                     <input type="text" class="comment-input" placeholder="Write a comment...">
                     <button class="post-button">Post Comment</button>
                     <div class="comments-list"></div>
                 `;
-                
+
                 // Set up comment functionality
                 setupCommentFunctionality();
             }
@@ -507,12 +639,12 @@ function addInteractions(postArea) {
     } else {
         setupCommentFunctionality();
     }
-    
+
     function setupCommentFunctionality() {
         const commentInput = commentSection.querySelector('.comment-input');
         const commentButton2 = commentSection.querySelector('.post-button');
         const commentsList = commentSection.querySelector('.comments-list');
-        
+
         commentButton2.addEventListener('click', () => {
             const commentText = commentInput.value.trim();
             if (commentText) {

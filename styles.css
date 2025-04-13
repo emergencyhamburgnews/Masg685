@@ -246,8 +246,14 @@ button.cta:active {
 }
 
 .about-link {
-    color: #1e8ed8;
-    text-decoration: underline;
+    color: #ebfc00; /* Keep the blue color */
+    text-decoration: none; /* Remove the underline */
+}
+
+/* Optional: Add a hover effect to make the link more interactive */
+.about-link:hover {
+    color: #00fc00; /* Lighter blue on hover */
+    text-decoration: none; /* Ensure no underline on hover */
 }
 
 /* Hero */
@@ -366,7 +372,7 @@ footer {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: linear-gradient(145deg, #007bff, #00ff88);
+    background: linear-gradient(145deg, #780000, #a30000);
     color: white;
     width: 50px;
     height: 50px;
@@ -416,7 +422,7 @@ footer {
     width: 50px;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(145deg, #007bff, #00ff88);
+    background: linear-gradient(145deg, #780000, #a30000);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -621,7 +627,7 @@ footer {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 3rem;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
@@ -651,7 +657,7 @@ footer {
 .update-item i {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -686,7 +692,7 @@ footer {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
@@ -714,7 +720,7 @@ footer {
     padding: 0.75rem 2rem;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     color: white;
     cursor: pointer;
     font-weight: 600;
@@ -878,7 +884,7 @@ footer {
 .chat-header {
     padding: 1rem;
     text-align: center;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
 }
 
 .chat-header h1 {
@@ -902,8 +908,19 @@ footer {
 }
 
 .chat-messages::-webkit-scrollbar {
-    width: 0;
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
     background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .message {
@@ -936,7 +953,7 @@ footer {
 }
 
 .message.user .message-content {
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     transition: transform 0.2s ease;
 }
 
@@ -975,7 +992,7 @@ footer {
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     color: white;
     cursor: pointer;
     display: flex;
@@ -988,6 +1005,179 @@ footer {
     transform: scale(1.1);
 }
 
+/* Private Server Styles */
+.private-server {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.server-card {
+    background: var(--nav-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+}
+
+.server-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.server-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.region {
+    background: linear-gradient(45deg, #780000, #a30000);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.server-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.player-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+.server-details {
+    padding: 1.5rem;
+}
+
+.detail-item {
+    margin-bottom: 1.5rem;
+}
+
+.detail-item h3 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.detail-item p {
+    color: var(--secondary-text);
+    line-height: 1.6;
+}
+
+.role-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.role-list li {
+    margin: 0.5rem 0;
+    color: var(--secondary-text);
+}
+
+.join-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(45deg, #780000, #a30000);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.join-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.rules-button {
+    margin-left: 10px;
+    background: linear-gradient(45deg, #a30000, #780000);
+}
+
+/* Rules Modal */
+.rules-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.rules-content {
+    background: var(--nav-bg);
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 80%;
+    max-width: 600px;
+    border-radius: 15px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-button {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #ff4b4b;
+}
+
+.rules-list {
+    margin-top: 20px;
+    color: var(--text-color);
+}
+
+.rules-list h3 {
+    margin: 20px 0 10px;
+    color: var(--text-color);
+}
+
+.rules-list ol {
+    padding-left: 20px;
+}
+
+.rules-list li {
+    margin: 10px 0;
+    color: var(--secondary-text);
+}
+
 /* Back button */
 .back-button {
     position: fixed;
@@ -995,7 +1185,7 @@ footer {
     left: 15px;
     width: 40px;
     height: 40px;
-    background: linear-gradient(45deg, #007bff, #00ff88);
+    background: linear-gradient(45deg, #780000, #a30000);
     border-radius: 50%;
     display: none;
     align-items: center;
