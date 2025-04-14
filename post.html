@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,21 +29,30 @@
     </nav>
 
     <div class="post-container">
-        <h1>My Posts</h1>
-
-        <!-- Public Posts Display -->
-        <div id="all-posts" class="post-area">
-            <h2>Recent Posts</h2>
+        <div class="page-header">
+            <button class="back-button" onclick="goBack()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h1>My Posts</h1>
         </div>
 
-        <!-- Login Section -->
-        <div id="login" class="login-section">
+        <!-- Create Post Button -->
+        <button id="create-post-btn" class="post-button">
+            <i class="fas fa-plus"></i> Create Post
+        </button>
+
+        <!-- Login Section (Initially Hidden) -->
+        <div id="login" class="login-section" style="display: none;">
+            <h2>Admin Access Required</h2>
             <input type="password" id="password" placeholder="Enter admin password" class="post-input">
             <button onclick="login()" class="post-button">Login</button>
         </div>
 
-        <!-- Post Form -->
+        <!-- Post Form (Initially Hidden) -->
         <div id="post-form" class="post-form" style="display: none;">
+            <h2>Create New Post</h2>
             <input type="text" id="post-title" placeholder="Enter post title..." class="post-input">
             <textarea id="text-post" placeholder="Write your post here..." class="post-textarea"></textarea>
             <div class="file-input-container">
@@ -53,25 +61,17 @@
                 </label>
                 <input type="file" id="image-post" accept="image/*" class="file-input">
             </div>
+            <div id="image-preview" class="image-preview"></div>
             <button onclick="submitPost()" class="post-button">
                 <i class="fas fa-paper-plane"></i> Post
             </button>
         </div>
 
-        <!-- Public Posts Display -->
-        <div id="all-posts" class="post-area">
-            <h2>Recent Posts</h2>
-        </div>
-
-        <!-- Admin Post Area -->
-        <div id="post-area" class="post-area" style="margin-top: 2rem;">
-            <div class="post-interactions">
-                <button class="interaction-button like-button">
-                    <i class="fas fa-heart"></i> <span class="like-count">0</span>
-                </button>
-                <button class="interaction-button comment-button">
-                    <i class="fas fa-comment"></i> <span class="comment-count">0</span>
-                </button>
+        <!-- Posts Display -->
+        <div id="posts-container" class="posts-container">
+            <!-- Posts will be dynamically added here -->
+            <div class="loading-posts">
+                <i class="fas fa-spinner fa-spin"></i> Loading posts...
             </div>
         </div>
     </div>

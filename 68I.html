@@ -6,10 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>68I - AI Assistant</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+            margin: 10px;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: #3498db;
+            border-radius: 50%;
+            margin: 0 2px;
+            display: inline-block;
+            animation: bounce 1.3s linear infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        .message.thinking {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 15px;
+            padding: 10px;
+            margin: 5px;
+            max-width: 80%;
+            align-self: flex-start;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="theme-container">
+            <button class="back-button" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
             <button id="theme-toggle" class="theme-toggle">
                 <span class="sun"></span>
                 <span class="moon"></span>
@@ -28,9 +67,6 @@
         </ul>
     </nav>
 
-    <a href="javascript:history.back()" class="back-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-    </a>
     <div class="chat-container">
         <div class="chat-header">
             <img src="68i-logo.svg" alt="68I Logo" class="chat-logo">
@@ -63,13 +99,13 @@
             'how can i contact masg685': 'You can contact Masg685 in several ways:\n1. Use the Contact form on the website (contact.html)\n2. Reach out through their social media accounts\n3. Leave comments on their YouTube videos\nThey appreciate hearing from fans and fellow gamers!',
             'what\'s new': 'You can check the Updates page for the latest news, but Masg685 regularly posts new content on their social media channels and continues to achieve new milestones in Emergency Hamburg, often alongside their friend Nexus!',
             'help': 'I can help you with:\n- Information about Masg685\'s background and achievements\n- Details about Nexus, their best friend and top EH player\n- Emergency Hamburg stats and gameplay\n- Finding social media links\n- Navigating the website\n- Contact information\n- Reporting players or requesting unbans\nWhat would you like to know more about?',
-            'who is nexus': 'Nexus is one of the top police officers in Emergency Hamburg, renowned for his incredible skills, quick thinking, and dedication to keeping the city safe. Hailing from Ho Chi Minh City, Vietnam, he’s a passionate gamer who’s earned respect in the EH community for his teamwork and leadership. He’s also Masg685’s best friend, always reliable, positive, and a blast to play with!',
-            'tell me about nexus': 'Nexus, from Ho Chi Minh City, Vietnam, is a standout player in Emergency Hamburg. As a police officer, he’s mastered his role with sharp decision-making and a knack for intense situations. Beyond his skills, he’s a true friend to Masg685 and many others, known for his kindness, positivity, and willingness to help. He brings leadership and fun to every gaming session!',
-            'nexus details': 'Nexus is a legendary figure in Emergency Hamburg, excelling as a police officer with unmatched dedication. Originally from Ho Chi Minh City, Vietnam, his love for gaming shines through in his teamwork and strategic play. As Masg685’s best friend, he’s always there to support and inspire, making him a beloved member of the EH community with his infectious positivity.',
-            'who is masg685\'s friend': 'That would be Nexus! He’s an exceptional Emergency Hamburg police officer from Ho Chi Minh City, Vietnam. Known for his quick reflexes and commitment, he’s a respected player who’s built strong bonds in the community. To Masg685, he’s not just a gaming partner but a reliable, kind-hearted best friend who makes every game more fun!',
+            'who is nexus': 'Nexus is one of the top police officers in Emergency Hamburg, renowned for his incredible skills, quick thinking, and dedication to keeping the city safe. Hailing from Ho Chi Minh City, Vietnam, he\'s a passionate gamer who\'s earned respect in the EH community for his teamwork and leadership. He\'s also Masg685\'s best friend, always reliable, positive, and a blast to play with!',
+            'tell me about nexus': 'Nexus, from Ho Chi Minh City, Vietnam, is a standout player in Emergency Hamburg. As a police officer, he\'s mastered his role with sharp decision-making and a knack for intense situations. Beyond his skills, he\'s a true friend to Masg685 and many others, known for his kindness, positivity, and willingness to help. He brings leadership and fun to every gaming session!',
+            'nexus details': 'Nexus is a legendary figure in Emergency Hamburg, excelling as a police officer with unmatched dedication. Originally from Ho Chi Minh City, Vietnam, his love for gaming shines through in his teamwork and strategic play. As Masg685\'s best friend, he\'s always there to support and inspire, making him a beloved member of the EH community with his infectious positivity.',
+            'who is masg685\'s friend': 'That would be Nexus! He\'s an exceptional Emergency Hamburg police officer from Ho Chi Minh City, Vietnam. Known for his quick reflexes and commitment, he\'s a respected player who\'s built strong bonds in the community. To Masg685, he\'s not just a gaming partner but a reliable, kind-hearted best friend who makes every game more fun!',
             'how to report player': 'To report a player who has done something wrong in the private server, go to the Private Server page and click the button labeled "Report Player". If you are already banned from the server, you can click the "Unban Request" button instead. Please note: Exploiters will not be unbanned.',
             'default': function(input) {
-                return `I'll help answer your question about "${input}". I aim to provide accurate and helpful information just like a regular chat AI would. Feel free to ask me anything!`;
+                return `I\'ll help answer your question about "${input}". I aim to provide accurate and helpful information just like a regular chat AI would. Feel free to ask me anything!`;
             }
         };
 
@@ -89,72 +125,168 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function getResponse(input) {
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message thinking';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return typingDiv;
+        }
+
+        function generateResponse(input) {
+            // Convert input to lowercase for matching
             const lowercaseInput = input.toLowerCase();
             
+            // Check for exact matches first
             if (responses[lowercaseInput]) {
-                return typeof responses[lowercaseInput] === 'function' ? responses[lowercaseInput](input) : responses[lowercaseInput];
+                return typeof responses[lowercaseInput] === 'function' 
+                    ? responses[lowercaseInput](input) 
+                    : responses[lowercaseInput];
             }
             
-            const keywords = {
-                'from': 'where is masg685 from',
-                'background': 'where is masg685 from',
-                'contact': 'how can i contact masg685',
-                'social': 'what are masg685\'s social media',
-                'follow': 'what are masg685\'s social media',
-                'hamburg': 'what about emergency hamburg',
-                'game': 'what about emergency hamburg',
-                'stats': 'what about emergency hamburg',
-                'website': 'how do i use this website',
-                'navigate': 'how do i use this website',
-                'help': 'help',
-                'new': 'what\'s new',
-                'update': 'what\'s new',
-                'nexus': 'who is nexus',
-                'police officer': 'who is nexus',
-                'friend': 'who is masg685\'s friend',
-                'vietnam': 'who is nexus',
-                'report player': 'how to report player',
-                'report someone': 'how to report player',
-                'unban': 'how to report player'
-            };
-            
-            for (const [keyword, response] of Object.entries(keywords)) {
-                if (lowercaseInput.includes(keyword)) {
-                    if (response.includes('nexus') || response.includes('friend')) {
+            // Define categories for different types of questions
+            const categories = {
+                personal: {
+                    keywords: ['who', 'what', 'where', 'when', 'how old', 'age', 'birthday', 'born', 'background'],
+                    response: responses['who is masg685']
+                },
+                gaming: {
+                    keywords: ['game', 'play', 'hamburg', 'emergency', 'stats', 'level', 'rank', 'score', 'achievement'],
+                    response: responses['what about emergency hamburg']
+                },
+                social: {
+                    keywords: ['social', 'media', 'youtube', 'tiktok', 'twitter', 'follow', 'channel', 'account'],
+                    response: responses['what are masg685\'s social media']
+                },
+                contact: {
+                    keywords: ['contact', 'reach', 'message', 'dm', 'email', 'send'],
+                    response: responses['how can i contact masg685']
+                },
+                website: {
+                    keywords: ['website', 'page', 'find', 'where', 'navigate', 'menu'],
+                    response: responses['how do i use this website']
+                },
+                nexus: {
+                    keywords: ['nexus', 'friend', 'best friend', 'partner', 'vietnam'],
+                    response: () => {
                         const nexusResponses = [
                             responses['who is nexus'],
                             responses['tell me about nexus'],
-                            responses['nexus details'],
-                            responses['who is masg685\'s friend']
+                            responses['nexus details']
                         ];
                         return nexusResponses[Math.floor(Math.random() * nexusResponses.length)];
                     }
-                    return responses[response];
+                },
+                report: {
+                    keywords: ['report', 'ban', 'unban', 'player', 'complaint'],
+                    response: responses['how to report player']
+                }
+            };
+
+            // Check each category for keyword matches
+            for (const [category, data] of Object.entries(categories)) {
+                for (const keyword of data.keywords) {
+                    if (lowercaseInput.includes(keyword)) {
+                        return typeof data.response === 'function' ? data.response() : data.response;
+                    }
                 }
             }
-            
-            return responses.default(input);
+
+            // If no matches found, generate a contextual response
+            return `I understand you're asking about "${input}". Let me help you with that. ${responses['help']}`;
         }
 
-        function handleSend() {
+        async function handleSend() {
             const message = userInput.value.trim();
+            console.log('Send button clicked, message:', message);
             if (message) {
-                addMessage(message, true);
-                setTimeout(() => {
-                    const response = getResponse(message);
+                try {
+                    // Disable input while processing
+                    userInput.disabled = true;
+                    sendButton.disabled = true;
+
+                    // Add user message
+                    addMessage(message, true);
+                    
+                    // Show typing indicator
+                    const typingIndicator = showTypingIndicator();
+                    
+                    // Clear input
+                    userInput.value = '';
+
+                    // Simulate AI thinking time (between 1 and 2 seconds)
+                    const thinkingTime = Math.random() * 1000 + 1000;
+                    await new Promise(resolve => setTimeout(resolve, thinkingTime));
+
+                    // Remove typing indicator
+                    typingIndicator.remove();
+
+                    // Generate and add AI response
+                    const response = generateResponse(message);
                     addMessage(response, false);
-                }, 500);
-                userInput.value = '';
+
+                    // Re-enable input
+                    userInput.disabled = false;
+                    sendButton.disabled = false;
+                    userInput.focus();
+                } catch (error) {
+                    console.error('Error in handleSend:', error);
+                    // Re-enable input in case of error
+                    userInput.disabled = false;
+                    sendButton.disabled = false;
+                }
             }
         }
 
-        sendButton.addEventListener('click', handleSend);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSend();
+        // Make sure event listeners are properly attached
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Setting up event listeners');
+            const sendButton = document.getElementById('send-button');
+            const userInput = document.getElementById('user-input');
+
+            if (sendButton && userInput) {
+                console.log('Found send button and input');
+                sendButton.addEventListener('click', () => {
+                    console.log('Send button clicked');
+                    handleSend();
+                });
+
+                userInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        console.log('Enter key pressed');
+                        e.preventDefault();
+                        handleSend();
+                    }
+                });
+            } else {
+                console.error('Could not find send button or input:', {
+                    sendButton: !!sendButton,
+                    userInput: !!userInput
+                });
             }
         });
+
+        // Add placeholder text rotation
+        const placeholders = [
+            "Ask me anything about Masg685...",
+            "Want to know about Emergency Hamburg?",
+            "Curious about Nexus?",
+            "Need help with the website?",
+            "Looking for social media links?"
+        ];
+
+        let currentPlaceholder = 0;
+        setInterval(() => {
+            currentPlaceholder = (currentPlaceholder + 1) % placeholders.length;
+            userInput.placeholder = placeholders[currentPlaceholder];
+        }, 3000);
     </script>
     <script src="javascript.js"></script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92f8b4ca4a7ebd02',t:'MTc0NDUyMzYzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>

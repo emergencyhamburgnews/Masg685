@@ -17,17 +17,38 @@ async function updateRobloxProfile() {
         username: 'masg685'
     };
 
+    const avatarElement = document.getElementById('roblox-avatar');
+    const usernameElement = document.getElementById('roblox-username');
+
+    if (!avatarElement || !usernameElement) {
+        console.error('Profile elements not found:', {
+            avatar: !!avatarElement,
+            username: !!usernameElement
+        });
+        return;
+    }
+
+    // Set loading state
+    avatarElement.style.opacity = '0.5';
+    usernameElement.textContent = 'Loading...';
+
     const retryFetch = async (url, attempts = 3) => {
         for (let i = 0; i < attempts; i++) {
             try {
+                console.log(`Attempting to fetch from ${url}`);
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
-                        'Accept': 'application/json',
-                        'Cache-Control': 'no-cache'
-                    }
+                        'Accept': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit'
                 });
-                if (response.ok) return response;
+                if (!response.ok) {
+                    console.error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response;
             } catch (err) {
                 console.error(`Attempt ${i + 1} failed:`, err);
                 if (i === attempts - 1) throw err;
@@ -39,46 +60,90 @@ async function updateRobloxProfile() {
 
     try {
         // Fetch user data first
+        console.log('Fetching user data...');
         const userResponse = await retryFetch(`https://users.roblox.com/v1/users/${profile.userId}`);
         const userData = await userResponse.json();
+        console.log('User data received:', userData);
 
         // Update username immediately
-        const usernameElement = document.getElementById('roblox-username');
-        if (usernameElement) {
-            usernameElement.textContent = userData.displayName || userData.name || profile.username;
-        }
+        usernameElement.textContent = userData.displayName || userData.name || profile.username;
 
         // Then fetch avatar
-        const avatarResponse = await retryFetch("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + profile.userId + "&size=150x150&format=Png");
+        console.log('Fetching avatar data...');
+        const avatarResponse = await retryFetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${profile.userId}&size=150x150&format=Png`);
         const avatarData = await avatarResponse.json();
+        console.log('Avatar data received:', avatarData);
 
-        // Update the profile elements
-        const avatarElement = document.getElementById('roblox-avatar');
-
-        if (avatarElement && avatarData.data && avatarData.data[0]) {
-            avatarElement.src = avatarData.data[0].imageUrl;
+        if (avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl) {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => {
+                avatarElement.src = img.src;
+                avatarElement.style.opacity = '1';
+                console.log('Avatar image loaded successfully');
+            };
+            img.onerror = (e) => {
+                console.error('Failed to load avatar image:', e);
+                avatarElement.src = 'https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png';
+                avatarElement.style.opacity = '1';
+            };
+            img.src = avatarData.data[0].imageUrl;
+        } else {
+            console.error('No avatar data received:', avatarData);
+            throw new Error('No avatar data received');
         }
 
-        if (usernameElement) {
-            usernameElement.textContent = userData.displayName || userData.name;
-        }
     } catch (error) {
         console.error('Error fetching Roblox profile:', error);
-        const usernameElement = document.getElementById('roblox-username');
-        if (usernameElement) usernameElement.textContent = 'Failed to load profile';
+        usernameElement.textContent = profile.username;
+        avatarElement.src = 'https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png';
+        avatarElement.style.opacity = '1';
     }
 }
 
-// Call the function when the page loads
-document.addEventListener('DOMContentLoaded', updateRobloxProfile);
+// Initialize everything when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
 
-// Initialize theme and Roblox profile
-window.addEventListener('DOMContentLoaded', () => {
+    // Initialize Roblox profile if on the right page
     if (document.getElementById('roblox-profile')) {
         updateRobloxProfile();
     }
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
+
+    // Mobile menu functionality
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Scroll to top functionality
+    const scrollTopButton = document.querySelector('.scroll-top');
+    if (scrollTopButton) {
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                scrollTopButton.classList.add('show');
+            } else {
+                scrollTopButton.classList.remove('show');
+            }
+        });
+
+        scrollTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     // Rules Modal functionality
     function initializeRulesModal() {
@@ -111,43 +176,43 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initialize modal functionality
     initializeRulesModal();
 
- // Handle report form submission
-const reportForm = document.getElementById('reportForm');
-if (reportForm) {
-    reportForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitButton = reportForm.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
+    // Handle report form submission
+    const reportForm = document.getElementById('reportForm');
+    if (reportForm) {
+        reportForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = reportForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
 
-        try {
-            const response = await fetch(reportForm.action, {
-                method: 'POST',
-                body: new FormData(reportForm),
-                headers: {
-                    'Accept': 'application/json'
+            try {
+                const response = await fetch(reportForm.action, {
+                    method: 'POST',
+                    body: new FormData(reportForm),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    submitButton.textContent = 'Sent Successfully!';
+                    reportForm.reset();
+                    setTimeout(() => {
+                        submitButton.textContent = originalText;
+                    }, 3000);
+                } else {
+                    throw new Error('Failed to send');
                 }
-            });
-
-            if (response.ok) {
-                submitButton.textContent = 'Sent Successfully!';
-                reportForm.reset();
+            } catch (error) {
+                submitButton.textContent = 'Failed to Send';
                 setTimeout(() => {
                     submitButton.textContent = originalText;
                 }, 3000);
-            } else {
-                throw new Error('Failed to send');
             }
-        } catch (error) {
-            submitButton.textContent = 'Failed to Send';
-            setTimeout(() => {
-                submitButton.textContent = originalText;
-            }, 3000);
-        }
-        submitButton.disabled = false;
-    });
-}
+            submitButton.disabled = false;
+        });
+    }
 
     // Handle unban request form submission
     const unbanForm = document.getElementById('unbanForm');
@@ -227,53 +292,51 @@ if (reportForm) {
         setInterval(updatePlayerCount, 30000);
     }
 
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
+    // Create Post Button Click Handler
+    const createPostBtn = document.getElementById('create-post-btn');
+    if (createPostBtn) {
+        createPostBtn.addEventListener('click', () => {
+            // Check if already logged in
+            const sessionExpiry = localStorage.getItem('adminSession');
+            if (sessionExpiry) {
+                const expiryDate = new Date(sessionExpiry);
+                if (expiryDate > new Date()) {
+                    // Already logged in, show post form directly
+                    document.getElementById('post-form').style.display = 'block';
+                    document.getElementById('login').style.display = 'none';
+                    return;
+                }
+                localStorage.removeItem('adminSession');
+            }
+            // Show login form
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('post-form').style.display = 'none';
+            document.getElementById('password').value = '';
+            document.getElementById('password').focus();
+        });
+    }
+
+    // Check and clean up expired username on page load
+    const userNameExpiry = localStorage.getItem('userNameExpiry');
+    if (userNameExpiry) {
+        const expiryDate = new Date(userNameExpiry);
+        if (expiryDate < new Date()) {
+            // Remove expired username from the list
+            const existingUsers = JSON.parse(localStorage.getItem('existingUsernames') || '[]');
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                const index = existingUsers.indexOf(userName);
+                if (index > -1) {
+                    existingUsers.splice(index, 1);
+                    localStorage.setItem('existingUsernames', JSON.stringify(existingUsers));
+                }
+            }
+            // Clear expired user data
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userNameExpiry');
+        }
     }
 });
-
-// Check if hamburger exists and log when clicked
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-
-if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.classList.toggle('active');
-        console.log('Hamburger clicked! Menu is now:', navLinks.classList.contains('active') ? 'open' : 'closed');
-    });
-} else {
-    console.error('Hamburger or nav-links not found!');
-}
-
-// Scroll to top functionality
-const scrollTopButton = document.querySelector('.scroll-top');
-if (scrollTopButton) {
-    const toggleScrollButton = () => {
-        if (window.scrollY > 100) {
-            scrollTopButton.classList.add('show');
-        } else {
-            scrollTopButton.classList.remove('show');
-        }
-    };
-
-    // Check on scroll
-    window.addEventListener('scroll', toggleScrollButton);
-    // Check on page load
-    window.addEventListener('DOMContentLoaded', toggleScrollButton);
-    // Check after content loads
-    window.addEventListener('load', toggleScrollButton);
-
-    scrollTopButton.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-}
-
-
 
 const form = document.querySelector('.contact form');
 if (form) {
@@ -288,7 +351,6 @@ if (form) {
     });
 }
 
-// Existing code (hamburger and loading simulation) remains unchanged...
 // Search functionality
 const searchIcon = document.querySelector('.search-icon');
 const searchContainer = document.querySelector('.search-container');
@@ -427,8 +489,8 @@ if (form && thankYouDiv) {
             if (response.ok) {
                 // Show custom thank-you message
                 thankYouDiv.style.display = 'block';
-                thankYouDiv.textContent = 'Thank you for your message! I’ll get back to you soon.';
-                thankYouDiv.style.color = 'white'; // Match your site’s style
+                thankYouDiv.textContent = 'Thank you for your message! I\'ll get back to you soon.';
+                thankYouDiv.style.color = 'white'; // Match your site's style
                 form.reset(); // Clear the form fields
             } else {
                 thankYouDiv.style.display = 'block';
@@ -442,8 +504,6 @@ if (form && thankYouDiv) {
         }
     });
 }
-
-// Existing code (hamburger, loading, contact form) remains unchanged...
 
 // Chat system
 const chatForm = document.getElementById('chat-form');
@@ -476,7 +536,7 @@ if (chatForm && chatMessages && chatStatus) {
 
             if (response.ok) {
                 chatStatus.style.display = 'block';
-                chatStatus.textContent = 'Message sent! I’ll reply soon.';
+                chatStatus.textContent = 'Message sent! I\'ll reply soon.';
                 setTimeout(() => {
                     chatStatus.style.display = 'none';
                 }, 3000); // Hide status after 3 seconds
@@ -496,262 +556,280 @@ if (chatForm && chatMessages && chatStatus) {
     });
 }
 
+// Post functionality
+const ADMIN_PASSWORD = 'Masg68525!'; // Using the same password as before
+let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
+// Login functionality
 function login() {
-    const pw = document.getElementById('password').value;
-    if (pw === "Masg68525!") {
-        document.getElementById('post-form').style.display = 'block';
+    const password = document.getElementById('password').value;
+    if (password === ADMIN_PASSWORD) {
         document.getElementById('login').style.display = 'none';
+        document.getElementById('post-form').style.display = 'block';
+        document.getElementById('password').value = '';
+        
         // Set session expiry to 50 days from now
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + 50);
         localStorage.setItem('adminSession', expiryDate.toISOString());
-        // Clear password field
-        document.getElementById('password').value = '';
     } else {
-        alert("Wrong password!");
+        alert('Incorrect password');
     }
 }
 
-// Check admin session on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const sessionExpiry = localStorage.getItem('adminSession');
-    if (sessionExpiry) {
-        const expiryDate = new Date(sessionExpiry);
-        if (expiryDate > new Date()) {
-            document.getElementById('post-form').style.display = 'block';
-            document.getElementById('login').style.display = 'none';
-        } else {
-            localStorage.removeItem('adminSession');
+// Handle image preview
+document.getElementById('image-post')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        const preview = document.getElementById('image-preview');
+        
+        reader.onload = function(e) {
+            preview.style.display = 'block';
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
         }
+        
+        reader.readAsDataURL(file);
     }
 });
 
-  function submitPost() {
+// Submit post
+async function submitPost() {
     const title = document.getElementById('post-title').value;
-    const text = document.getElementById('text-post').value;
+    const content = document.getElementById('text-post').value;
     const imageInput = document.getElementById('image-post');
-    const postArea = document.getElementById('post-area');
-    const allPosts = document.getElementById('all-posts'); // Assuming this element exists
+    const file = imageInput?.files[0];
 
-    // Store post data
-    const postData = {
-        title: title,
-        text: text,
-        timestamp: new Date().toISOString()
+    if (!title || !content) {
+        alert('Please fill in both title and content');
+        return;
+    }
+
+    let imageData = null;
+    if (file) {
+        imageData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Create new post
+    const newPost = {
+        id: Date.now(),
+        title,
+        content,
+        image: imageData,
+        date: new Date().toISOString(),
+        likes: 0,
+        comments: []
     };
 
-    // Clear old post
-    postArea.innerHTML = "";
-
-    const contentDiv = document.createElement('div');
-
-    // Add title if present
-    if (title.trim() !== "") {
-      const h2 = document.createElement('h2');
-      h2.textContent = title;
-      h2.style.marginBottom = '15px';
-      contentDiv.appendChild(h2);
-    }
-
-    // If there's text, show it
-    if (text.trim() !== "") {
-      const p = document.createElement('p');
-      p.textContent = text;
-      contentDiv.appendChild(p);
-    }
-
-    // If there's an image, show it
-    if (imageInput.files && imageInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        contentDiv.appendChild(img);
-
-        postData.image = e.target.result;
-        localStorage.setItem('currentPost', JSON.stringify(postData));
-
-        // Add to public posts
-        const publicPost = contentDiv.cloneNode(true);
-        allPosts.insertBefore(publicPost, allPosts.firstChild);
-
-        // Add to admin area
-        postArea.appendChild(contentDiv);
-        addInteractions(postArea);
-        addInteractions(publicPost);
-      };
-      reader.readAsDataURL(imageInput.files[0]);
-    } else {
-      // If no image, add content and interactions immediately
-      localStorage.setItem('currentPost', JSON.stringify(postData));
-
-      // Add to public posts
-      const publicPost = contentDiv.cloneNode(true);
-      allPosts.insertBefore(publicPost, allPosts.firstChild);
-
-      // Add to admin area
-      postArea.appendChild(contentDiv);
-      addInteractions(postArea);
-      addInteractions(publicPost);
-    }
+    // Replace all posts with just the new one
+    posts = [newPost];
+    localStorage.setItem('posts', JSON.stringify(posts));
+    
+    // Clear form
+    document.getElementById('post-title').value = '';
+    document.getElementById('text-post').value = '';
+    document.getElementById('image-post').value = '';
+    document.getElementById('image-preview').style.display = 'none';
+    
+    // Refresh posts display
+    displayPosts();
 }
 
-// Load saved post on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const savedPost = localStorage.getItem('currentPost');
-    if (savedPost) {
-        const postData = JSON.parse(savedPost);
-        const postArea = document.getElementById('post-area');
-        postArea.innerHTML = '';
+// Display posts
+function displayPosts() {
+    const container = document.getElementById('posts-container');
+    if (!container) return;
 
-        const contentDiv = document.createElement('div');
+    container.innerHTML = posts.length ? '' : '<div class="loading-posts">No posts yet</div>';
 
-        if (postData.title) {
-            const h2 = document.createElement('h2');
-            h2.textContent = postData.title;
-            h2.style.marginBottom = '15px';
-            contentDiv.appendChild(h2);
-        }
+    posts.forEach(post => {
+        const date = new Date(post.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 
-        if (postData.text) {
-            const p = document.createElement('p');
-            p.textContent = postData.text;
-            contentDiv.appendChild(p);
-        }
-
-        if (postData.image) {
-            const img = document.createElement('img');
-            img.src = postData.image;
-            contentDiv.appendChild(img);
-        }
-
-        postArea.appendChild(contentDiv);
-        addInteractions(postArea);
-    }
-});
-
-
-function addInteractions(postArea) {
-    const userName = localStorage.getItem('userName');
-
-    // Add interaction buttons
-    const interactions = document.createElement('div');
-    interactions.className = 'post-interactions';
-    interactions.innerHTML = `
-      <button class="interaction-button like-button">
-        <i class="fas fa-heart"></i> <span class="like-count">0</span>
-      </button>
-      <button class="interaction-button comment-button">
-        <i class="fas fa-comment"></i> <span class="comment-count">0</span>
-      </button>
-    `;
-    postArea.appendChild(interactions);
-
-    // Add click handlers
-    const likeButton = interactions.querySelector('.like-button');
-    const likeCount = interactions.querySelector('.like-count');
-    const commentButton = interactions.querySelector('.comment-button');
-    let liked = false;
-
-    // Create comment section
-    const commentSection = document.createElement('div');
-    commentSection.className = 'comment-section';
-
-    // Show different content based on whether user has entered their name
-    if (!userName) {
-        commentSection.innerHTML = `
-            <div class="name-input-section">
-                <input type="text" class="name-input" placeholder="Enter your name to comment...">
-                <button class="post-button save-name-btn">Save Name</button>
+        const postElement = document.createElement('div');
+        postElement.className = 'post-card';
+        postElement.innerHTML = `
+            <div class="post-header">
+                <h2 class="post-title">${post.title}</h2>
+                <div class="post-date">${date}</div>
+            </div>
+            <div class="post-content">
+                <div class="post-text">${post.content}</div>
+                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
+            </div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <button class="action-button like-button ${post.likedBy?.includes(getUserId()) ? 'active' : ''}" onclick="toggleLike(${post.id})">
+                        <i class="fas fa-heart"></i>
+                        <span>${post.likes || 0}</span>
+                    </button>
+                    <button class="action-button comment-button" onclick="toggleComments(${post.id})">
+                        <i class="fas fa-comment"></i>
+                        <span>${post.comments?.length || 0}</span>
+                    </button>
+                </div>
+            </div>
+            <div class="comment-section" id="comments-${post.id}" style="display: none;">
+                <div class="comments-container">
+                    ${!localStorage.getItem('userName') ? `
+                        <div class="name-input-section">
+                            <input type="text" class="name-input" placeholder="Enter your name to comment...">
+                            <button class="post-button save-name-btn" onclick="saveName(${post.id})">Save Name</button>
+                        </div>
+                    ` : `
+                        <div class="comment-input-section">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="post-button post-comment-btn" onclick="addComment(${post.id})">Post Comment</button>
+                        </div>
+                    `}
+                    <div class="comments-list">
+                        ${(post.comments || []).map(comment => `
+                            <div class="comment-item">
+                                <span class="comment-author ${comment.userName === 'Masg685' ? 'owner-name' : ''}">
+                                    ${comment.userName === 'Masg685' ? '<i class="fas fa-crown owner-crown"></i> ' : ''}${comment.userName}:
+                                </span>
+                                <span class="comment-text">${comment.text}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             </div>
         `;
-    } else {
-        commentSection.innerHTML = `
-            <input type="text" class="comment-input" placeholder="Write a comment...">
-            <button class="post-button">Post Comment</button>
-            <div class="comments-list"></div>
-        `;
-    }
-    postArea.appendChild(commentSection);
-
-    // Like button functionality
-    likeButton.addEventListener('click', () => {
-      liked = !liked;
-      likeButton.classList.toggle('active');
-      likeCount.textContent = liked ? '1' : '0';
+        container.appendChild(postElement);
     });
-
-    // Comment button functionality
-    commentButton.addEventListener('click', () => {
-      commentSection.classList.toggle('active');
-    });
-
-    // Add comment functionality
-    const commentInput = commentSection.querySelector('.comment-input');
-    const commentButton2 = commentSection.querySelector('.post-button');
-    const commentsList = commentSection.querySelector('.comments-list');
-    let commentCount = 0;
-
-    if (!userName) {
-        const saveNameBtn = commentSection.querySelector('.save-name-btn');
-        const nameInput = commentSection.querySelector('.name-input');
-
-        saveNameBtn.addEventListener('click', () => {
-            const name = nameInput.value.trim();
-            if (name) {
-                // Save name with 50-day expiry
-                const expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + 50);
-                localStorage.setItem('userName', name);
-                localStorage.setItem('userNameExpiry', expiryDate.toISOString());
-
-                // Update comment section to show comment input
-                commentSection.innerHTML = `
-                    <input type="text" class="comment-input" placeholder="Write a comment...">
-                    <button class="post-button">Post Comment</button>
-                    <div class="comments-list"></div>
-                `;
-
-                // Set up comment functionality
-                setupCommentFunctionality();
-            }
-        });
-    } else {
-        setupCommentFunctionality();
-    }
-
-    function setupCommentFunctionality() {
-        const commentInput = commentSection.querySelector('.comment-input');
-        const commentButton2 = commentSection.querySelector('.post-button');
-        const commentsList = commentSection.querySelector('.comments-list');
-
-        commentButton2.addEventListener('click', () => {
-            const commentText = commentInput.value.trim();
-            if (commentText) {
-                const commentItem = document.createElement('div');
-                commentItem.className = 'comment-item';
-                commentItem.textContent = `${userName}: ${commentText}`;
-                commentsList.appendChild(commentItem);
-                commentInput.value = '';
-                commentCount++;
-                interactions.querySelector('.comment-count').textContent = commentCount;
-            }
-        });
-    }
-
-    // Reset inputs
-    document.getElementById('text-post').value = "";
-    document.getElementById('image-post').value = "";
 }
 
-// Check and clean up expired username on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const userNameExpiry = localStorage.getItem('userNameExpiry');
-    if (userNameExpiry) {
-        const expiryDate = new Date(userNameExpiry);
-        if (expiryDate < new Date()) {
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userNameExpiry');
+// Get unique ID for user (for like tracking)
+function getUserId() {
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+        userId = 'user_' + Date.now() + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userId', userId);
+    }
+    return userId;
+}
+
+// Toggle like status
+function toggleLike(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+
+    const userId = getUserId();
+    post.likedBy = post.likedBy || [];
+    
+    const userLikeIndex = post.likedBy.indexOf(userId);
+    if (userLikeIndex === -1) {
+        // User hasn't liked the post yet - add like
+        post.likedBy.push(userId);
+        post.likes = (post.likes || 0) + 1;
+    } else {
+        // User already liked the post - remove like
+        post.likedBy.splice(userLikeIndex, 1);
+        post.likes = Math.max(0, (post.likes || 1) - 1);
+    }
+
+    localStorage.setItem('posts', JSON.stringify(posts));
+    displayPosts();
+}
+
+// Toggle comments visibility
+function toggleComments(postId) {
+    const commentSection = document.getElementById(`comments-${postId}`);
+    if (commentSection) {
+        commentSection.style.display = commentSection.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+// Save user name
+function saveName(postId) {
+    const nameInput = document.querySelector(`#comments-${postId} .name-input`);
+    const name = nameInput?.value.trim();
+    
+    // Check if name is empty
+    if (!name) {
+        alert('Please enter a valid name');
+        return;
+    }
+
+    // Check if trying to use owner's name
+    if (name.toLowerCase() === 'masg685') {
+        alert('This username is reserved. Please choose a different name.');
+        nameInput.value = '';
+        return;
+    }
+
+    // Get all existing usernames from localStorage
+    const existingUsers = JSON.parse(localStorage.getItem('existingUsernames') || '[]');
+    
+    // Check if name is already taken
+    if (existingUsers.includes(name)) {
+        alert('This name is already taken. Please choose a different name.');
+        nameInput.value = '';
+        return;
+    }
+
+    // Save the new username to the list
+    existingUsers.push(name);
+    localStorage.setItem('existingUsernames', JSON.stringify(existingUsers));
+
+    // Save username with expiry
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 50);
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userNameExpiry', expiryDate.toISOString());
+    
+    // Refresh the display to show comment input
+    displayPosts();
+}
+
+// Add comment to post
+function addComment(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+
+    const commentInput = document.querySelector(`#comments-${postId} .comment-input`);
+    const commentText = commentInput?.value.trim();
+    const userName = localStorage.getItem('userName');
+
+    if (commentText && userName) {
+        // Add new comment
+        post.comments = post.comments || [];
+        post.comments.unshift({
+            id: Date.now(),
+            userName: userName,
+            text: commentText
+        });
+
+        // Save to localStorage and refresh display
+        localStorage.setItem('posts', JSON.stringify(posts));
+        displayPosts();
+        
+        // Keep the comment section open and clear input
+        const commentSection = document.getElementById(`comments-${postId}`);
+        if (commentSection) {
+            commentSection.style.display = 'block';
+            commentInput.value = '';
         }
     }
+}
+
+// Initialize posts display
+document.addEventListener('DOMContentLoaded', () => {
+    displayPosts();
 });
+
+// Navigation function
+function goBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = 'home.html';
+    }
+}
