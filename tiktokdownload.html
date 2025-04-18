@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masg685</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun">☀</span>
+            </button>
+            <button class="search-toggle" onclick="openSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="hamburger">☰</div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search across all pages...">
+            <div class="search-results"></div>
+        </div>
+    </div>
+    <div>
+        </button>
+        <h1 style="text-align: center; margin: 2rem 0; font-size: 2.5rem; background: linear-gradient(45deg, #780000, #a30000); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TikTok Video Downloader</h1>
+    </div>
+
+    <div class="form-container">
+        <div class="custom-form tiktok-form">
+            <div class="form-group">
+                <label for="tiktok-url">TikTok Video URL</label>
+                <input type="text" id="tiktok-url" placeholder="Paste your TikTok video URL here..." required>
+            </div>
+            <button id="download-btn" class="submit-button" onclick="downloadTikTok()">
+                <i class="fas fa-download"></i> Download Video
+            </button>
+            <div id="loading" class="loading-container" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Processing your video...</p>
+            </div>
+            <div id="download-result" class="download-result" style="display: none;">
+                <button id="download-link" class="submit-button">
+                    <i class="fas fa-download"></i> Download Video (No Watermark)
+                </button>
+            </div>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </div>
+        
+        <div class="instructions-container" style="margin-top: 2rem; padding: 1.5rem; background: var(--nav-bg); border-radius: 10px; color: var(--text-color);">
+            <h2 style="margin-bottom: 1rem; color: var(--text-color);">How to Download TikTok Videos</h2>
+            <ol style="list-style-type: decimal; padding-left: 1.5rem; color: var(--secondary-text);">
+                <li style="margin-bottom: 0.5rem;">Open TikTok and find the video you want to download</li>
+                <li style="margin-bottom: 0.5rem;">Click the "Share" button and then "Copy Link"</li>
+                <li style="margin-bottom: 0.5rem;">Paste the copied URL in the input box above</li>
+                <li style="margin-bottom: 0.5rem;">Click "Download Video" and wait for processing</li>
+                <li style="margin-bottom: 0.5rem;">Click the "Download Video (No Watermark)" button when it appears</li>
+            </ol>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--secondary-text);">
+                <p style="margin-bottom: 0.5rem;"><strong>Note:</strong> This tool allows you to download TikTok videos without the watermark. The downloaded videos are for personal use only.</p>
+                <p>Please respect creators' rights and TikTok's terms of service when using downloaded content.</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-top"></button>
+
+    <script src="javascript.js"></script>
+    <script>
+        // TikTok downloader functionality
+        async function downloadTikTok() {
+            const urlInput = document.getElementById('tiktok-url');
+            const loadingDiv = document.getElementById('loading');
+            const resultDiv = document.getElementById('download-result');
+            const errorDiv = document.getElementById('error-message');
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadLink = document.getElementById('download-link');
+
+            const url = urlInput.value.trim();
+            if (!url) {
+                errorDiv.textContent = 'Please enter a valid TikTok URL';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Show loading state
+            loadingDiv.style.display = 'flex';
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            downloadBtn.disabled = true;
+
+            try {
+                // Replace this with your actual API endpoint
+                const apiUrl = 'https://tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com/vid/index';
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'X-RapidAPI-Key': '92b6d74885msh72b48b0666b5bc4p110acbjsnf54bd4ef9441',
+                        'X-RapidAPI-Host': 'tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com'
+                    },
+                    body: new URLSearchParams({
+                        url: url
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.video_url) {
+                    downloadLink.onclick = () => {
+                        window.open(data.video_url, '_blank');
+                    };
+                    resultDiv.style.display = 'block';
+                } else {
+                    throw new Error('Could not process video');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error processing video. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+                downloadBtn.disabled = false;
+            }
+        }
+    </script>
+    <style>
+        .tiktok-form {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+            gap: 1rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-top: 5px solid #780000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ff4b4b;
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 75, 75, 0.1);
+            border-radius: 5px;
+        }
+
+        .download-result {
+            margin-top: 2rem;
+        }
+
+        #download-link {
+            width: 100%;
+            margin-top: 1rem;
+            background: linear-gradient(45deg, #780000, #a30000);
+        }
+
+        #download-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(120, 0, 0, 0.3);
+        }
+
+        .submit-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-button i {
+            font-size: 1.2rem;
+        }
+    </style>
+</body>
+</html>

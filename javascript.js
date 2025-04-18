@@ -1,6 +1,7 @@
 // Theme toggle functionality
 function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
 }
 
@@ -352,120 +353,66 @@ if (form) {
 }
 
 // Search functionality
-const searchIcon = document.querySelector('.search-icon');
-const searchContainer = document.querySelector('.search-container');
-const searchInput = document.querySelector('.search-input');
-const searchResults = document.querySelector('.search-results');
-const searchClose = document.querySelector('.search-close');
-
-function openSearch() {
-    searchContainer.style.display = 'flex';
-    searchInput.focus();
-}
-
-function closeSearch() {
-    searchContainer.style.display = 'none';
-    searchInput.value = '';
-    searchResults.innerHTML = '';
-}
-
 function performSearch(query) {
-    const searchQuery = query.trim().toLowerCase();
-    searchResults.innerHTML = '';
-    if (!searchQuery) return;
+    const searchText = query.toLowerCase();
+    const contentElements = document.querySelectorAll('main p, main h1, main h2, main h3, main li, main span, .about p, .contact p, .updates-container p, .private-server p, .form-container p, .chat p');
+    
+            removeHighlights();
+    
+    let firstMatch = null;
 
-    const content = document.body.innerText.toLowerCase();
-    const matches = content.includes(searchQuery);
-
-    if (!matches) {
-        searchResults.innerHTML = `
-            <div class="no-results">
-                Hmmmm.... looks like there weren't any results for "${query}"
-            </div>
-        `;
-        return;
-    }
-
-    // Find all elements containing the search query
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, li');
-    let foundResults = false;
-
-    elements.forEach(element => {
-        if (element.innerText.toLowerCase().includes(searchQuery)) {
-            foundResults = true;
-            const resultItem = document.createElement('div');
-            resultItem.className = 'search-result-item';
-            resultItem.textContent = element.innerText.trim();
-            resultItem.addEventListener('click', () => {
-                element.scrollIntoView({ behavior: 'smooth' });
-                element.style.backgroundColor = '#ffeb3b50';
-                setTimeout(() => {
-                    element.style.backgroundColor = '';
-                }, 2000);
-                closeSearch();
-            });
-            searchResults.appendChild(resultItem);
+    contentElements.forEach(element => {
+        const text = element.textContent.toLowerCase();
+        if (text.includes(searchText)) {
+            const regex = new RegExp(`(${searchText})`, 'gi');
+            element.innerHTML = element.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+            if (!firstMatch) firstMatch = element;
         }
     });
 
-    if (!foundResults) {
-        searchResults.innerHTML = `
-            <div class="no-results">
-                Hmmmm.... looks like there weren't any results for "${query}"
-            </div>
-        `;
+    if (firstMatch) {
+        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
-function findMatches(content, query) {
-    const matches = [];
-    const regex = new RegExp(`[^.]*${query}[^.]*\\.?`, 'gi');
-    let match;
-    while ((match = regex.exec(content)) !== null) {
-        matches.push(match[0].trim());
-    }
-    return matches;
+function removeHighlights() {
+    const highlights = document.querySelectorAll('.search-highlight');
+    highlights.forEach(highlight => {
+        const parent = highlight.parentNode;
+            parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+    });
 }
 
-function addSearchResult(url, text) {
-    const div = document.createElement('div');
-    div.className = 'search-result-item';
-    div.textContent = text;
-    div.onclick = () => {
-        window.location.href = `${url}#${encodeURIComponent(text)}`;
-        closeSearch();
-    };
-    searchResults.appendChild(div);
-}
-
-if (searchIcon) {
-    searchIcon.addEventListener('click', openSearch);
-}
-
-if (searchClose) {
-    searchClose.addEventListener('click', closeSearch);
-}
-
+// Event listener for search input
+const searchInput = document.querySelector('.search-input');
 if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        performSearch(e.target.value);
-    });
-
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeSearch();
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const query = this.value.trim();
+            performSearch(query);
         }
     });
 }
 
-// Close search when clicking outside
-if (searchContainer) {
-    searchContainer.addEventListener('click', (e) => {
-        if (e.target === searchContainer) {
-            closeSearch();
+// Close search and remove highlights when closing search container
+document.addEventListener('click', function(e) {
+    const searchContainer = document.querySelector('.search-container');
+    if (e.target.classList.contains('search-container')) {
+        searchContainer.classList.remove('show');
+            removeHighlights();
+    }
+});
+
+// Close search with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer.classList.contains('show')) {
+            searchContainer.classList.remove('show');
+        removeHighlights();
         }
-    });
-}
+    }
+});
 
 const thankYouDiv = document.getElementById('thank-you-message');
 

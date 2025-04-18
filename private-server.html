@@ -11,10 +11,11 @@
     <nav class="navbar">
         <div class="theme-container">
             <button id="theme-toggle" class="theme-toggle">
-                <span class="sun"></span>
-                <span class="moon"></span>
+                <span class="sun">☀</span>
             </button>
-            <span class="search-icon"></span>
+            <button class="search-toggle" onclick="openSearch()">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
         <div class="hamburger">☰</div>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -23,9 +24,17 @@
             <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
             <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
             <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
-            <li><a href="post.html"><i class="fas fa-pen-to-square"></i><span>Posts</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
         </ul>
     </nav>
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search across all pages...">
+            <div class="search-results"></div>
+        </div>
+    </div>
 
     <div class="private-server">
         <div class="server-card">
