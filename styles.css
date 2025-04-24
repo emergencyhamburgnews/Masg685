@@ -157,10 +157,40 @@ h1, h2, h3, h4, h5, h6, p, span, a, li {
     .nav-links {
         transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
+        background: #202020;
     }
 
     .nav-links.active {
         transform: translateX(0);
+    }
+
+    .nav-links a,
+    .nav-links i,
+    .nav-links span {
+        color: #ffffff !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .nav-links {
+        display: flex;
+        position: static;
+        width: auto;
+        height: auto;
+        background: none;
+        padding: 0;
+    }
+
+    .nav-links.active {
+        left: 0;
+    }
+
+    .nav-links li {
+        margin: 0 1rem;
+    }
+
+    .hamburger {
+        display: none;
     }
 }
 
@@ -387,51 +417,53 @@ footer {
 
 
 
-/* Scroll to top button */
+/* Scroll to top button styles */
 .scroll-top {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: linear-gradient(145deg, #780000, #a30000);
-    color: white;
     width: 50px;
     height: 50px;
-    border-radius: 25px;
+    background: linear-gradient(135deg, #780000, #a30000);
+    color: white;
     border: none;
-    display: none;
-    justify-content: center;
-    align-items: center;
+    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 999;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    display: none;
+    align-items: center;
+    justify-content: center;
     font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
 }
 
 .scroll-top::before {
-    content: '↑';
-    color: white;
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-left: 3px solid white;
+    border-top: 3px solid white;
+    transform: rotate(45deg) translate(2px, 2px);
+    transition: transform 0.3s ease;
 }
 
 .scroll-top:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #a30000, #780000);
 }
 
-.scroll-top.show {
-    display: flex;
-    animation: fadeInUp 0.5s ease;
+.scroll-top:hover::before {
+    transform: rotate(45deg) translate(2px, -2px);
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.scroll-top:active {
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .scroll-top {
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
 /* AI Chat Button Styles */
@@ -532,12 +564,12 @@ footer {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
     display: none;
     justify-content: center;
     align-items: flex-start;
     padding-top: 100px;
     z-index: 1001;
-    backdrop-filter: blur(5px);
 }
 
 .search-container.show {
@@ -547,46 +579,51 @@ footer {
 .search-box {
     width: 90%;
     max-width: 600px;
+    background: var(--nav-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     position: relative;
-    margin: 0 auto;
+}
+
+.close-search {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.close-search:hover {
+    opacity: 1;
 }
 
 .search-input {
     width: 100%;
-    padding: 15px 20px;
+    padding: 1rem;
     font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    background: var(--bg-color);
     color: var(--text-color);
-    background: var(--nav-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: none;
 }
 
 .search-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.search-input::placeholder {
-    color: var(--secondary-text);
-    opacity: 0.8;
+    box-shadow: 0 0 0 2px var(--border-color);
 }
 
 .search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--nav-bg);
-    border-radius: 15px;
-    margin-top: 10px;
-    max-height: 400px;
+    margin-top: 1rem;
+    max-height: 300px;
     overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    display: none;
 }
 
 .search-result-item {

@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="theme-container">
             <button id="theme-toggle" class="theme-toggle">
-                <span class="sun">☀</span>
+                <span class="sun" style="font-family: system-ui;">☀</span>
             </button>
             <button class="search-toggle" onclick="openSearch()">
                 <i class="fas fa-search"></i>
@@ -34,6 +34,7 @@
     <!-- Search Container -->
     <div class="search-container">
         <div class="search-box">
+            <button class="close-search" aria-label="Close search">×</button>
             <input type="text" class="search-input" placeholder="Search across all pages...">
             <div class="search-results"></div>
         </div>
@@ -80,7 +81,7 @@
         </div>
     </div>
 
-    <button class="scroll-top"></button>
+    <button class="scroll-top" aria-label="Scroll to top"></button>
 
     <script src="javascript.js"></script>
     <script>
@@ -100,6 +101,12 @@
                 return;
             }
 
+            if (!url.includes('tiktok.com')) {
+                errorDiv.textContent = 'Please enter a valid TikTok URL';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
             // Show loading state
             loadingDiv.style.display = 'flex';
             resultDiv.style.display = 'none';
@@ -107,7 +114,6 @@
             downloadBtn.disabled = true;
 
             try {
-                // Replace this with your actual API endpoint
                 const apiUrl = 'https://tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com/vid/index';
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -121,18 +127,23 @@
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
                 const data = await response.json();
                 
-                if (data.video_url) {
+                if (data && data.video_url) {
                     downloadLink.onclick = () => {
-                        window.open(data.video_url, '_blank');
+                        window.location.href = data.video_url;
                     };
                     resultDiv.style.display = 'block';
                 } else {
-                    throw new Error('Could not process video');
+                    throw new Error('No video URL found in response');
                 }
             } catch (error) {
-                errorDiv.textContent = 'Error processing video. Please try again.';
+                console.error('Download error:', error);
+                errorDiv.textContent = 'Unable to download video. Please check your URL and try again.';
                 errorDiv.style.display = 'block';
             } finally {
                 loadingDiv.style.display = 'none';

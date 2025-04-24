@@ -4,6 +4,14 @@
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Masg685">
+    <meta property="og:description" content="Emergency Hamburg player">
+    <meta property="og:image" content="masglogo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="theme-color" content="#780000">
     <title>Masg685</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -35,6 +43,7 @@
     <!-- Search Container -->
     <div class="search-container">
         <div class="search-box">
+            <button class="close-search" aria-label="Close search">×</button>
             <input type="text" class="search-input" placeholder="Search across all pages...">
             <div class="search-results"></div>
         </div>
@@ -45,10 +54,86 @@
         <img src="masglogo.png" alt="Top Image" class="hero-image">
         <p>Emergency Hamburg player</p>
         <h1>Hi :)</h1>
-          <p>welcome to my personal site, you can find
-          information about me <a href="about.html" class="about-link">here</a></p></p>
-          </div>
+        <p>welcome to my personal site, you can find
+        information about me <a href="about.html" class="about-link">here</a></p>
+        
+        <!-- Slideshow Container -->
+        <div class="slideshow-container">
+            <div class="slide fade">
+                <img src="img1.jpg" alt="Image 1">
+            </div>
+            <div class="slide fade">
+                <img src="img2.jpg" alt="Image 2">
+            </div>
+            <div class="slide fade">
+                <img src="img3.jpg" alt="Image 3">
+            </div>
+            <div class="slide fade">
+                <img src="img4.jpg" alt="Image 4">
+            </div>
+            <div class="slide fade">
+                <img src="img5.jpg" alt="Image 5">
+            </div>
+        </div>
     </section>
+
+    <style>
+        .slideshow-container {
+            max-width: 800px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .fade {
+            animation: fade 2s ease-in-out;
+        }
+
+        @keyframes fade {
+            from {opacity: 0.4}
+            to {opacity: 1}
+        }
+    </style>
+
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let slides = document.getElementsByClassName("slide");
+            
+            // Hide all slides
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            
+            // Move to next slide
+            slideIndex++;
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+            
+            // Show current slide
+            slides[slideIndex - 1].style.display = "block";
+            
+            // Change slide every 7 seconds
+            setTimeout(showSlides, 7000);
+        }
+    </script>
 
     <!-- Social Media Section -->
     <section class="social-media">

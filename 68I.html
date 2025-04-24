@@ -4,42 +4,8 @@
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>68I - AI Assistant</title>
+    <title>Help Center</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .typing-indicator {
-            display: flex;
-            padding: 10px;
-            margin: 10px;
-        }
-        
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background: #3498db;
-            border-radius: 50%;
-            margin: 0 2px;
-            display: inline-block;
-            animation: bounce 1.3s linear infinite;
-        }
-        
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes bounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-4px); }
-        }
-
-        .message.thinking {
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 15px;
-            padding: 10px;
-            margin: 5px;
-            max-width: 80%;
-            align-self: flex-start;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -50,8 +16,16 @@
                 </svg>
             </button>
         </div>
-        <div class="hamburger"></div>
+        <div class="hamburger">☰</div>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+            <li><a href="tiktokdownload.html"><i class="fab fa-tiktok"></i><span>TikTok Downloader</span></a></li>
+        </ul>
     </nav>
 
     <!-- Search Container -->
@@ -64,226 +38,277 @@
 
     <div class="chat-container">
         <div class="chat-header">
-            <img src="68i-logo.svg" alt="68I Logo" class="chat-logo">
-            <h1>68I Assistant</h1>
-            <p class="chat-subtitle">Ask me anything about Masg685!</p>
+            <img src="masgfav.jpg" alt="Chat Logo" class="chat-logo">
+            <h1>Help Center</h1>
+            <p class="chat-subtitle">Find answers to common questions</p>
         </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot">
-                <div class="message-content">
-                    Hi! I'm 68I, your AI assistant. How can I help you today?
+        <div class="chat-content">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hello! Type your question or choose from the suggestions below:
+                    </div>
                 </div>
             </div>
+            <div id="suggestions" class="suggestions-container"></div>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+            <button id="send-button">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
     </div>
 
-    <script>
-        const responses = {
-            'hey': 'Hello! I\'m 68I, Masg685\'s AI assistant. I can tell you all about Masg685, their friend Nexus, achievements, social media, or help you navigate this website. What would you like to know?',
-            'hi': 'Hi there! I\'m here to help you learn about Masg685, Nexus, and explore their website. Feel free to ask anything!',
-            'hello': 'Hello! I\'m 68I, your friendly AI guide. I can tell you about Masg685\'s background, their friend Nexus, gaming achievements, or help you explore the website. What interests you?',
-            'who is masg685': 'Masg685 is a content creator and gamer from Australia, born on the beautiful island of Savai\'i in Samoa. They\'ve become one of the most successful Emergency Hamburg players and share their gaming experiences on YouTube and TikTok!',
-            'where is masg685 from': 'Masg685 has an interesting background - they\'re from Australia but were born in Savai\'i, which is an island in Samoa. This multicultural background adds to their unique perspective in content creation and gaming!',
-            'how do i use this website': 'This website has several sections you can explore:\n- Home: Main page with overview and social media links\n- About: Detailed information about Masg685\n- Contact: Get in touch with Masg685\n- Updates: Latest news and updates\n- Posts: Check out Masg685\'s latest posts\n- Private Server: Report players or request unbans\n\nYou can use the navigation menu at the top to move between pages, and there\'s a search feature to find specific information. Need help with anything specific?',
-            'what about emergency hamburg': 'Masg685 is a highly skilled Emergency Hamburg player with impressive stats:\n- Police XP: +312,213 XP (One of the best!)\n- Fire & Medical XP: +20,352 XP\n- Truck Driver XP: +1,721 XP\n- ADAC XP: +2,035 XP\n- Bus Driver XP: +1,454 XP\nThey\'re known for playing with a controller and joined Roblox on 22/11/2023. Their friend Nexus is also a top police officer in the game!',
-            'what are masg685\'s social media': 'You can follow Masg685 on various platforms:\n- TikTok: @masg685 (Gaming content and updates)\n- YouTube: @masg685 (Gameplay videos and tutorials)\n- X (Twitter): @masg685_ (Latest news and interactions)\n- Roblox: User ID 5255024681 (Join them in Emergency Hamburg!)\nFun fact: Nexus often teams up with Masg685 in their gaming adventures!',
-            'how can i contact masg685': 'You can contact Masg685 in several ways:\n1. Use the Contact form on the website (contact.html)\n2. Reach out through their social media accounts\n3. Leave comments on their YouTube videos\nThey appreciate hearing from fans and fellow gamers!',
-            'what\'s new': 'You can check the Updates page for the latest news, but Masg685 regularly posts new content on their social media channels and continues to achieve new milestones in Emergency Hamburg, often alongside their friend Nexus!',
-            'help': 'I can help you with:\n- Information about Masg685\'s background and achievements\n- Details about Nexus, their best friend and top EH player\n- Emergency Hamburg stats and gameplay\n- Finding social media links\n- Navigating the website\n- Contact information\n- Reporting players or requesting unbans\nWhat would you like to know more about?',
-            'who is nexus': 'Nexus is one of the top police officers in Emergency Hamburg, renowned for his incredible skills, quick thinking, and dedication to keeping the city safe. Hailing from Ho Chi Minh City, Vietnam, he\'s a passionate gamer who\'s earned respect in the EH community for his teamwork and leadership. He\'s also Masg685\'s best friend, always reliable, positive, and a blast to play with!',
-            'tell me about nexus': 'Nexus, from Ho Chi Minh City, Vietnam, is a standout player in Emergency Hamburg. As a police officer, he\'s mastered his role with sharp decision-making and a knack for intense situations. Beyond his skills, he\'s a true friend to Masg685 and many others, known for his kindness, positivity, and willingness to help. He brings leadership and fun to every gaming session!',
-            'nexus details': 'Nexus is a legendary figure in Emergency Hamburg, excelling as a police officer with unmatched dedication. Originally from Ho Chi Minh City, Vietnam, his love for gaming shines through in his teamwork and strategic play. As Masg685\'s best friend, he\'s always there to support and inspire, making him a beloved member of the EH community with his infectious positivity.',
-            'who is masg685\'s friend': 'That would be Nexus! He\'s an exceptional Emergency Hamburg police officer from Ho Chi Minh City, Vietnam. Known for his quick reflexes and commitment, he\'s a respected player who\'s built strong bonds in the community. To Masg685, he\'s not just a gaming partner but a reliable, kind-hearted best friend who makes every game more fun!',
-            'how to report player': 'To report a player who has done something wrong in the private server, go to the Private Server page and click the button labeled "Report Player". If you are already banned from the server, you can click the "Unban Request" button instead. Please note: Exploiters will not be unbanned.',
-            'default': function(input) {
-                return `I\'ll help answer your question about "${input}". I aim to provide accurate and helpful information just like a regular chat AI would. Feel free to ask me anything!`;
-            }
-        };
+    <style>
+        .chat-container {
+            max-width: 800px;
+            margin: 1rem auto;
+            background: var(--nav-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+        }
 
-        const chatMessages = document.getElementById('chat-messages');
+        .chat-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .suggestions-container {
+            background: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: auto;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(120, 0, 0, 0.1);
+        }
+
+        .suggestion-item i {
+            color: #780000;
+            width: 20px;
+        }
+
+        .answer-container {
+            background: var(--nav-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .answer-title {
+            font-weight: bold;
+            color: #780000;
+            margin-bottom: 10px;
+        }
+
+        .answer-content {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .answer-link {
+            color: #780000;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .answer-link:hover {
+            text-decoration: underline;
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            background: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        #send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #780000, #a30000);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        #send-button:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 0;
+                border-radius: 0;
+                height: 100vh;
+            }
+        }
+    </style>
+
+    <script>
+        const questions = [
+            {
+                text: "How to use TikTok Downloader?",
+                icon: "fab fa-tiktok",
+                answer: `To use the TikTok Downloader:
+                1. Copy the TikTok video URL you want to download
+                2. Go to the TikTok Downloader page
+                3. Paste the URL in the input box
+                4. Click "Download Video"
+                5. Click the final download button when it appears`,
+                link: "tiktokdownload.html"
+            },
+            {
+                text: "Who is Masg685?",
+                icon: "fas fa-user",
+                answer: `Masg685 is from Australia, born on the island of Savai'i in Samoa. He's an experienced Emergency Hamburg player with over 300,000 XP as a police officer. He creates content on YouTube and TikTok.`,
+                link: "about.html"
+            },
+            {
+                text: "Who is Nexus?",
+                icon: "fas fa-star",
+                answer: `Nexus is one of the best police officers in Emergency Hamburg, from Ho Chi Minh City, Vietnam. He's known for his impressive skills and dedication to keeping the city safe. He's a respected member of the EH community and Masg685's best friend.`,
+                link: "about.html"
+            },
+            {
+                text: "How to Report a Player?",
+                icon: "fas fa-flag",
+                answer: `To report a player:
+                1. Go to the Private Server page
+                2. Click the "Report Player" button
+                3. Fill out the report form with details
+                4. Submit the form`,
+                link: "report-player.html"
+            },
+            {
+                text: "How to join the Private Server?",
+                icon: "fas fa-server",
+                answer: `To join the private server:
+                1. Visit the Private Server page
+                2. Click the "Join Server" button
+                3. Make sure to read and follow the server rules`,
+                link: "private-server.html"
+            },
+            {
+                text: "How to request an unban?",
+                icon: "fas fa-unlock",
+                answer: `If you've been banned:
+                1. Go to the Private Server page
+                2. Click the "Unban Request" button
+                3. Fill out the unban request form
+                4. Wait for a response`,
+                link: "unban-request.html"
+            }
+        ];
+
         const userInput = document.getElementById('user-input');
+        const suggestionsContainer = document.getElementById('suggestions');
+        const chatMessages = document.getElementById('chat-messages');
         const sendButton = document.getElementById('send-button');
 
-        function addMessage(message, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    ${message}
-                </div>
-            `;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+        function showSuggestions(filter = '') {
+            const filteredQuestions = questions.filter(q => 
+                q.text.toLowerCase().includes(filter.toLowerCase())
+            );
 
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message thinking';
-            typingDiv.innerHTML = `
-                <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return typingDiv;
-        }
-
-        function generateResponse(input) {
-            // Convert input to lowercase for matching
-            const lowercaseInput = input.toLowerCase();
-            
-            // Check for exact matches first
-            if (responses[lowercaseInput]) {
-                return typeof responses[lowercaseInput] === 'function' 
-                    ? responses[lowercaseInput](input) 
-                    : responses[lowercaseInput];
-            }
-            
-            // Define categories for different types of questions
-            const categories = {
-                personal: {
-                    keywords: ['who', 'what', 'where', 'when', 'how old', 'age', 'birthday', 'born', 'background'],
-                    response: responses['who is masg685']
-                },
-                gaming: {
-                    keywords: ['game', 'play', 'hamburg', 'emergency', 'stats', 'level', 'rank', 'score', 'achievement'],
-                    response: responses['what about emergency hamburg']
-                },
-                social: {
-                    keywords: ['social', 'media', 'youtube', 'tiktok', 'twitter', 'follow', 'channel', 'account'],
-                    response: responses['what are masg685\'s social media']
-                },
-                contact: {
-                    keywords: ['contact', 'reach', 'message', 'dm', 'email', 'send'],
-                    response: responses['how can i contact masg685']
-                },
-                website: {
-                    keywords: ['website', 'page', 'find', 'where', 'navigate', 'menu'],
-                    response: responses['how do i use this website']
-                },
-                nexus: {
-                    keywords: ['nexus', 'friend', 'best friend', 'partner', 'vietnam'],
-                    response: () => {
-                        const nexusResponses = [
-                            responses['who is nexus'],
-                            responses['tell me about nexus'],
-                            responses['nexus details']
-                        ];
-                        return nexusResponses[Math.floor(Math.random() * nexusResponses.length)];
-                    }
-                },
-                report: {
-                    keywords: ['report', 'ban', 'unban', 'player', 'complaint'],
-                    response: responses['how to report player']
-                }
-            };
-
-            // Check each category for keyword matches
-            for (const [category, data] of Object.entries(categories)) {
-                for (const keyword of data.keywords) {
-                    if (lowercaseInput.includes(keyword)) {
-                        return typeof data.response === 'function' ? data.response() : data.response;
-                    }
-                }
-            }
-
-            // If no matches found, generate a contextual response
-            return `I understand you're asking about "${input}". Let me help you with that. ${responses['help']}`;
-        }
-
-        async function handleSend() {
-            const message = userInput.value.trim();
-            console.log('Send button clicked, message:', message);
-            if (message) {
-                try {
-                    // Disable input while processing
-                    userInput.disabled = true;
-                    sendButton.disabled = true;
-
-                    // Add user message
-                    addMessage(message, true);
-                    
-                    // Show typing indicator
-                    const typingIndicator = showTypingIndicator();
-                    
-                    // Clear input
-                    userInput.value = '';
-
-                    // Simulate AI thinking time (between 1 and 2 seconds)
-                    const thinkingTime = Math.random() * 1000 + 1000;
-                    await new Promise(resolve => setTimeout(resolve, thinkingTime));
-
-                    // Remove typing indicator
-                    typingIndicator.remove();
-
-                    // Generate and add AI response
-                    const response = generateResponse(message);
-                    addMessage(response, false);
-
-                    // Re-enable input
-                    userInput.disabled = false;
-                    sendButton.disabled = false;
-                    userInput.focus();
-                } catch (error) {
-                    console.error('Error in handleSend:', error);
-                    // Re-enable input in case of error
-                    userInput.disabled = false;
-                    sendButton.disabled = false;
-                }
-            }
-        }
-
-        // Make sure event listeners are properly attached
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('Setting up event listeners');
-            const sendButton = document.getElementById('send-button');
-            const userInput = document.getElementById('user-input');
-
-            if (sendButton && userInput) {
-                console.log('Found send button and input');
-                sendButton.addEventListener('click', () => {
-                    console.log('Send button clicked');
-                    handleSend();
-                });
-
-                userInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        console.log('Enter key pressed');
-                        e.preventDefault();
-                        handleSend();
-                    }
-                });
+            if (filteredQuestions.length > 0) {
+                suggestionsContainer.style.display = 'block';
+                suggestionsContainer.innerHTML = filteredQuestions
+                    .map(q => `
+                        <div class="suggestion-item" onclick="showAnswer('${q.text}')">
+                            <i class="${q.icon}"></i>
+                            ${q.text}
+                        </div>
+                    `).join('');
             } else {
-                console.error('Could not find send button or input:', {
-                    sendButton: !!sendButton,
-                    userInput: !!userInput
-                });
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        function showAnswer(questionText) {
+            const question = questions.find(q => q.text === questionText);
+            if (question) {
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'message bot';
+                answerDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="answer-container">
+                            <div class="answer-title">${question.text}</div>
+                            <div class="answer-content">${question.answer}</div>
+                            <a href="${question.link}" class="answer-link">Learn more →</a>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(answerDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                userInput.value = '';
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        userInput.addEventListener('input', () => {
+            showSuggestions(userInput.value);
+        });
+
+        userInput.addEventListener('focus', () => {
+            showSuggestions(userInput.value);
+        });
+
+        sendButton.addEventListener('click', () => {
+            const query = userInput.value.trim();
+            if (query) {
+                showSuggestions(query);
             }
         });
 
-        // Add placeholder text rotation
-        const placeholders = [
-            "Ask me anything about Masg685...",
-            "Want to know about Emergency Hamburg?",
-            "Curious about Nexus?",
-            "Need help with the website?",
-            "Looking for social media links?"
-        ];
-
-        let currentPlaceholder = 0;
-        setInterval(() => {
-            currentPlaceholder = (currentPlaceholder + 1) % placeholders.length;
-            userInput.placeholder = placeholders[currentPlaceholder];
-        }, 3000);
+        // Show all suggestions initially
+        showSuggestions();
     </script>
-    <script src="javascript.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92f8b4ca4a7ebd02',t:'MTc0NDUyMzYzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

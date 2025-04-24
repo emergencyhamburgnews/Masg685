@@ -130,19 +130,150 @@ document.addEventListener('DOMContentLoaded', () => {
         themeToggle.addEventListener('click', toggleTheme);
     }
 
+    // Search functionality
+    const searchContainer = document.querySelector('.search-container');
+    const searchInput = document.querySelector('.search-input');
+    
+    function openSearch() {
+        if (searchContainer) {
+            searchContainer.style.display = 'flex';
+            searchInput.focus();
+        }
+    }
+
+    // Add click handler for search toggle button
+    document.querySelector('.search-toggle')?.addEventListener('click', openSearch);
+
+    function removeHighlights() {
+        const highlights = document.querySelectorAll('.search-highlight');
+        highlights.forEach(highlight => {
+            const parent = highlight.parentNode;
+            parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+        });
+    }
+
+    function performSearch(query) {
+        const searchText = query.toLowerCase();
+        const contentElements = document.querySelectorAll('main p, main h1, main h2, main h3, main li, main span, .about p, .contact p, .updates-container p, .private-server p, .form-container p, .chat p');
+        
+        removeHighlights();
+        
+        let firstMatch = null;
+        let firstMatchText = '';
+
+        contentElements.forEach(element => {
+            const text = element.textContent.toLowerCase();
+            if (text.includes(searchText)) {
+                const regex = new RegExp(`(${searchText})`, 'gi');
+                element.innerHTML = element.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                
+                // Store the first match
+                if (!firstMatch) {
+                    firstMatch = element;
+                    firstMatchText = text;
+                }
+            }
+        });
+
+        if (firstMatch) {
+            // Close search container
+            const searchContainer = document.querySelector('.search-container');
+            if (searchContainer) {
+                searchContainer.style.display = 'none';
+            }
+
+            // Clear search input
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
+            // Scroll to the match with offset for better visibility
+            const offset = 100; // Pixels from the top
+            const elementPosition = firstMatch.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: elementPosition - offset,
+                behavior: 'smooth'
+            });
+
+            // Highlight will remain visible
+            setTimeout(() => {
+                const highlight = firstMatch.querySelector('.search-highlight');
+                if (highlight) {
+                    highlight.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                }
+            }, 100);
+        }
+    }
+
+    // Add search input handler
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            }
+        });
+
+        // Also handle input changes for real-time search
+        searchInput.addEventListener('input', function(e) {
+            const query = this.value.trim();
+            if (query) {
+                performSearch(query);
+            } else {
+                removeHighlights();
+            }
+        });
+    }
+
+    // Add close button handler
+    const closeSearchBtn = document.querySelector('.close-search');
+    if (closeSearchBtn) {
+        closeSearchBtn.addEventListener('click', () => {
+            if (searchContainer) {
+                searchContainer.style.display = 'none';
+                removeHighlights();
+            }
+        });
+    }
+
+    // Close search when clicking outside
+    document.addEventListener('click', (e) => {
+        if (searchContainer && 
+            !searchContainer.contains(e.target) && 
+            !e.target.classList.contains('search-toggle') &&
+            !e.target.classList.contains('fa-search')) {
+            searchContainer.style.display = 'none';
+            removeHighlights();
+        }
+    });
+
+    // Close search on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && searchContainer) {
+            searchContainer.style.display = 'none';
+            removeHighlights();
+        }
+    });
+
     // Scroll to top functionality
     const scrollTopButton = document.querySelector('.scroll-top');
     if (scrollTopButton) {
         window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 100) {
-                scrollTopButton.classList.add('show');
+            if (window.scrollY > 300) {
+                scrollTopButton.style.display = 'flex';
             } else {
-                scrollTopButton.classList.remove('show');
+                scrollTopButton.style.display = 'none';
             }
         });
 
         scrollTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     }
 
@@ -352,106 +483,6 @@ if (form) {
     });
 }
 
-// Search functionality
-function performSearch(query) {
-    const searchText = query.toLowerCase();
-    const contentElements = document.querySelectorAll('main p, main h1, main h2, main h3, main li, main span, .about p, .contact p, .updates-container p, .private-server p, .form-container p, .chat p');
-    
-            removeHighlights();
-    
-    let firstMatch = null;
-
-    contentElements.forEach(element => {
-        const text = element.textContent.toLowerCase();
-        if (text.includes(searchText)) {
-            const regex = new RegExp(`(${searchText})`, 'gi');
-            element.innerHTML = element.textContent.replace(regex, '<span class="search-highlight">$1</span>');
-            if (!firstMatch) firstMatch = element;
-        }
-    });
-
-    if (firstMatch) {
-        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function removeHighlights() {
-    const highlights = document.querySelectorAll('.search-highlight');
-    highlights.forEach(highlight => {
-        const parent = highlight.parentNode;
-            parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
-    });
-}
-
-// Event listener for search input
-const searchInput = document.querySelector('.search-input');
-if (searchInput) {
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const query = this.value.trim();
-            performSearch(query);
-        }
-    });
-}
-
-// Close search and remove highlights when closing search container
-document.addEventListener('click', function(e) {
-    const searchContainer = document.querySelector('.search-container');
-    if (e.target.classList.contains('search-container')) {
-        searchContainer.classList.remove('show');
-            removeHighlights();
-    }
-});
-
-// Close search with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const searchContainer = document.querySelector('.search-container');
-        if (searchContainer.classList.contains('show')) {
-            searchContainer.classList.remove('show');
-        removeHighlights();
-        }
-    }
-});
-
-const thankYouDiv = document.getElementById('thank-you-message');
-
-if (form && thankYouDiv) {
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Stop the default form submission (no redirect)
-
-        // Get form data
-        const formData = new FormData(form);
-
-        try {
-            // Send the form data to Formspree
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                // Show custom thank-you message
-                thankYouDiv.style.display = 'block';
-                thankYouDiv.textContent = 'Thank you for your message! I\'ll get back to you soon.';
-                thankYouDiv.style.color = 'white'; // Match your site's style
-                form.reset(); // Clear the form fields
-            } else {
-                thankYouDiv.style.display = 'block';
-                thankYouDiv.textContent = 'Oops! Something went wrong. Please try again.';
-                thankYouDiv.style.color = '#ff5555'; // Red for error
-            }
-        } catch (error) {
-            thankYouDiv.style.display = 'block';
-            thankYouDiv.textContent = 'Error submitting form. Check your connection and try again.';
-            thankYouDiv.style.color = '#ff5555';
-        }
-    });
-}
-
 // Chat system
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById('chat-messages');
@@ -556,7 +587,12 @@ async function submitPost() {
     if (file) {
         imageData = await new Promise((resolve) => {
             const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
+            reader.onload = (e) => {
+                // Convert relative URLs to absolute URLs
+                const baseUrl = window.location.origin;
+                const imageUrl = e.target.result;
+                resolve(imageUrl.startsWith('data:') ? imageUrl : `${baseUrl}/${imageUrl}`);
+            };
             reader.readAsDataURL(file);
         });
     }
@@ -593,12 +629,17 @@ function displayPosts() {
 
     container.innerHTML = posts.length ? '' : '<div class="loading-posts">No posts yet</div>';
 
+    const baseUrl = window.location.origin;
+
     posts.forEach(post => {
         const date = new Date(post.date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+
+        // Ensure image URL is absolute
+        const imageUrl = post.image ? (post.image.startsWith('data:') || post.image.startsWith('http') ? post.image : `${baseUrl}/${post.image}`) : '';
 
         const postElement = document.createElement('div');
         postElement.className = 'post-card';
@@ -609,7 +650,11 @@ function displayPosts() {
             </div>
             <div class="post-content">
                 <div class="post-text">${post.content}</div>
-                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
+                ${imageUrl ? `
+                    <a href="${imageUrl}" target="_blank" class="post-image-link">
+                        <img src="${imageUrl}" alt="${post.title}" class="post-image">
+                    </a>
+                ` : ''}
             </div>
             <div class="post-footer">
                 <div class="post-actions">
