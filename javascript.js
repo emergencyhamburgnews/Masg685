@@ -21,89 +21,356 @@ async function updateRobloxProfile() {
     const avatarElement = document.getElementById('roblox-avatar');
     const usernameElement = document.getElementById('roblox-username');
 
-    if (!avatarElement || !usernameElement) {
-        console.error('Profile elements not found:', {
-            avatar: !!avatarElement,
-            username: !!usernameElement
-        });
-        return;
-    }
+    if (!avatarElement || !usernameElement) return;
 
-    // Set loading state
     avatarElement.style.opacity = '0.5';
-    usernameElement.textContent = 'Loading...';
+    usernameElement.textContent = profile.username;
 
-    const retryFetch = async (url, attempts = 3) => {
-        for (let i = 0; i < attempts; i++) {
-            try {
-                console.log(`Attempting to fetch from ${url}`);
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    mode: 'cors',
-                    credentials: 'omit'
-                });
-                if (!response.ok) {
-                    console.error(`HTTP error! status: ${response.status}`);
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response;
-            } catch (err) {
-                console.error(`Attempt ${i + 1} failed:`, err);
-                if (i === attempts - 1) throw err;
-            }
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-        throw new Error('Max retry attempts reached');
+    const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${profile.userId}&width=150&height=150&format=png`;
+    avatarElement.src = avatarUrl;
+    avatarElement.onload = () => avatarElement.style.opacity = '1';
+    avatarElement.onerror = () => {
+        // Use the specific avatar URL as fallback
+        avatarElement.src = 'https://tr.rbxcdn.com/30DAY-AvatarHeadshot-5929DDFE20EB1B4D7B3C06D885B0627E-Png/150/150/AvatarHeadshot/Webp/noFilter';
+        avatarElement.style.opacity = '1';
     };
 
     try {
-        // Fetch user data first
-        console.log('Fetching user data...');
-        const userResponse = await retryFetch(`https://users.roblox.com/v1/users/${profile.userId}`);
-        const userData = await userResponse.json();
-        console.log('User data received:', userData);
-
-        // Update username immediately
-        usernameElement.textContent = userData.displayName || userData.name || profile.username;
-
-        // Then fetch avatar
-        console.log('Fetching avatar data...');
-        const avatarResponse = await retryFetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${profile.userId}&size=150x150&format=Png`);
-        const avatarData = await avatarResponse.json();
-        console.log('Avatar data received:', avatarData);
-
-        if (avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl) {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-                avatarElement.src = img.src;
-                avatarElement.style.opacity = '1';
-                console.log('Avatar image loaded successfully');
-            };
-            img.onerror = (e) => {
-                console.error('Failed to load avatar image:', e);
-                avatarElement.src = 'https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png';
-                avatarElement.style.opacity = '1';
-            };
-            img.src = avatarData.data[0].imageUrl;
-        } else {
-            console.error('No avatar data received:', avatarData);
-            throw new Error('No avatar data received');
+        const response = await fetch(`https://users.roblox.com/v1/users/${profile.userId}`);
+        if (response.ok) {
+            const data = await response.json();
+            usernameElement.textContent = data.displayName || data.name || profile.username;
         }
-
     } catch (error) {
-        console.error('Error fetching Roblox profile:', error);
-        usernameElement.textContent = profile.username;
-        avatarElement.src = 'https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png';
-        avatarElement.style.opacity = '1';
+        console.error('Failed to fetch user data:', error);
     }
+}
+
+// Language translations
+const translations = {
+    en: {
+        // Navigation
+        home: 'Home',
+        about: 'About',
+        contact: 'Contact',
+        updates: 'Updates',
+        privateServer: 'Private Server',
+        tiktokDownloader: 'TikTok Downloader',
+        language: 'Language',
+        
+        // About page
+        aboutMe: 'About Me',
+        aboutText: 'Hi, my nickname is Masg685 and I\'m from Australia. I was born on the island of Savai\'i in Samoa. In 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I\'ve earned over 300,000 XP as a police officer, which is known as one of the best teams in the game.',
+        socialMedia: 'Later, I started creating content on social media — beginning with YouTube and then expanding to TikTok. If you haven\'t subscribed yet, please do — it really helps me out!',
+        
+        // Private server section
+        privateServerTitle: 'private-server',
+        privateServerInfo: 'I will be creating a',
+        privateServerText: 'in Emergency Hamburg, and once controller support is added in the next update.',
+        
+        // Game stats
+        emergencyHamburg: 'Emergency Hamburg',
+        gamepass: 'Gamepass:',
+        policeXp: 'Police Xp:',
+        fireAndMedicalXp: 'Fire & Medical Xp:',
+        xpTotal: 'XP Total',
+        plusSix: '+6',
+        plus312213: '+312,213',
+        plus20352: '+20,352',
+        
+        // Common elements
+        search: 'Search...',
+        scrollTop: 'Scroll to top',
+        welcome: 'Welcome to my personal site',
+        findInfo: 'you can find information about me',
+        here: 'here',
+        
+        // Help Center
+        helpCenter: 'Help Center',
+        searchQuestions: 'Search questions...',
+        howToUse: 'How to use',
+        whoIs: 'Who is',
+        howToReport: 'How to Report',
+        
+        // Contact Form
+        yourName: 'Your Name',
+        yourEmail: 'Your Email',
+        message: 'Message',
+        send: 'Send',
+        messageSent: 'Message sent successfully!',
+        
+        // Server Status
+        serverStatus: 'Server Status',
+        online: 'Online',
+        offline: 'Offline',
+        players: 'Players',
+        
+        // Buttons
+        joinDiscord: 'Join Discord',
+        joinServer: 'Join Server',
+        viewRules: 'View Rules',
+        reportPlayer: 'Report Player',
+        unbanRequest: 'Unban Request'
+    },
+    vi: {
+        // Navigation
+        home: 'Trang chủ',
+        about: 'Giới thiệu',
+        contact: 'Liên hệ',
+        updates: 'Cập nhật',
+        privateServer: 'Máy chủ riêng',
+        tiktokDownloader: 'Tải TikTok',
+        language: 'Ngôn ngữ',
+        
+        // About page
+        aboutMe: 'Giới thiệu về tôi',
+        aboutText: 'Xin chào, biệt danh của tôi là Masg685 và tôi đến từ Úc. Tôi sinh ra trên đảo Savai\'i ở Samoa. Năm 2023, tôi bắt đầu chơi Emergency Hamburg, một trò chơi nhập vai từ Đức. Tôi đã đạt được hơn 300.000 XP với vai trò cảnh sát, được biết đến là một trong những đội tốt nhất trong trò chơi.',
+        socialMedia: 'Sau đó, tôi bắt đầu tạo nội dung trên mạng xã hội — bắt đầu với YouTube và sau đó mở rộng sang TikTok. Nếu bạn chưa đăng ký, hãy đăng ký nhé — điều đó thực sự giúp ích cho tôi!',
+        
+        // Private server section
+        privateServerTitle: 'máy-chủ-riêng',
+        privateServerInfo: 'Tôi sẽ tạo một',
+        privateServerText: 'trong Emergency Hamburg, và khi hỗ trợ bộ điều khiển được thêm vào trong bản cập nhật tiếp theo.',
+        
+        // Game stats
+        emergencyHamburg: 'Emergency Hamburg',
+        gamepass: 'Gamepass:',
+        policeXp: 'Điểm Cảnh sát:',
+        fireAndMedicalXp: 'Điểm Cứu hỏa & Y tế:',
+        xpTotal: 'Tổng XP',
+        plusSix: '+6',
+        plus312213: '+312.213',
+        plus20352: '+20.352',
+        
+        // Common elements
+        search: 'Tìm kiếm...',
+        scrollTop: 'Cuộn lên trên',
+        welcome: 'Chào mừng đến trang web của tôi',
+        findInfo: 'bạn có thể tìm thông tin về tôi',
+        here: 'tại đây',
+        
+        // Help Center
+        helpCenter: 'Trung tâm trợ giúp',
+        searchQuestions: 'Tìm kiếm câu hỏi...',
+        howToUse: 'Cách sử dụng',
+        whoIs: 'Ai là',
+        howToReport: 'Cách báo cáo',
+        
+        // Contact Form
+        yourName: 'Tên của bạn',
+        yourEmail: 'Email của bạn',
+        message: 'Tin nhắn',
+        send: 'Gửi',
+        messageSent: 'Đã gửi tin nhắn thành công!',
+        
+        // Server Status
+        serverStatus: 'Trạng thái máy chủ',
+        online: 'Đang hoạt động',
+        offline: 'Ngoại tuyến',
+        players: 'Người chơi',
+        
+        // Buttons
+        joinDiscord: 'Tham gia Discord',
+        joinServer: 'Tham gia máy chủ',
+        viewRules: 'Xem luật',
+        reportPlayer: 'Báo cáo người chơi',
+        unbanRequest: 'Yêu cầu gỡ cấm'
+    },
+    sm: {
+        // Navigation
+        home: 'Amataga',
+        about: 'E uiga',
+        contact: 'Fesootai',
+        updates: 'Faafou',
+        privateServer: 'Server Patino',
+        tiktokDownloader: 'TikTok Download',
+        language: 'Gagana',
+        
+        // About page
+        aboutMe: 'E uiga ia te au',
+        aboutText: 'Talofa, o lo\'u igoa faaigoaina o Masg685 ma ou sau mai Ausetalia. Na ou fanau i le motu o Savai\'i i Samoa. I le 2023, na amata ona ou taalo i le Emergency Hamburg, o se taaloga roleplay mai Siamani. Ua ou maua le sili atu i le 300,000 XP o se leoleo, o le tasi lea o au\'auna sili ona lelei i le taaloga.',
+        socialMedia: 'Mulimuli ane, na amata ona ou faia ni ata i luga o upega feso\'ota\'i — amata i le YouTube ona sosolo atu lea i le TikTok. Afai e te le\'i subscribe, fa\'amolemole fai — e fesoasoani tele ia te a\'u!',
+        
+        // Private server section
+        privateServerTitle: 'server-patino',
+        privateServerInfo: 'O le a ou faia se',
+        privateServerText: 'i le Emergency Hamburg, ma pe a fa\'aopoopo le controller support i le fa\'afouina o le lumana\'i.',
+        
+        // Game stats
+        emergencyHamburg: 'Emergency Hamburg',
+        gamepass: 'Gamepass:',
+        policeXp: 'Leoleo Xp:',
+        fireAndMedicalXp: 'Tinei Afi & Soifua Maloloina Xp:',
+        xpTotal: 'Aofai XP',
+        plusSix: '+6',
+        plus312213: '+312,213',
+        plus20352: '+20,352',
+        
+        // Common elements
+        search: 'Saili...',
+        scrollTop: 'Scroll i luga',
+        welcome: 'Afio mai i lau upega tafailagi',
+        findInfo: 'e mafai ona e maua faamatalaga e uiga ia te au',
+        here: 'iinei',
+        
+        // Help Center
+        helpCenter: 'Nofoaga Fesoasoani',
+        searchQuestions: 'Saili fesili...',
+        howToUse: 'Fa\'afefea ona fa\'aoga',
+        whoIs: 'O ai',
+        howToReport: 'Auala e Lipoti ai',
+        
+        // Contact Form
+        yourName: 'Lou Igoa',
+        yourEmail: 'Lau Imeli',
+        message: 'Feau',
+        send: 'Lafo',
+        messageSent: 'Ua maea ona lafo le feau!',
+        
+        // Server Status
+        serverStatus: 'Tulaga o le Server',
+        online: 'Ua Online',
+        offline: 'Ua Offline',
+        players: 'Tagata Taalo',
+        
+        // Buttons
+        joinDiscord: 'Auai i le Discord',
+        joinServer: 'Auai i le Server',
+        viewRules: 'Va\'ai Tulafono',
+        reportPlayer: 'Lipoti Tagata Taalo',
+        unbanRequest: 'Talosaga mo le Unban'
+    }
+};
+
+// Function to apply translations
+function applyTranslations(lang) {
+    // First handle elements with data-translate attribute
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+            if (element.tagName === 'INPUT' && element.getAttribute('placeholder')) {
+                element.placeholder = translations[lang][key];
+            } else {
+                element.textContent = translations[lang][key];
+            }
+        }
+    });
+
+    // Then handle automatic translation for all text content
+    function translateTextNodes(node) {
+        if (node.nodeType === 3) { // Text node
+            const text = node.textContent.trim();
+            if (text && text.length > 1) { // Only translate non-empty text
+                // Try to find translation
+                for (const [key, value] of Object.entries(translations['en'])) {
+                    if (value === text) {
+                        const translation = translations[lang][key];
+                        if (translation) {
+                            node.textContent = translation;
+                            break;
+                        }
+                    }
+                }
+            }
+        } else if (node.nodeType === 1) { // Element node
+            // Skip script and style tags
+            if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+                // Also translate placeholder and value attributes for inputs
+                if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
+                    if (node.placeholder) {
+                        for (const [key, value] of Object.entries(translations['en'])) {
+                            if (value === node.placeholder) {
+                                const translation = translations[lang][key];
+                                if (translation) {
+                                    node.placeholder = translation;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (node.value && node.type !== 'password' && node.type !== 'email') {
+                        for (const [key, value] of Object.entries(translations['en'])) {
+                            if (value === node.value) {
+                                const translation = translations[lang][key];
+                                if (translation) {
+                                    node.value = translation;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Recursively translate child nodes
+                node.childNodes.forEach(child => translateTextNodes(child));
+            }
+        }
+    }
+
+    // Start translation from body to avoid affecting scripts
+    const body = document.body;
+    if (body) {
+        translateTextNodes(body);
+    }
+}
+
+// Function to change language
+function changeLanguage(lang) {
+    if (!translations[lang]) return;
+    
+    localStorage.setItem('selectedLanguage', lang);
+    document.documentElement.setAttribute('lang', lang);
+    applyTranslations(lang);
 }
 
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+    // Add language selector to navigation
+    const navigationLinks = document.querySelector('.nav-links');
+    if (navigationLinks) {
+        // Adjust all navigation items to be slightly smaller
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.style.fontSize = '14px';
+        });
+
+        // Adjust icons to be slightly smaller
+        document.querySelectorAll('.nav-item i').forEach(icon => {
+            icon.style.fontSize = '14px';
+        });
+
+        const langSelector = document.createElement('li');
+        langSelector.className = 'nav-item';
+        langSelector.innerHTML = `
+            <select onchange="changeLanguage(this.value)" style="background: transparent; color: white; border: none; padding: 0; margin: 0; cursor: pointer; font-size: 14px; font-family: inherit; -webkit-appearance: none; -moz-appearance: none; appearance: none; text-decoration: none; outline: none;">
+                <option value="" disabled selected>Language</option>
+                <option value="en">English</option>
+                <option value="vi">Tiếng Việt</option>
+                <option value="sm">Gagana Sāmoa</option>
+            </select>
+        `;
+        navigationLinks.appendChild(langSelector);
+
+        // Update the selected option based on current language
+        const updateSelectedLanguage = () => {
+            const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+            const select = langSelector.querySelector('select');
+            if (select) {
+                select.value = currentLang;
+            }
+        };
+
+        // Update on load
+        updateSelectedLanguage();
+    }
+
+    // Apply saved language or default to English
+    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+    const langSelect = document.querySelector('.lang-selector select');
+    if (langSelect) {
+        langSelect.value = savedLang;
+    }
+    applyTranslations(savedLang);
+
     // Initialize theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
@@ -113,14 +380,72 @@ document.addEventListener('DOMContentLoaded', () => {
         updateRobloxProfile();
     }
 
+    // Discord button click handler
+    const discordButton = document.querySelector('a[href*="discord.gg"]');
+    if (discordButton) {
+        // Create message element
+        const messageElement = document.createElement('div');
+        messageElement.style.cssText = `
+            display: none;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            color: #ff0000;
+            background-color: rgba(255, 0, 0, 0.1);
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.3s ease-in-out;
+        `;
+        messageElement.textContent = 'Sorry, the Discord server is currently under development. Please check back later!';
+        
+        // Insert message after the button
+        discordButton.parentNode.insertBefore(messageElement, discordButton.nextSibling);
+
+        discordButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            messageElement.style.display = 'block';
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000);
+        });
+    }
+
     // Mobile menu functionality
     const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
+    const mobileNavLinks = document.querySelector('.nav-links');
     
-    if (hamburger && navLinks) {
+    if (hamburger && mobileNavLinks) {
+        hamburger.style.display = 'none'; // Reset display property
+        
+        // Show hamburger on mobile
+        const checkMobileView = () => {
+            if (window.innerWidth <= 768) {
+                hamburger.style.display = 'block';
+                mobileNavLinks.classList.remove('active');
+            } else {
+                hamburger.style.display = 'none';
+                mobileNavLinks.classList.remove('active');
+            }
+        };
+
+        // Check on load and resize
+        checkMobileView();
+        window.addEventListener('resize', checkMobileView);
+
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
+            mobileNavLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !mobileNavLinks.contains(e.target)) {
+                hamburger.classList.remove('active');
+                mobileNavLinks.classList.remove('active');
+            }
         });
     }
 
@@ -391,9 +716,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Private Server Join Button
     const joinButton = document.getElementById('join-server');
     if (joinButton) {
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = `
+            display: none;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            color: #ff0000;
+            background-color: rgba(255, 0, 0, 0.1);
+            text-align: center;
+            font-weight: bold;
+        `;
+        messageDiv.textContent = 'Sorry, the Private Server is not available yet. Please check back later!';
+        joinButton.parentNode.insertBefore(messageDiv, joinButton.nextSibling);
+
         joinButton.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = 'https://www.roblox.com/games/7711635737';
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
         });
     }
 
@@ -587,30 +931,57 @@ async function submitPost() {
     if (file) {
         imageData = await new Promise((resolve) => {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                // Convert relative URLs to absolute URLs
-                const baseUrl = window.location.origin;
-                const imageUrl = e.target.result;
-                resolve(imageUrl.startsWith('data:') ? imageUrl : `${baseUrl}/${imageUrl}`);
-            };
+            reader.onload = (e) => resolve(e.target.result);
             reader.readAsDataURL(file);
         });
     }
 
-    // Create new post
+    // Add new post while keeping existing ones
+    const existingPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     const newPost = {
         id: Date.now(),
-        title,
-        content,
-        image: imageData,
+        title: 'Website Updates - October 2023',
+        content: `🔄 Recent Changes and Updates:
+
+✨ New Features Added:
+- Multi-language support (English, Vietnamese, Samoan)
+- Language selector in navigation
+- Improved Help Center with predefined questions
+- Enhanced search functionality
+- Better mobile responsiveness
+
+🛠️ Fixed Issues:
+- Mobile menu button visibility
+- Scroll-to-top button styling
+- Roblox profile avatar loading
+- Navigation layout and spacing
+- Text size adjustments
+
+❌ Removed Features:
+- Direct AI chat responses (replaced with predefined Q&A)
+- Old search system
+- Previous language implementation
+
+💡 Previous Features Still Available:
+- TikTok Downloader
+- Private Server information
+- Contact form
+- Server status
+- User reporting system
+- Unban request system
+
+All these changes aim to improve website performance and user experience while maintaining core functionality.`,
+        image: null,
         date: new Date().toISOString(),
         likes: 0,
         comments: []
     };
 
-    // Replace all posts with just the new one
-    posts = [newPost];
-    localStorage.setItem('posts', JSON.stringify(posts));
+    // Add new post to the beginning of the array
+    existingPosts.unshift(newPost);
+    
+    // Save all posts
+    localStorage.setItem('posts', JSON.stringify(existingPosts));
     
     // Clear form
     document.getElementById('post-title').value = '';

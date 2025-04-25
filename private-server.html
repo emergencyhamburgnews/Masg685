@@ -20,11 +20,12 @@
         <div class="hamburger">☰</div>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <ul class="nav-links">
-            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
-            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
-            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
-            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
-            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+            <li><a href="home.html"><i class="fas fa-home"></i><span data-translate="home">Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span data-translate="about">About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span data-translate="contact">Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span data-translate="updates">Updates</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span data-translate="privateServer">Private Server</span></a></li>
+            <li><a href="tiktokdownload.html"><i class="fab fa-tiktok"></i><span data-translate="tiktokDownloader">TikTok Downloader</span></a></li>
         </ul>
     </nav>
 
@@ -70,6 +71,7 @@
                 </div>
                 <div class="button-container">
                     <a href="#" id="join-server" class="join-button"><i class="fas fa-gamepad"></i> Join Server</a>
+                    <a href="https://discord.gg/your-invite-link" target="_blank" class="join-button discord-button"><i class="fab fa-discord"></i> Discord</a>
                     <button class="join-button rules-button"><i class="fas fa-scroll"></i> Rules</button>
                     <a href="report-player.html" class="join-button"><i class="fas fa-flag"></i> Report Player</a>
                     <a href="unban-request.html" class="join-button"><i class="fas fa-unlock"></i> Unban Request</a>
@@ -77,6 +79,15 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .discord-button {
+            background: #5865F2 !important;
+        }
+        .discord-button:hover {
+            background: #4752C4 !important;
+        }
+    </style>
 
     <!-- Rules Modal -->
     <div class="rules-modal" id="rules-modal">
