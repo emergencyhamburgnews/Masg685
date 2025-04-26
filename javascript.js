@@ -46,331 +46,8 @@ async function updateRobloxProfile() {
     }
 }
 
-// Language translations
-const translations = {
-    en: {
-        // Navigation
-        home: 'Home',
-        about: 'About',
-        contact: 'Contact',
-        updates: 'Updates',
-        privateServer: 'Private Server',
-        tiktokDownloader: 'TikTok Downloader',
-        language: 'Language',
-        
-        // About page
-        aboutMe: 'About Me',
-        aboutText: 'Hi, my nickname is Masg685 and I\'m from Australia. I was born on the island of Savai\'i in Samoa. In 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I\'ve earned over 300,000 XP as a police officer, which is known as one of the best teams in the game.',
-        socialMedia: 'Later, I started creating content on social media — beginning with YouTube and then expanding to TikTok. If you haven\'t subscribed yet, please do — it really helps me out!',
-        
-        // Private server section
-        privateServerTitle: 'private-server',
-        privateServerInfo: 'I will be creating a',
-        privateServerText: 'in Emergency Hamburg, and once controller support is added in the next update.',
-        
-        // Game stats
-        emergencyHamburg: 'Emergency Hamburg',
-        gamepass: 'Gamepass:',
-        policeXp: 'Police Xp:',
-        fireAndMedicalXp: 'Fire & Medical Xp:',
-        xpTotal: 'XP Total',
-        plusSix: '+6',
-        plus312213: '+312,213',
-        plus20352: '+20,352',
-        
-        // Common elements
-        search: 'Search...',
-        scrollTop: 'Scroll to top',
-        welcome: 'Welcome to my personal site',
-        findInfo: 'you can find information about me',
-        here: 'here',
-        
-        // Help Center
-        helpCenter: 'Help Center',
-        searchQuestions: 'Search questions...',
-        howToUse: 'How to use',
-        whoIs: 'Who is',
-        howToReport: 'How to Report',
-        
-        // Contact Form
-        yourName: 'Your Name',
-        yourEmail: 'Your Email',
-        message: 'Message',
-        send: 'Send',
-        messageSent: 'Message sent successfully!',
-        
-        // Server Status
-        serverStatus: 'Server Status',
-        online: 'Online',
-        offline: 'Offline',
-        players: 'Players',
-        
-        // Buttons
-        joinDiscord: 'Join Discord',
-        joinServer: 'Join Server',
-        viewRules: 'View Rules',
-        reportPlayer: 'Report Player',
-        unbanRequest: 'Unban Request'
-    },
-    vi: {
-        // Navigation
-        home: 'Trang chủ',
-        about: 'Giới thiệu',
-        contact: 'Liên hệ',
-        updates: 'Cập nhật',
-        privateServer: 'Máy chủ riêng',
-        tiktokDownloader: 'Tải TikTok',
-        language: 'Ngôn ngữ',
-        
-        // About page
-        aboutMe: 'Giới thiệu về tôi',
-        aboutText: 'Xin chào, biệt danh của tôi là Masg685 và tôi đến từ Úc. Tôi sinh ra trên đảo Savai\'i ở Samoa. Năm 2023, tôi bắt đầu chơi Emergency Hamburg, một trò chơi nhập vai từ Đức. Tôi đã đạt được hơn 300.000 XP với vai trò cảnh sát, được biết đến là một trong những đội tốt nhất trong trò chơi.',
-        socialMedia: 'Sau đó, tôi bắt đầu tạo nội dung trên mạng xã hội — bắt đầu với YouTube và sau đó mở rộng sang TikTok. Nếu bạn chưa đăng ký, hãy đăng ký nhé — điều đó thực sự giúp ích cho tôi!',
-        
-        // Private server section
-        privateServerTitle: 'máy-chủ-riêng',
-        privateServerInfo: 'Tôi sẽ tạo một',
-        privateServerText: 'trong Emergency Hamburg, và khi hỗ trợ bộ điều khiển được thêm vào trong bản cập nhật tiếp theo.',
-        
-        // Game stats
-        emergencyHamburg: 'Emergency Hamburg',
-        gamepass: 'Gamepass:',
-        policeXp: 'Điểm Cảnh sát:',
-        fireAndMedicalXp: 'Điểm Cứu hỏa & Y tế:',
-        xpTotal: 'Tổng XP',
-        plusSix: '+6',
-        plus312213: '+312.213',
-        plus20352: '+20.352',
-        
-        // Common elements
-        search: 'Tìm kiếm...',
-        scrollTop: 'Cuộn lên trên',
-        welcome: 'Chào mừng đến trang web của tôi',
-        findInfo: 'bạn có thể tìm thông tin về tôi',
-        here: 'tại đây',
-        
-        // Help Center
-        helpCenter: 'Trung tâm trợ giúp',
-        searchQuestions: 'Tìm kiếm câu hỏi...',
-        howToUse: 'Cách sử dụng',
-        whoIs: 'Ai là',
-        howToReport: 'Cách báo cáo',
-        
-        // Contact Form
-        yourName: 'Tên của bạn',
-        yourEmail: 'Email của bạn',
-        message: 'Tin nhắn',
-        send: 'Gửi',
-        messageSent: 'Đã gửi tin nhắn thành công!',
-        
-        // Server Status
-        serverStatus: 'Trạng thái máy chủ',
-        online: 'Đang hoạt động',
-        offline: 'Ngoại tuyến',
-        players: 'Người chơi',
-        
-        // Buttons
-        joinDiscord: 'Tham gia Discord',
-        joinServer: 'Tham gia máy chủ',
-        viewRules: 'Xem luật',
-        reportPlayer: 'Báo cáo người chơi',
-        unbanRequest: 'Yêu cầu gỡ cấm'
-    },
-    sm: {
-        // Navigation
-        home: 'Amataga',
-        about: 'E uiga',
-        contact: 'Fesootai',
-        updates: 'Faafou',
-        privateServer: 'Server Patino',
-        tiktokDownloader: 'TikTok Download',
-        language: 'Gagana',
-        
-        // About page
-        aboutMe: 'E uiga ia te au',
-        aboutText: 'Talofa, o lo\'u igoa faaigoaina o Masg685 ma ou sau mai Ausetalia. Na ou fanau i le motu o Savai\'i i Samoa. I le 2023, na amata ona ou taalo i le Emergency Hamburg, o se taaloga roleplay mai Siamani. Ua ou maua le sili atu i le 300,000 XP o se leoleo, o le tasi lea o au\'auna sili ona lelei i le taaloga.',
-        socialMedia: 'Mulimuli ane, na amata ona ou faia ni ata i luga o upega feso\'ota\'i — amata i le YouTube ona sosolo atu lea i le TikTok. Afai e te le\'i subscribe, fa\'amolemole fai — e fesoasoani tele ia te a\'u!',
-        
-        // Private server section
-        privateServerTitle: 'server-patino',
-        privateServerInfo: 'O le a ou faia se',
-        privateServerText: 'i le Emergency Hamburg, ma pe a fa\'aopoopo le controller support i le fa\'afouina o le lumana\'i.',
-        
-        // Game stats
-        emergencyHamburg: 'Emergency Hamburg',
-        gamepass: 'Gamepass:',
-        policeXp: 'Leoleo Xp:',
-        fireAndMedicalXp: 'Tinei Afi & Soifua Maloloina Xp:',
-        xpTotal: 'Aofai XP',
-        plusSix: '+6',
-        plus312213: '+312,213',
-        plus20352: '+20,352',
-        
-        // Common elements
-        search: 'Saili...',
-        scrollTop: 'Scroll i luga',
-        welcome: 'Afio mai i lau upega tafailagi',
-        findInfo: 'e mafai ona e maua faamatalaga e uiga ia te au',
-        here: 'iinei',
-        
-        // Help Center
-        helpCenter: 'Nofoaga Fesoasoani',
-        searchQuestions: 'Saili fesili...',
-        howToUse: 'Fa\'afefea ona fa\'aoga',
-        whoIs: 'O ai',
-        howToReport: 'Auala e Lipoti ai',
-        
-        // Contact Form
-        yourName: 'Lou Igoa',
-        yourEmail: 'Lau Imeli',
-        message: 'Feau',
-        send: 'Lafo',
-        messageSent: 'Ua maea ona lafo le feau!',
-        
-        // Server Status
-        serverStatus: 'Tulaga o le Server',
-        online: 'Ua Online',
-        offline: 'Ua Offline',
-        players: 'Tagata Taalo',
-        
-        // Buttons
-        joinDiscord: 'Auai i le Discord',
-        joinServer: 'Auai i le Server',
-        viewRules: 'Va\'ai Tulafono',
-        reportPlayer: 'Lipoti Tagata Taalo',
-        unbanRequest: 'Talosaga mo le Unban'
-    }
-};
-
-// Function to apply translations
-function applyTranslations(lang) {
-    // First handle elements with data-translate attribute
-    const elements = document.querySelectorAll('[data-translate]');
-    elements.forEach(element => {
-        const key = element.getAttribute('data-translate');
-        if (translations[lang] && translations[lang][key]) {
-            if (element.tagName === 'INPUT' && element.getAttribute('placeholder')) {
-                element.placeholder = translations[lang][key];
-            } else {
-                element.textContent = translations[lang][key];
-            }
-        }
-    });
-
-    // Then handle automatic translation for all text content
-    function translateTextNodes(node) {
-        if (node.nodeType === 3) { // Text node
-            const text = node.textContent.trim();
-            if (text && text.length > 1) { // Only translate non-empty text
-                // Try to find translation
-                for (const [key, value] of Object.entries(translations['en'])) {
-                    if (value === text) {
-                        const translation = translations[lang][key];
-                        if (translation) {
-                            node.textContent = translation;
-                            break;
-                        }
-                    }
-                }
-            }
-        } else if (node.nodeType === 1) { // Element node
-            // Skip script and style tags
-            if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
-                // Also translate placeholder and value attributes for inputs
-                if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
-                    if (node.placeholder) {
-                        for (const [key, value] of Object.entries(translations['en'])) {
-                            if (value === node.placeholder) {
-                                const translation = translations[lang][key];
-                                if (translation) {
-                                    node.placeholder = translation;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (node.value && node.type !== 'password' && node.type !== 'email') {
-                        for (const [key, value] of Object.entries(translations['en'])) {
-                            if (value === node.value) {
-                                const translation = translations[lang][key];
-                                if (translation) {
-                                    node.value = translation;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                // Recursively translate child nodes
-                node.childNodes.forEach(child => translateTextNodes(child));
-            }
-        }
-    }
-
-    // Start translation from body to avoid affecting scripts
-    const body = document.body;
-    if (body) {
-        translateTextNodes(body);
-    }
-}
-
-// Function to change language
-function changeLanguage(lang) {
-    if (!translations[lang]) return;
-    
-    localStorage.setItem('selectedLanguage', lang);
-    document.documentElement.setAttribute('lang', lang);
-    applyTranslations(lang);
-}
-
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Add language selector to navigation
-    const navigationLinks = document.querySelector('.nav-links');
-    if (navigationLinks) {
-        // Adjust all navigation items to be slightly smaller
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.style.fontSize = '14px';
-        });
-
-        // Adjust icons to be slightly smaller
-        document.querySelectorAll('.nav-item i').forEach(icon => {
-            icon.style.fontSize = '14px';
-        });
-
-        const langSelector = document.createElement('li');
-        langSelector.className = 'nav-item';
-        langSelector.innerHTML = `
-            <select onchange="changeLanguage(this.value)" style="background: transparent; color: white; border: none; padding: 0; margin: 0; cursor: pointer; font-size: 14px; font-family: inherit; -webkit-appearance: none; -moz-appearance: none; appearance: none; text-decoration: none; outline: none;">
-                <option value="" disabled selected>Language</option>
-                <option value="en">English</option>
-                <option value="vi">Tiếng Việt</option>
-                <option value="sm">Gagana Sāmoa</option>
-            </select>
-        `;
-        navigationLinks.appendChild(langSelector);
-
-        // Update the selected option based on current language
-        const updateSelectedLanguage = () => {
-            const currentLang = localStorage.getItem('selectedLanguage') || 'en';
-            const select = langSelector.querySelector('select');
-            if (select) {
-                select.value = currentLang;
-            }
-        };
-
-        // Update on load
-        updateSelectedLanguage();
-    }
-
-    // Apply saved language or default to English
-    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
-    const langSelect = document.querySelector('.lang-selector select');
-    if (langSelect) {
-        langSelect.value = savedLang;
-    }
-    applyTranslations(savedLang);
-
     // Initialize theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
@@ -424,9 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const checkMobileView = () => {
             if (window.innerWidth <= 768) {
                 hamburger.style.display = 'block';
-                mobileNavLinks.classList.remove('active');
+                if (!mobileNavLinks.classList.contains('active')) {
+                    mobileNavLinks.classList.remove('active');
+                }
             } else {
                 hamburger.style.display = 'none';
+                hamburger.classList.remove('active');
                 mobileNavLinks.classList.remove('active');
             }
         };
@@ -435,7 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
         checkMobileView();
         window.addEventListener('resize', checkMobileView);
 
-        hamburger.addEventListener('click', () => {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
             hamburger.classList.toggle('active');
             mobileNavLinks.classList.toggle('active');
         });
@@ -446,6 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 hamburger.classList.remove('active');
                 mobileNavLinks.classList.remove('active');
             }
+        });
+
+        // Prevent menu from closing when clicking inside nav links
+        mobileNavLinks.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
     }
 
@@ -458,16 +144,92 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search functionality
     const searchContainer = document.querySelector('.search-container');
     const searchInput = document.querySelector('.search-input');
+    const searchResults = document.querySelector('.search-results');
     
+    // Add click handler for search toggle button
+    document.querySelector('.search-toggle')?.addEventListener('click', openSearch);
+
+    // Common questions and their answers
+    const commonQuestions = [
+        {
+            question: "How to join private server?",
+            keywords: ["private server", "join server", "server join"]
+        },
+        {
+            question: "Where to download sounds?",
+            keywords: ["hit sounds", "sound effects", "download sounds", "audio"]
+        },
+        {
+            question: "How to contact?",
+            keywords: ["contact", "reach out", "message", "email"]
+        },
+        {
+            question: "What's new in updates?",
+            keywords: ["updates", "changes", "new features", "latest"]
+        },
+        {
+            question: "How to report a player?",
+            keywords: ["report player", "report", "complaint"]
+        },
+        {
+            question: "How to request unban?",
+            keywords: ["unban", "ban appeal", "banned"]
+        },
+        {
+            question: "How to use TikTok downloader?",
+            keywords: ["tiktok", "download video", "tiktok download"]
+        },
+        {
+            question: "Where is the Roblox profile?",
+            keywords: ["roblox", "profile", "account"]
+        },
+        {
+            question: "How to change theme?",
+            keywords: ["theme", "dark mode", "light mode", "color"]
+        },
+        {
+            question: "Where to find social media links?",
+            keywords: ["social media", "links", "youtube", "twitter", "tiktok"]
+        },
+        {
+            question: "How to use chat feature?",
+            keywords: ["chat", "message", "68I"]
+        },
+        {
+            question: "Server status and player count?",
+            keywords: ["status", "players", "online", "count"]
+        }
+    ];
+
     function openSearch() {
         if (searchContainer) {
             searchContainer.style.display = 'flex';
             searchInput.focus();
+            showSearchSuggestions();
         }
     }
 
-    // Add click handler for search toggle button
-    document.querySelector('.search-toggle')?.addEventListener('click', openSearch);
+    function showSearchSuggestions() {
+        if (!searchResults) return;
+        
+        // Create suggestions container if it doesn't exist
+        let suggestionsContainer = searchResults.querySelector('.search-suggestions');
+        if (!suggestionsContainer) {
+            suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'search-suggestions';
+            searchResults.appendChild(suggestionsContainer);
+        }
+
+        // Add suggestion buttons with all keywords for better matching
+        suggestionsContainer.innerHTML = commonQuestions
+            .map(item => `
+                <button class="search-suggestion" 
+                    onclick="performSearch('${item.question}')"
+                    data-keywords="${item.keywords.join(' ')}">
+                    ${item.question}
+                </button>
+            `).join('');
+    }
 
     function removeHighlights() {
         const highlights = document.querySelectorAll('.search-highlight');
@@ -479,76 +241,227 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function performSearch(query) {
         const searchText = query.toLowerCase();
-        const contentElements = document.querySelectorAll('main p, main h1, main h2, main h3, main li, main span, .about p, .contact p, .updates-container p, .private-server p, .form-container p, .chat p');
+        // Only search in main content areas, excluding navigation and layout elements
+        const contentElements = document.querySelectorAll(
+            'main p, main h1, main h2, main h3, main li, main span, ' + 
+            '.hero p, .hero h1, ' +
+            '.about p, .about h1, .about h2, .about h3, ' +
+            '.contact p, .contact h1, .contact h2, ' +
+            '.updates-container p, .updates-container h1, .updates-container h2, ' +
+            '.private-server p, .private-server h1, .private-server h2, ' +
+            '.form-container p, .form-container h1, .form-container h2, ' +
+            '.chat p, .chat h1, .chat h2, ' +
+            '.sound-effects h2, .sound-effects h3, ' +
+            '.social-media h1, .social-media p'
+        );
         
         removeHighlights();
         
+        let matches = [];
         let firstMatch = null;
-        let firstMatchText = '';
+        let bestMatchScore = 0;
+
+        // Find the question if it matches one of our common questions
+        const matchedQuestion = commonQuestions.find(q => 
+            q.question.toLowerCase() === searchText || 
+            q.keywords.some(k => searchText.includes(k.toLowerCase()))
+        );
 
         contentElements.forEach(element => {
+            // Skip if element is part of navigation or layout
+            if (element.closest('.nav-links') || 
+                element.closest('.navbar') || 
+                element.closest('.hamburger') ||
+                element.closest('footer')) {
+                return;
+            }
+
             const text = element.textContent.toLowerCase();
-            if (text.includes(searchText)) {
-                const regex = new RegExp(`(${searchText})`, 'gi');
-                element.innerHTML = element.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+            const keywords = matchedQuestion ? matchedQuestion.keywords : [searchText];
+            
+            // Check if element contains any of the keywords
+            const matchesKeyword = keywords.some(keyword => text.includes(keyword.toLowerCase()));
+            
+            if (matchesKeyword) {
+                const score = calculateRelevanceScore(text, searchText, element);
                 
-                // Store the first match
-                if (!firstMatch) {
+                // Highlight the matching text
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(`(${keyword})`, 'gi');
+                    element.innerHTML = element.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+                });
+                
+                matches.push({
+                    element: element,
+                    text: text,
+                    score: score
+                });
+
+                if (score > bestMatchScore) {
                     firstMatch = element;
-                    firstMatchText = text;
+                    bestMatchScore = score;
                 }
             }
         });
 
+        // Sort matches by relevance score
+        matches.sort((a, b) => b.score - a.score);
+
+        // Update search results
+        if (searchResults && matches.length > 0) {
+            searchResults.innerHTML = `
+                <div class="search-suggestions"></div>
+                ${matches.map(match => `
+                    <div class="search-result-item" onclick="scrollToElement('${match.element.id || generateElementId(match.element)}')">
+                        <div class="search-result-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="search-result-content">
+                            <h3>${getContextTitle(match.element)}</h3>
+                            <p>${getHighlightedSnippet(match.text, searchText)}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+
+            // Re-add suggestions
+            showSearchSuggestions();
+        }
+
         if (firstMatch) {
             // Close search container
-            const searchContainer = document.querySelector('.search-container');
-            if (searchContainer) {
-                searchContainer.style.display = 'none';
-            }
-
+            searchContainer.style.display = 'none';
+            
             // Clear search input
-            const searchInput = document.querySelector('.search-input');
-            if (searchInput) {
-                searchInput.value = '';
-            }
+            searchInput.value = '';
 
-            // Scroll to the match with offset for better visibility
-            const offset = 100; // Pixels from the top
-            const elementPosition = firstMatch.getBoundingClientRect().top + window.pageYOffset;
-            window.scrollTo({
-                top: elementPosition - offset,
-                behavior: 'smooth'
-            });
-
-            // Highlight will remain visible
-            setTimeout(() => {
-                const highlight = firstMatch.querySelector('.search-highlight');
-                if (highlight) {
-                    highlight.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
-                }
-            }, 100);
+            // Scroll to the match with smooth animation
+            scrollToElement(firstMatch.id || generateElementId(firstMatch));
         }
     }
 
-    // Add search input handler
+    function calculateRelevanceScore(text, searchText, element) {
+        let score = 0;
+        
+        // Check element type and location
+        if (element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3') score += 15;
+        if (element.closest('section')?.querySelector('h1, h2, h3')?.textContent.toLowerCase().includes(searchText)) score += 10;
+        if (element.tagName === 'A' || element.tagName === 'BUTTON') score += 5;
+        
+        // Check content relevance
+        if (text.includes(searchText)) score += 10;
+        if (text.length < 100) score += 5;
+        score += (text.match(new RegExp(searchText, 'gi')) || []).length;
+        
+        // Check if element is in view
+        const rect = element.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight) score += 3;
+        
+        return score;
+    }
+
+    function getContextTitle(element) {
+        // Get nearest heading or first few words
+        const nearestHeading = element.closest('section')?.querySelector('h1, h2, h3')?.textContent;
+        return nearestHeading || element.textContent.slice(0, 50) + '...';
+    }
+
+    function getHighlightedSnippet(text, searchText) {
+        const index = text.toLowerCase().indexOf(searchText.toLowerCase());
+        const start = Math.max(0, index - 30);
+        const end = Math.min(text.length, index + searchText.length + 30);
+        let snippet = text.slice(start, end);
+        
+        // Add ellipsis if needed
+        if (start > 0) snippet = '...' + snippet;
+        if (end < text.length) snippet += '...';
+        
+        // Highlight search term
+        return snippet.replace(new RegExp(searchText, 'gi'), match => `<span class="search-highlight">${match}</span>`);
+    }
+
+    function generateElementId(element) {
+        if (!element.id) {
+            element.id = 'search-result-' + Math.random().toString(36).substr(2, 9);
+        }
+        return element.id;
+    }
+
+    function scrollToElement(elementId) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        // Scroll to element with offset for better visibility
+        const offset = 100;
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        
+        window.scrollTo({
+            top: elementPosition - offset,
+            behavior: 'smooth'
+        });
+
+        // Add focus animation to the element
+        element.style.transition = 'all 0.3s ease';
+        element.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            element.style.transform = 'scale(1)';
+        }, 300);
+    }
+
+    // Add search input handlers
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const query = this.value.trim();
                 if (query) {
-                    performSearch(query);
+                    // Find first matching element that's not in layout
+                    const elements = document.querySelectorAll('*');
+                    let bestMatch = null;
+                    let bestScore = 0;
+
+                    elements.forEach(element => {
+                        // Skip if element is part of navigation or layout
+                        if (element.closest('.nav-links') || 
+                            element.closest('.navbar') || 
+                            element.closest('.hamburger') ||
+                            element.closest('footer') ||
+                            element.closest('.theme-container') ||
+                            element.closest('.search-container')) {
+                            return;
+                        }
+
+                        const text = element.textContent.toLowerCase();
+                        if (text.includes(query.toLowerCase())) {
+                            const score = calculateRelevanceScore(text, query, element);
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMatch = element;
+                            }
+                        }
+                    });
+
+                    if (bestMatch) {
+                        // Close search container
+                        searchContainer.style.display = 'none';
+                        
+                        // Clear search input
+                        this.value = '';
+
+                        // Scroll to the match
+                        scrollToElement(bestMatch.id || generateElementId(bestMatch));
+                    }
                 }
             }
         });
 
-        // Also handle input changes for real-time search
+        // Real-time search as user types
         searchInput.addEventListener('input', function(e) {
             const query = this.value.trim();
-            if (query) {
+            if (query.length >= 2) { // Only search if 2 or more characters
                 performSearch(query);
             } else {
                 removeHighlights();
+                showSearchSuggestions();
             }
         });
     }
@@ -1195,4 +1108,61 @@ function goBack() {
     } else {
         window.location.href = 'home.html';
     }
+}
+
+// Sound effects functionality
+const sounds = {
+    hit1: new Audio('sounds/1 hit .mp3'),
+    hit2: new Audio('sounds/2 hits .mp3'),
+    hit3: new Audio('sounds/3 hits.mp3'),
+    hit4: new Audio('sounds/4 hits.mp3')
+};
+
+function playSound(soundId) {
+    // Stop all other sounds
+    Object.values(sounds).forEach(sound => {
+        sound.pause();
+        sound.currentTime = 0;
+    });
+    
+    // Play the selected sound
+    sounds[soundId].play();
+}
+
+function downloadSound(soundId) {
+    const soundFiles = {
+        hit1: '1 hit .mp3',
+        hit2: '2 hits .mp3',
+        hit3: '3 hits.mp3',
+        hit4: '4 hits.mp3'
+    };
+
+    const fileName = soundFiles[soundId];
+    
+    // Create XHR request to force download
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'sounds/' + fileName, true);
+    xhr.responseType = 'blob';
+    
+    xhr.onload = function() {
+        if (this.status === 200) {
+            // Create blob and download
+            const blob = new Blob([this.response], { type: 'audio/mpeg' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        }
+    };
+    
+    xhr.send();
 }
