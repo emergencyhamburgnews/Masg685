@@ -868,27 +868,22 @@ async function submitPost() {
     const existingPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     const newPost = {
         id: Date.now(),
-        title: 'Website Updates - October 2023',
-        content: `🔄 Recent Changes and Updates:
+        title: 'Website Updates - Bug Fixes (October 2023)',
+        content: `🔄 Recent Bug Fixes and Improvements:
 
-✨ New Features Added:
+🛠️ Fixed Issues:
+- Fixed mobile menu text and icons color in light mode
+- Fixed sound effects not playing on mobile devices
+- Fixed download functionality for mobile users
+- Improved mobile compatibility for audio playback
+- Enhanced touch event handling for iOS devices
+
+✨ Previous Updates Still Active:
 - Multi-language support (English, Vietnamese, Samoan)
 - Language selector in navigation
 - Improved Help Center with predefined questions
 - Enhanced search functionality
 - Better mobile responsiveness
-
-🛠️ Fixed Issues:
-- Mobile menu button visibility
-- Scroll-to-top button styling
-- Roblox profile avatar loading
-- Navigation layout and spacing
-- Text size adjustments
-
-❌ Removed Features:
-- Direct AI chat responses (replaced with predefined Q&A)
-- Old search system
-- Previous language implementation
 
 💡 Previous Features Still Available:
 - TikTok Downloader
@@ -898,7 +893,7 @@ async function submitPost() {
 - User reporting system
 - Unban request system
 
-All these changes aim to improve website performance and user experience while maintaining core functionality.`,
+These fixes improve the mobile experience and ensure better functionality across all devices.`,
         image: null,
         date: new Date().toISOString(),
         likes: 0,
@@ -1137,27 +1132,40 @@ const sounds = {
 function initializeSounds() {
     Object.values(sounds).forEach(sound => {
         sound.preload = 'auto';
-        sound.volume = 0;
+        // Remove initial volume setting to prevent mobile blocking
         sound.playsinline = true;
         sound.muted = false;
+        // Add touch event handler for iOS
+        sound.load();
     });
 }
+
+// Initialize sounds on page load
+document.addEventListener('DOMContentLoaded', initializeSounds);
 
 function playSound(soundId) {
     const sound = sounds[soundId];
     if (!sound) return;
     
+    // Stop other sounds
     Object.values(sounds).forEach(s => {
         s.pause();
         s.currentTime = 0;
     });
     
-    sound.volume = 1.0;
-    sound.play().catch(error => {
-        console.log("Playback failed:", error);
-        initializeSounds();
-        sound.play().catch(e => console.log("Retry failed:", e));
-    });
+    // Create user interaction promise
+    const playPromise = sound.play();
+    
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            sound.volume = 1.0;
+        }).catch(error => {
+            console.log("Playback failed:", error);
+            // Try to initialize and play again
+            sound.load();
+            sound.play().catch(e => console.log("Retry failed:", e));
+        });
+    }
 }
 
 function downloadSound(soundId) {
@@ -1169,15 +1177,21 @@ function downloadSound(soundId) {
     };
 
     const fileName = soundFiles[soundId];
+    const soundPath = 'sounds/' + fileName;
+
+    // For mobile devices, open in new tab
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.open(soundPath, '_blank');
+        return;
+    }
     
-    // Create XHR request to force download
+    // For desktop, use XHR download
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'sounds/' + fileName, true);
+    xhr.open('GET', soundPath, true);
     xhr.responseType = 'blob';
     
     xhr.onload = function() {
         if (this.status === 200) {
-            // Create blob and download
             const blob = new Blob([this.response], { type: 'audio/mpeg' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -1187,7 +1201,6 @@ function downloadSound(soundId) {
             document.body.appendChild(link);
             link.click();
             
-            // Cleanup
             setTimeout(() => {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);

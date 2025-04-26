@@ -141,20 +141,30 @@ h1, h2, h3, h4, h5, h6, p, span, a, li {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    color: var(--text-color);
+    color: #ffffff !important;
     text-decoration: none;
     padding: 0.5rem;
 }
 
 .nav-links i {
     font-size: 1.5rem;
-    color: var(--text-color);
+    color: #ffffff !important;
     width: 24px;
 }
 
 .nav-links span {
     font-size: 1.2rem;
-    color: var(--text-color);
+    color: #ffffff !important;
+}
+
+[data-theme="light"] .nav-links {
+    background: #202020;
+}
+
+[data-theme="light"] .nav-links a,
+[data-theme="light"] .nav-links i,
+[data-theme="light"] .nav-links span {
+    color: #ffffff !important;
 }
 
 @media (max-width: 768px) {
