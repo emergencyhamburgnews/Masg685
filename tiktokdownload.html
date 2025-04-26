@@ -162,6 +162,19 @@
                 return;
             }
 
+            // Extract video ID from URL
+            let videoId = '';
+            try {
+                const urlObj = new URL(url);
+                const path = urlObj.pathname;
+                videoId = path.split('/').filter(p => p).pop();
+                if (!videoId) throw new Error('Invalid video URL');
+            } catch (error) {
+                errorDiv.textContent = 'Invalid TikTok URL format. Please check the URL and try again.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
             // Show loading state
             loadingDiv.style.display = 'flex';
             downloadBtn.disabled = true;
@@ -183,7 +196,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `API Error: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -208,15 +222,15 @@
                 
                 // Show specific error messages
                 if (error.message.includes('API Error: 429')) {
-                    errorDiv.textContent = 'Too many requests. Please try again in a few minutes.';
+                    errorDiv.textContent = 'Too many requests. Please wait a few minutes and try again.';
                 } else if (error.message.includes('API Error: 403')) {
-                    errorDiv.textContent = 'Access denied. Please check your TikTok URL.';
+                    errorDiv.textContent = 'This video is private or not accessible. Please check the URL and make sure the video is public.';
                 } else if (error.message.includes('API Error: 404')) {
-                    errorDiv.textContent = 'Video not found. Please check your URL.';
+                    errorDiv.textContent = 'Video not found. Please check your URL or try a different video.';
                 } else if (error.message.includes('No video URL')) {
-                    errorDiv.textContent = 'Could not extract video. Please try a different video.';
+                    errorDiv.textContent = 'Could not extract video. The video might be private or region-locked.';
                 } else {
-                    errorDiv.textContent = 'Unable to download video. Please check your URL and try again.';
+                    errorDiv.textContent = 'Unable to download video. Please make sure the video is public and try again.';
                 }
                 
                 errorDiv.style.display = 'block';

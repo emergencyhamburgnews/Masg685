@@ -725,6 +725,21 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('userNameExpiry');
         }
     }
+
+    // Initialize sounds for mobile
+    initializeSounds();
+    
+    // Add touch event listeners for mobile
+    const playButtons = document.querySelectorAll('.play-button');
+    playButtons.forEach(button => {
+        button.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent double-firing on mobile
+            const soundId = button.getAttribute('data-sound');
+            if (soundId) {
+                playSound(soundId);
+            }
+        });
+    });
 });
 
 const form = document.querySelector('.contact form');
@@ -1118,15 +1133,31 @@ const sounds = {
     hit4: new Audio('sounds/4 hits.mp3')
 };
 
-function playSound(soundId) {
-    // Stop all other sounds
+// Initialize sounds for mobile
+function initializeSounds() {
     Object.values(sounds).forEach(sound => {
-        sound.pause();
-        sound.currentTime = 0;
+        sound.preload = 'auto';
+        sound.volume = 0;
+        sound.playsinline = true;
+        sound.muted = false;
+    });
+}
+
+function playSound(soundId) {
+    const sound = sounds[soundId];
+    if (!sound) return;
+    
+    Object.values(sounds).forEach(s => {
+        s.pause();
+        s.currentTime = 0;
     });
     
-    // Play the selected sound
-    sounds[soundId].play();
+    sound.volume = 1.0;
+    sound.play().catch(error => {
+        console.log("Playback failed:", error);
+        initializeSounds();
+        sound.play().catch(e => console.log("Retry failed:", e));
+    });
 }
 
 function downloadSound(soundId) {

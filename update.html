@@ -43,41 +43,109 @@
     </div>
 
     <div class="updates-container">
-        <h1>Latest Updates</h1>
-        <div class="update-list">
-            <div class="update-item">
-                <i class="fas fa-plus-circle"></i>
-                <h3>New Features</h3>
-                <p>• Added TikTok Downloader page with icon in navigation<br>
-                   • Implemented search highlighting feature for content<br>
-                   • Added automatic scrolling to search results<br>
-                   • Enhanced search functionality across all pages</p>
-                <span class="update-date">Current</span>
+        <div class="updates-header">
+            <h1>Website Updates</h1>
+            <p class="updates-subtitle">Track all changes and improvements to the website</p>
+        </div>
+
+        <div class="updates-timeline">
+            <!-- Today's Update -->
+            <div class="timeline-item current">
+                <div class="timeline-date">
+                    <span class="date">April 2025</span>
+                    <span class="badge">Latest</span>
+                </div>
+                <div class="timeline-content">
+                    <div class="update-card">
+                        <div class="card-header">
+                            <i class="fas fa-star"></i>
+                            <h2>Major Design Updates</h2>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-plus-circle"></i> New Additions</h3>
+                            <ul>
+                                <li>Redesigned Private Server page with modern card layout</li>
+                                <li>Added server status indicator with live animations</li>
+                                <li>Improved role display with icons and hover effects</li>
+                                <li>Enhanced action buttons with gradient backgrounds</li>
+                                <li>Added owner badge and profile improvements</li>
+                            </ul>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-wrench"></i> Improvements</h3>
+                            <ul>
+                                <li>Fixed TikTok downloader error handling</li>
+                                <li>Improved video URL validation</li>
+                                <li>Enhanced error messages for better clarity</li>
+                                <li>Better mobile compatibility for sound effects</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="update-item">
-                <i class="fas fa-wrench"></i>
-                <h3>Recent Fixes</h3>
-                <p>• Fixed mobile menu button visibility<br>
-                   • Fixed scroll-to-top button styling<br>
-                   • Fixed Roblox profile avatar loading<br>
-                   • Improved navigation layout and spacing<br>
-                   • Adjusted text sizes for better readability<br>
-                   • Fixed search functionality to only highlight page content<br>
-                   • Improved Enter key functionality in search<br>
-                   • Enhanced navigation menu with icons<br>
-                   • Updated search bar design with blur effect</p>
-                <span class="update-date">Last Week</span>
+            <!-- Previous Updates Toggle -->
+            <div class="timeline-toggle">
+                <button id="show-previous" class="toggle-button">
+                    <i class="fas fa-history"></i>
+                    Show Previous Updates
+                </button>
             </div>
 
-            <div class="update-item">
-                <i class="fas fa-check-circle"></i>
-                <h3>Previous Updates</h3>
-                <p>• Added dark/light mode toggle<br>
-                   • Improved mobile navigation<br>
-                   • Enhanced overall site responsiveness<br>
-                   • Added floating chat feature</p>
-                <span class="update-date">March 2025</span>
+            <!-- Previous Updates (Initially Hidden) -->
+            <div id="previous-updates" style="display: none;">
+                <!-- Last Week's Update -->
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="date">Last Week</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="update-card">
+                            <div class="card-header">
+                                <i class="fas fa-tools"></i>
+                                <h2>Technical Improvements</h2>
+                            </div>
+                            <div class="changes-section">
+                                <h3><i class="fas fa-wrench"></i> Fixes & Improvements</h3>
+                                <ul>
+                                    <li>Fixed mobile menu button visibility</li>
+                                    <li>Fixed scroll-to-top button styling</li>
+                                    <li>Fixed Roblox profile avatar loading</li>
+                                    <li>Improved navigation layout and spacing</li>
+                                    <li>Adjusted text sizes for better readability</li>
+                                    <li>Fixed search functionality to only highlight page content</li>
+                                    <li>Improved Enter key functionality in search</li>
+                                    <li>Enhanced navigation menu with icons</li>
+                                    <li>Updated search bar design with blur effect</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- March Update -->
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="date">March 2025</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="update-card">
+                            <div class="card-header">
+                                <i class="fas fa-magic"></i>
+                                <h2>Feature Update</h2>
+                            </div>
+                            <div class="changes-section">
+                                <h3><i class="fas fa-check-circle"></i> New Features</h3>
+                                <ul>
+                                    <li>Added dark/light mode toggle</li>
+                                    <li>Improved mobile navigation</li>
+                                    <li>Enhanced overall site responsiveness</li>
+                                    <li>Added floating chat feature</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -90,5 +158,251 @@
         <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMCA0djEySDZsLTQgNFY0YzAtMS4xLjktMiAyLTJoMTRjMS4xIDAgMiAuOSAyIDJ6TTYgMTJoMTJ2LTJINnYyem0wLTNoMTJWN0g2djJ6Ii8+PC9zdmc+" alt="Chat" class="chat-icon">
     </a>
     <script src="javascript.js"></script>
+
+    <style>
+        .updates-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .updates-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .updates-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #780000, #a30000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s ease infinite;
+        }
+
+        .updates-subtitle {
+            color: var(--secondary-text);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .updates-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .updates-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #780000, transparent);
+            top: 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-date {
+            position: absolute;
+            left: 0;
+            width: 150px;
+            text-align: right;
+            padding-right: 2rem;
+        }
+
+        .timeline-date .date {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .timeline-date .badge {
+            background: linear-gradient(45deg, #780000, #a30000);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .timeline-content {
+            flex: 1;
+            max-width: 800px;
+            margin-left: 150px;
+            position: relative;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 15px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #780000;
+            border: 3px solid var(--bg-color);
+            z-index: 1;
+        }
+
+        .update-card {
+            background: var(--nav-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            margin-left: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .update-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: #780000;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .changes-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .changes-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .changes-section h3 i {
+            color: #780000;
+        }
+
+        .changes-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .changes-section li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary-text);
+            line-height: 1.4;
+        }
+
+        .changes-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #780000;
+        }
+
+        .timeline-toggle {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .toggle-button {
+            background: none;
+            border: 2px solid #780000;
+            color: var(--text-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: #780000;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .toggle-button i {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .updates-header h1 {
+                font-size: 2rem;
+            }
+
+            .timeline-date {
+                position: relative;
+                width: auto;
+                text-align: left;
+                padding-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .timeline-content {
+                margin-left: 0;
+            }
+
+            .update-card {
+                margin-left: 0;
+            }
+
+            .updates-timeline::before {
+                left: 20px;
+            }
+
+            .timeline-content::before {
+                left: -28px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById('show-previous').addEventListener('click', function() {
+            const previousUpdates = document.getElementById('previous-updates');
+            const button = this;
+            
+            if (previousUpdates.style.display === 'none') {
+                previousUpdates.style.display = 'block';
+                button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Previous Updates';
+            } else {
+                previousUpdates.style.display = 'none';
+                button.innerHTML = '<i class="fas fa-history"></i> Show Previous Updates';
+            }
+        });
+    </script>
 </body>
 </html>
