@@ -39,8 +39,8 @@
     </div>
 
     <div class="private-server-container">
-        <div class="server-header">
-            <h1>Emergency Hamburg Private Server</h1>
+            <div class="server-header">
+            <h1>AUSRP</h1>
             <p class="server-subtitle">Experience realistic emergency response roleplay</p>
         </div>
 
@@ -76,15 +76,37 @@
                     <i class="fas fa-crown"></i>
                     <h2>Server Owner</h2>
                 </div>
-                <div class="roblox-profile" id="roblox-profile">
-                    <div class="profile-content">
-                        <img src="" alt="Roblox Avatar" id="roblox-avatar" class="roblox-avatar">
-                        <div class="profile-info">
-                            <h3 id="roblox-username">Loading...</h3>
-                            <span class="owner-badge">Owner</span>
+                <a href="https://www.roblox.com/users/5255024681/profile" target="_blank" style="text-decoration:none;">
+                    <div class="roblox-profile" id="roblox-profile">
+                        <div class="profile-content">
+                            <img src="" alt="Roblox Avatar" id="roblox-avatar" class="roblox-avatar">
+                            <div class="profile-info">
+                                <h3 id="roblox-username">Masg685</h3>
+                                <span class="owner-badge">Owner</span>
+                            </div>
                         </div>
                     </div>
+                </a>
+            </div>
+
+            <!-- Server Manager Card -->
+            <div class="server-card owner-card">
+                <div class="card-header">
+                    <i class="fas fa-user-tie"></i>
+                    <h2>Server Manager</h2>
                 </div>
+                <a href="https://www.roblox.com/users/4964937920/profile" target="_blank" style="text-decoration:none;">
+                    <div class="roblox-profile" id="roblox-profile-manager">
+                        <div class="profile-content">
+                            <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-1230C27A840ABB95FDC95516AD42C4C5-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Roblox Avatar" id="roblox-avatar-manager" class="roblox-avatar">
+                            <div class="profile-info">
+                                <h3 id="roblox-username-manager">Nexus</h3>
+                                <span class="owner-badge">Manager</span>
+                                <a href="contactn.html" class="cta contact-nexus-btn">Contact Nexus</a>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <!-- Available Roles Card -->
@@ -157,37 +179,37 @@
             <div class="rules-list">
                 <div class="rules-section">
                     <h3><i class="fas fa-gavel"></i> General Rules</h3>
-                    <ol>
-                        <li>Respect all players and staff members</li>
-                        <li>No harassment, bullying, or toxic behavior</li>
-                        <li>No exploiting or using hacks</li>
-                        <li>Follow the chain of command</li>
-                        <li>No random arrests or kills</li>
-                        <li>Keep chat appropriate and friendly</li>
-                        <li>Listen to staff instructions</li>
-                    </ol>
+                <ol>
+                    <li>Respect all players and staff members</li>
+                    <li>No harassment, bullying, or toxic behavior</li>
+                    <li>No exploiting or using hacks</li>
+                    <li>Follow the chain of command</li>
+                    <li>No random arrests or kills</li>
+                    <li>Keep chat appropriate and friendly</li>
+                    <li>Listen to staff instructions</li>
+                </ol>
                 </div>
 
                 <div class="rules-section">
                     <h3><i class="fas fa-theater-masks"></i> Roleplay Rules</h3>
-                    <ol>
-                        <li>Stay in character during roleplay</li>
-                        <li>No breaking character without reason</li>
-                        <li>Use appropriate sirens and signals</li>
-                        <li>Follow traffic laws when not responding</li>
-                        <li>Respect emergency vehicle right of way</li>
-                        <li>Maintain realistic RP scenarios</li>
-                        <li>Use proper radio communications</li>
-                    </ol>
+                <ol>
+                    <li>Stay in character during roleplay</li>
+                    <li>No breaking character without reason</li>
+                    <li>Use appropriate sirens and signals</li>
+                    <li>Follow traffic laws when not responding</li>
+                    <li>Respect emergency vehicle right of way</li>
+                    <li>Maintain realistic RP scenarios</li>
+                    <li>Use proper radio communications</li>
+                </ol>
                 </div>
 
                 <div class="rules-section">
                     <h3><i class="fas fa-exclamation-triangle"></i> Consequences</h3>
-                    <ol>
-                        <li>First offense: Warning</li>
-                        <li>Second offense: Temporary kick</li>
-                        <li>Third offense: Server ban</li>
-                    </ol>
+                <ol>
+                    <li>First offense: Warning</li>
+                    <li>Second offense: Temporary kick</li>
+                    <li>Third offense: Server ban</li>
+                </ol>
                 </div>
             </div>
         </div>
@@ -337,6 +359,25 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+        }
+
+        /* Manager card unique color overrides */
+        #roblox-profile-manager .owner-badge {
+            background: linear-gradient(45deg, #0077b6, #00b4d8);
+            color: #fff;
+        }
+        /* Blue icon for manager */
+        #roblox-profile-manager .profile-content i,
+        #roblox-profile-manager .card-header i {
+            color: #0077b6 !important;
+        }
+        /* Blue border for manager avatar */
+        #roblox-profile-manager .roblox-avatar {
+            border: 3px solid #0077b6;
+        }
+        /* Blue border for manager card */
+        #roblox-profile-manager {
+            border: 1px solid #0077b6;
         }
 
         /* Roles Card Styles */
@@ -521,6 +562,32 @@
                 margin: 1rem;
                 padding: 1.5rem;
             }
+        }
+
+        .contact-nexus-btn {
+            background: linear-gradient(90deg, #0093e9 0%, #80d0c7 100%);
+            color: #fff !important;
+            font-weight: 500;
+            padding: 0.45rem 1.1rem;
+            border-radius: 18px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,147,233,0.10);
+            font-size: 0.97rem;
+            letter-spacing: 0.2px;
+            transition: all 0.18s cubic-bezier(.4,2,.6,1);
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none !important;
+            position: relative;
+            overflow: hidden;
+            min-width: 120px;
+        }
+        .contact-nexus-btn:hover {
+            background: linear-gradient(90deg, #80d0c7 0%, #0093e9 100%);
+            color: #fff;
+            transform: translateY(-1px) scale(1.025);
+            box-shadow: 0 4px 16px rgba(0,147,233,0.16);
         }
     </style>
 </body>

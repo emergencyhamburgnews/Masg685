@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Nexus</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="theme-container">
+            <button class="back-button" onclick="goBack()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun" style="font-family: system-ui;">☀</span>
+            </button>
+            <button class="search-toggle" onclick="openSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="hamburger">☰</div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span data-translate="home">Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span data-translate="about">About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span data-translate="contact">Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span data-translate="updates">Updates</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span data-translate="privateServer">Private Server</span></a></li>
+            <li><a href="tiktokdownload.html"><i class="fab fa-tiktok"></i><span data-translate="tiktokDownloader">TikTok Downloader</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <div class="search-box">
+            <button class="close-search" aria-label="Close search">×</button>
+            <input type="text" class="search-input" placeholder="Search across all pages...">
+            <div class="search-results"></div>
+        </div>
+    </div>
+    <section class="contact">
+        <div class="contact-card-nexus">
+            <h1>Contact Nexus</h1>
+            <form action="https://formspree.io/f/xjkwkaar" method="POST" id="contactn-form">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Message" required></textarea>
+                <button type="submit" class="cta contact-btn-nexus">Send</button>
+            </form>
+            <div id="thank-you-message" style="display: none; margin-top: 1rem;"></div>
+        </div>
+    </section>
+    <footer>
+        <p>© 2025</p>
+    </footer>
+    <button class="scroll-top" aria-label="Scroll to top"></button>
+    <a href="68I.html" class="floating-chat">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMCA0djEySDZsLTQgNFY0YzAtMS4xLjktMiAyLTJoMTRjMS4xIDAgMiAuOSAyIDJ6TTYgMTJoMTJ2LTJINnYyem0wLTNoMTJWN0g2djJ6Ii8+PC9zdmc+" alt="Chat" class="chat-icon">
+    </a>
+    <script src="javascript.js"></script>
+    <script src="javanexus.js"></script>
+    <style>
+    .contact-card-nexus {
+        max-width: 600px;
+        margin: 2.5rem auto 2rem auto;
+        background: var(--nav-bg);
+        border-radius: 22px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        padding: 3.5rem 2rem 3rem 2rem;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .contact-card-nexus h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(45deg, #0093e9, #80d0c7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+    }
+    .contact-card-nexus form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+    .contact-card-nexus input,
+    .contact-card-nexus textarea {
+        width: 100%;
+        padding: 0.9rem 1.1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-color);
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .contact-card-nexus input:focus,
+    .contact-card-nexus textarea:focus {
+        border-color: #0093e9;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0,147,233,0.08);
+    }
+    .contact-card-nexus textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+    .contact-btn-nexus {
+        background: linear-gradient(90deg, #0093e9 0%, #80d0c7 100%);
+        color: #fff;
+        font-weight: 600;
+        padding: 0.85rem 0;
+        border-radius: 18px;
+        border: none;
+        font-size: 1.08rem;
+        letter-spacing: 0.5px;
+        transition: all 0.18s cubic-bezier(.4,2,.6,1);
+        margin-top: 0.5rem;
+        width: 100%;
+        box-shadow: 0 2px 8px rgba(0,147,233,0.10);
+        cursor: pointer;
+    }
+    .contact-btn-nexus:hover {
+        background: linear-gradient(90deg, #80d0c7 0%, #0093e9 100%);
+        transform: translateY(-1px) scale(1.025);
+        box-shadow: 0 4px 16px rgba(0,147,233,0.16);
+    }
+    @media (max-width: 600px) {
+        .contact-card-nexus {
+            padding: 2rem 0.5rem 2.5rem 0.5rem;
+        }
+    }
+    </style>
+</body>
+</html> 

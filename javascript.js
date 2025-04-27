@@ -41,6 +41,8 @@ async function updateRobloxProfile() {
             const data = await response.json();
             usernameElement.textContent = data.displayName || data.name || profile.username;
         }
+        // Always force the username to 'Masg685' after API
+        usernameElement.textContent = 'Masg685';
     } catch (error) {
         console.error('Failed to fetch user data:', error);
     }
@@ -742,19 +744,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-const form = document.querySelector('.contact form');
-if (form) {
-    form.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent the page from refreshing
-        const name = form.querySelector('input[type="text"]').value;
-        const email = form.querySelector('input[type="email"]').value;
-        const message = form.querySelector('textarea').value;
-        console.log('Name:', name);
-        console.log('Email:', email);
-        console.log('Message:', message);
-    });
-}
-
 // Chat system
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById('chat-messages');
@@ -1179,34 +1168,14 @@ function downloadSound(soundId) {
     const fileName = soundFiles[soundId];
     const soundPath = 'sounds/' + fileName;
 
-    // For mobile devices, open in new tab
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        window.open(soundPath, '_blank');
-        return;
-    }
-    
-    // For desktop, use XHR download
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', soundPath, true);
-    xhr.responseType = 'blob';
-    
-    xhr.onload = function() {
-        if (this.status === 200) {
-            const blob = new Blob([this.response], { type: 'audio/mpeg' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            
-            setTimeout(() => {
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }
-    };
-    
-    xhr.send();
+    // Always trigger download using anchor tag for all platforms
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    link.href = soundPath;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+        document.body.removeChild(link);
+    }, 100);
 }
