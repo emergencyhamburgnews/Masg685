@@ -15,7 +15,7 @@ function toggleTheme() {
 async function updateRobloxProfile() {
     const profile = {
         userId: '5255024681',
-        username: 'masg685'
+        username: 'Masg685'
     };
 
     const avatarElement = document.getElementById('roblox-avatar');
@@ -57,39 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Roblox profile if on the right page
     if (document.getElementById('roblox-profile')) {
         updateRobloxProfile();
-    }
-
-    // Discord button click handler
-    const discordButton = document.querySelector('a[href*="discord.gg"]');
-    if (discordButton) {
-        // Create message element
-        const messageElement = document.createElement('div');
-        messageElement.style.cssText = `
-            display: none;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ff0000;
-            border-radius: 5px;
-            color: #ff0000;
-            background-color: rgba(255, 0, 0, 0.1);
-            text-align: center;
-            font-weight: bold;
-            animation: fadeIn 0.3s ease-in-out;
-        `;
-        messageElement.textContent = 'Sorry, the Discord server is currently under development. Please check back later!';
-        
-        // Insert message after the button
-        discordButton.parentNode.insertBefore(messageElement, discordButton.nextSibling);
-
-        discordButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            messageElement.style.display = 'block';
-            
-            // Hide message after 3 seconds
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 3000);
-        });
     }
 
     // Mobile menu functionality
