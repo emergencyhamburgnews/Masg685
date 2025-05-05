@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (joinButton) {
         joinButton.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = 'https://www.roblox.com/games/start?placeld=7711635737&launchData=joinCode%3D72kaqjm0';
+            window.location.href = 'https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3D72kaqjm0';
         });
     }
 
@@ -698,6 +698,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (discordMembers) discordMembers.textContent = 'N/A';
                 if (discordMemberList) discordMemberList.textContent = 'N/A';
             });
+    }
+
+    // Copy join code functionality
+    const copyJoinCodeBtn = document.getElementById('copy-join-code');
+    const joinCodeBox = document.getElementById('join-code-box');
+    if (copyJoinCodeBtn && joinCodeBox) {
+        copyJoinCodeBtn.addEventListener('click', () => {
+            joinCodeBox.select();
+            joinCodeBox.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            copyJoinCodeBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyJoinCodeBtn.textContent = 'Copy';
+            }, 1200);
+        });
     }
 });
 
