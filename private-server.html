@@ -57,8 +57,12 @@
                         <span class="status-value">AUS</span>
                     </div>
                     <div class="status-item">
-                        <span class="status-label">Players</span>
-                        <span class="status-value"><span id="current-players">0</span>/<span id="max-players">42</span></span>
+                        <span class="status-label">Discord Members</span>
+                        <span class="status-value"><span id="discord-members">...</span></span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Member List</span>
+                        <div class="status-value discord-member-list" id="discord-member-list"></div>
                     </div>
                     <div class="status-item">
                         <span class="status-label">Status</span>
@@ -588,6 +592,29 @@
             color: #fff;
             transform: translateY(-1px) scale(1.025);
             box-shadow: 0 4px 16px rgba(0,147,233,0.16);
+        }
+
+        .discord-member-list {
+            max-height: 140px;
+            overflow-y: auto;
+            font-size: 0.97em;
+            background: rgba(0,0,0,0.10);
+            border-radius: 8px;
+            padding: 8px 0 8px 0;
+            scrollbar-width: thin;
+            scrollbar-color: #5865F2 #23272A;
+        }
+        .discord-member-list::-webkit-scrollbar {
+            width: 7px;
+            background: #23272A;
+            border-radius: 8px;
+        }
+        .discord-member-list::-webkit-scrollbar-thumb {
+            background: #5865F2;
+            border-radius: 8px;
+        }
+        .discord-member-list::-webkit-scrollbar-thumb:hover {
+            background: #4752C4;
         }
     </style>
 </body>

@@ -598,56 +598,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Private Server Join Button
     const joinButton = document.getElementById('join-server');
     if (joinButton) {
-        // Create message element
-        const messageDiv = document.createElement('div');
-        messageDiv.style.cssText = `
-            display: none;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ff0000;
-            border-radius: 5px;
-            color: #ff0000;
-            background-color: rgba(255, 0, 0, 0.1);
-            text-align: center;
-            font-weight: bold;
-        `;
-        messageDiv.textContent = 'Sorry, the Private Server is not available yet. Please check back later!';
-        joinButton.parentNode.insertBefore(messageDiv, joinButton.nextSibling);
-
         joinButton.addEventListener('click', (e) => {
             e.preventDefault();
-            messageDiv.style.display = 'block';
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 3000);
+            window.location.href = 'https://www.roblox.com/games/start?placeld=7711635737&launchData=joinCode%3D72kaqjm0';
         });
-    }
-
-    // Update player count from Roblox server
-    const currentPlayers = document.getElementById('current-players');
-    if (currentPlayers) {
-        async function updatePlayerCount() {
-            try {
-                // Fetch player count for Emergency Hamburg
-                const response = await fetch(`https://games.roblox.com/v1/games/7711635737/servers/Public?sortOrder=Asc&limit=100`);
-                const data = await response.json();
-
-                let totalPlayers = 0;
-                if (data.data && data.data.length > 0) {
-                    // Sum up players from all servers
-                    totalPlayers = data.data.reduce((sum, server) => sum + server.playing, 0);
-                }
-
-                currentPlayers.textContent = totalPlayers;
-            } catch (error) {
-                console.error('Error fetching player count:', error);
-                currentPlayers.textContent = '0';
-            }
-        }
-
-        // Update initially and then every 30 seconds
-        updatePlayerCount();
-        setInterval(updatePlayerCount, 30000);
     }
 
     // Create Post Button Click Handler
@@ -709,6 +663,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Fetch and display Discord server member count and member list
+    const discordMembers = document.getElementById('discord-members');
+    const discordMemberList = document.getElementById('discord-member-list');
+    if (discordMembers || discordMemberList) {
+        const GUILD_ID = '1358340466315362415';
+        fetch(`https://discord.com/api/guilds/${GUILD_ID}/widget.json`)
+            .then(response => response.json())
+            .then(data => {
+                if (discordMembers) {
+                    if (data && typeof data.members === 'object') {
+                        discordMembers.textContent = data.members.length;
+                    } else if (data && typeof data.presence_count === 'number') {
+                        discordMembers.textContent = data.presence_count;
+                    } else {
+                        discordMembers.textContent = 'N/A';
+                    }
+                }
+                if (discordMemberList) {
+                    if (data && Array.isArray(data.members)) {
+                        discordMemberList.innerHTML = data.members.map(m =>
+                            `<div style='display:flex;align-items:center;gap:7px;margin-bottom:2px;'><img src='${m.avatar_url}' alt='' style='width:22px;height:22px;border-radius:50%;box-shadow:0 1px 4px #23272A22;'>${m.username}${m.bot ? ' <span style=\'color:#5865F2;font-size:0.85em;\'>(bot)</span>' : ''}</div>`
+                        ).join('');
+                        if (data.members.length >= 100) {
+                            discordMemberList.innerHTML += `<div style='color:#888;font-size:0.9em;margin-top:6px;'>Not all members may be shown due to Discord API limits.</div>`;
+                        }
+                    } else {
+                        discordMemberList.textContent = 'N/A';
+                    }
+                }
+            })
+            .catch(() => {
+                if (discordMembers) discordMembers.textContent = 'N/A';
+                if (discordMemberList) discordMemberList.textContent = 'N/A';
+            });
+    }
 });
 
 // Chat system
