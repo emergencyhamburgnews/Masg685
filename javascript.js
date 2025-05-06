@@ -1,58 +1,8 @@
-// Theme toggle functionality
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-}
-
-function toggleTheme() {
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-}
-
-// Roblox profile integration
-async function updateRobloxProfile() {
-    const profile = {
-        userId: '5255024681',
-        username: 'Masg685'
-    };
-
-    const avatarElement = document.getElementById('roblox-avatar');
-    const usernameElement = document.getElementById('roblox-username');
-
-    if (!avatarElement || !usernameElement) return;
-
-    avatarElement.style.opacity = '0.5';
-    usernameElement.textContent = profile.username;
-
-    const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${profile.userId}&width=150&height=150&format=png`;
-    avatarElement.src = avatarUrl;
-    avatarElement.onload = () => avatarElement.style.opacity = '1';
-    avatarElement.onerror = () => {
-        // Use the specific avatar URL as fallback
-        avatarElement.src = 'https://tr.rbxcdn.com/30DAY-AvatarHeadshot-5929DDFE20EB1B4D7B3C06D885B0627E-Png/150/150/AvatarHeadshot/Webp/noFilter';
-        avatarElement.style.opacity = '1';
-    };
-
-    try {
-        const response = await fetch(`https://users.roblox.com/v1/users/${profile.userId}`);
-        if (response.ok) {
-            const data = await response.json();
-            usernameElement.textContent = data.displayName || data.name || profile.username;
-        }
-        // Always force the username to 'Masg685' after API
-        usernameElement.textContent = 'Masg685';
-    } catch (error) {
-        console.error('Failed to fetch user data:', error);
-    }
-}
-
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme
+    // Initialize theme from localStorage
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
 
     // Initialize Roblox profile if on the right page
     if (document.getElementById('roblox-profile')) {
@@ -102,12 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileNavLinks.addEventListener('click', (e) => {
             e.stopPropagation();
         });
-    }
-
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
     }
 
     // Search functionality
