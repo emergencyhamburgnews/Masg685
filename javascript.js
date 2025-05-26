@@ -1,8 +1,58 @@
+// Theme toggle functionality
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Roblox profile integration
+async function updateRobloxProfile() {
+    const profile = {
+        userId: '5255024681',
+        username: 'Masg685'
+    };
+
+    const avatarElement = document.getElementById('roblox-avatar');
+    const usernameElement = document.getElementById('roblox-username');
+
+    if (!avatarElement || !usernameElement) return;
+
+    avatarElement.style.opacity = '0.5';
+    usernameElement.textContent = profile.username;
+
+    const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${profile.userId}&width=150&height=150&format=png`;
+    avatarElement.src = avatarUrl;
+    avatarElement.onload = () => avatarElement.style.opacity = '1';
+    avatarElement.onerror = () => {
+        // Use the specific avatar URL as fallback
+        avatarElement.src = 'https://tr.rbxcdn.com/30DAY-AvatarHeadshot-5929DDFE20EB1B4D7B3C06D885B0627E-Png/150/150/AvatarHeadshot/Webp/noFilter';
+        avatarElement.style.opacity = '1';
+    };
+
+    try {
+        const response = await fetch(`https://users.roblox.com/v1/users/${profile.userId}`);
+        if (response.ok) {
+            const data = await response.json();
+            usernameElement.textContent = data.displayName || data.name || profile.username;
+        }
+        // Always force the username to 'Masg685' after API
+        usernameElement.textContent = 'Masg685';
+    } catch (error) {
+        console.error('Failed to fetch user data:', error);
+    }
+}
+
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme from localStorage
+    // Initialize theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    setTheme(savedTheme);
 
     // Initialize Roblox profile if on the right page
     if (document.getElementById('roblox-profile')) {
@@ -14,12 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileNavLinks = document.querySelector('.nav-links');
     
     if (hamburger && mobileNavLinks) {
+        // Add hamburger lines if not already present
+        if (!hamburger.querySelector('span')) {
+            hamburger.innerHTML = '<span></span>';
+        }
+        
         hamburger.style.display = 'none'; // Reset display property
         
         // Show hamburger on mobile
         const checkMobileView = () => {
             if (window.innerWidth <= 768) {
-                hamburger.style.display = 'block';
+                hamburger.style.display = 'flex';
                 if (!mobileNavLinks.classList.contains('active')) {
                     mobileNavLinks.classList.remove('active');
                 }
@@ -52,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileNavLinks.addEventListener('click', (e) => {
             e.stopPropagation();
         });
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
     }
 
     // Search functionality
@@ -89,10 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
             keywords: ["unban", "ban appeal", "banned"]
         },
         {
-            question: "How to use TikTok downloader?",
-            keywords: ["tiktok", "download video", "tiktok download"]
-        },
-        {
             question: "Where is the Roblox profile?",
             keywords: ["roblox", "profile", "account"]
         },
@@ -102,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             question: "Where to find social media links?",
-            keywords: ["social media", "links", "youtube", "twitter", "tiktok"]
+            keywords: ["social media", "links", "youtube", "twitter"]
         },
         {
             question: "How to use chat feature?",
@@ -111,6 +168,22 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             question: "Server status and player count?",
             keywords: ["status", "players", "online", "count"]
+        },
+        {
+            question: "How to navigate the website?",
+            keywords: ["navigate", "menu", "pages", "navigation"]
+        },
+        {
+            question: "What is Emergency Hamburg?",
+            keywords: ["emergency hamburg", "game", "roleplay", "eh"]
+        },
+        {
+            question: "How to access help center?",
+            keywords: ["help", "support", "assistance", "68I"]
+        },
+        {
+            question: "Where to find updates?",
+            keywords: ["updates", "news", "announcements", "latest"]
         }
     ];
 
@@ -544,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (joinButton) {
         joinButton.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = 'https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3D72kaqjm0';
+            window.location.href = 'https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dpgisejpb';
         });
     }
 

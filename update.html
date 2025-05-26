@@ -14,11 +14,14 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun" style="font-family: system-ui;">☀</span>
+            </button>
             <button class="search-toggle" onclick="openSearch()">
                 <i class="fas fa-search"></i>
             </button>
         </div>
-        <div class="hamburger">☰</div>
+        <div class="hamburger"><span></span></div>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <ul class="nav-links">
             <li><a href="home.html"><i class="fas fa-home"></i><span data-translate="home">Home</span></a></li>
@@ -26,7 +29,7 @@
             <li><a href="contact.html"><i class="fas fa-envelope"></i><span data-translate="contact">Contact</span></a></li>
             <li><a href="update.html"><i class="fas fa-bell"></i><span data-translate="updates">Updates</span></a></li>
             <li><a href="private-server.html"><i class="fas fa-server"></i><span data-translate="privateServer">Private Server</span></a></li>
-            <li><a href="tiktokdownload.html"><i class="fab fa-tiktok"></i><span data-translate="tiktokDownloader">TikTok Downloader</span></a></li>
+            
         </ul>
     </nav>
 
@@ -46,17 +49,65 @@
         </div>
 
         <div class="updates-timeline">
-            <!-- Today's Update -->
+            <!-- Latest Update -->
             <div class="timeline-item current">
                 <div class="timeline-date">
-                    <span class="date">April 2025</span>
+                    <span class="date">May 23, 2025</span>
                     <span class="badge">Latest</span>
                 </div>
                 <div class="timeline-content">
                     <div class="update-card">
                         <div class="card-header">
+                            <i class="fas fa-palette"></i>
+                            <h2>Major Design & UI Improvements</h2>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-wrench"></i> What We Fixed</h3>
+                            <ul>
+                                <li>Fixed search bar design with better styling and backdrop blur effects</li>
+                                <li>Redesigned search results container with proper theming and hover effects</li>
+                                <li>Fixed mobile hamburger menu with proper 3-line design in center of box</li>
+                                <li>Improved mobile responsiveness for all form elements and containers</li>
+                                <li>Fixed AI chat responses to properly handle "Hi" and "Hello" greetings</li>
+                                <li>Enhanced mobile menu sizing and positioning issues</li>
+                            </ul>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-plus-circle"></i> What We Added & Improved</h3>
+                            <ul>
+                                <li>Completely new modern color scheme with gradient designs (#780000 to black)</li>
+                                <li>Enhanced 68I.html (Help Center) with better AI chat functionality</li>
+                                <li>Improved search functionality across all pages with real-time filtering</li>
+                                <li>Added better mobile design optimization for all devices</li>
+                                <li>Enhanced button designs with gradient effects and hover animations</li>
+                                <li>Improved navigation menu with better icons and spacing</li>
+                                <li>Added comprehensive help center with 25+ topics and AI assistance</li>
+                                <li>Better backdrop blur effects for navigation and search containers</li>
+                            </ul>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-trash"></i> What We Removed</h3>
+                            <ul>
+                                <li>Removed all TikTok download page functionality and related code</li>
+                                <li>Cleaned up JavaScript and CSS files from TikTok-related functions</li>
+                                <li>Removed TikTok references from navigation and question lists</li>
+                                <li>Streamlined codebase by removing unused TikTok components</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Update -->
+            <div class="timeline-item">
+                <div class="timeline-date">
+                    <span class="date">April 2025</span>
+                </div>
+                <div class="timeline-content">
+                    <div class="update-card">
+                        <div class="card-header">
                             <i class="fas fa-tools"></i>
-                            <h2>Major Website Improvements & Fixes</h2>
+                            <h2>Contact Form & Integration Fixes</h2>
                         </div>
                         <div class="changes-section">
                             <h3><i class="fas fa-wrench"></i> What We Fixed</h3>

@@ -11,10 +11,8 @@
 <body>
     <nav class="navbar">
         <div class="theme-container">
-            <button class="back-button" onclick="goBack()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun">☀</span>
             </button>
             <button class="search-toggle" onclick="openSearch()">
                 <i class="fas fa-search"></i>
@@ -38,6 +36,7 @@
         </div>
     </div>
 
+    <div class="form-container report-container">
         <div class="form-header">
             <i class="fas fa-flag"></i>
         <h1>Report Player</h1>
@@ -58,7 +57,6 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     Rule Violation
                 </label>
-            <div class="custom-select">
                 <select id="violation" name="violation" required>
                     <option value="">Select violation type</option>
                     <option value="hacking">Hacking</option>
@@ -67,10 +65,6 @@
                     <option value="teaming">Teaming</option>
                     <option value="other">Other</option>
                 </select>
-                <div class="select-arrow">
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-            </div>
             </div> 
 
             <div class="form-group">
@@ -81,436 +75,130 @@
                 <textarea id="timestamp" name="timestamp" rows="4" required placeholder="Please provide details about the incident, including when it happened"></textarea>
             </div>
         
-        <div class="form-group">
-            <label>
-                <i class="fas fa-paper-plane"></i>
-                Send Report To
-            </label>
-            <div class="submission-options">
-                <label class="option-label">
-                    <input type="checkbox" name="sendTo" value="discord" checked>
-                    <i class="fab fa-discord"></i> Discord
-                </label>
-                <label class="option-label">
-                    <input type="checkbox" name="sendTo" value="email" checked>
-                    <i class="fas fa-envelope"></i> Email
-                </label>
-            </div>
-            </div>
-        
             <button type="submit" class="submit-button">
                 <i class="fas fa-paper-plane"></i>
                 Submit Report
             </button>
         </form>
+    </div>
 
     <script src="javascript.js"></script>
 
-    <script>
-        // Discord webhook integration
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1369248820357234738/u-9-9CtrxtY7xM2UoZVkM-dzLjS_Hi7c6gDO39YD0-_wLjJY4wkYJwkxZN7UQdXpEKdA';
-
-        document.getElementById('reportForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-            
-            // Get selected submission methods
-            const sendToDiscord = this.querySelector('input[value="discord"]').checked;
-            const sendToEmail = this.querySelector('input[value="email"]').checked;
-
-            if (!sendToDiscord && !sendToEmail) {
-                alert('Please select at least one submission method');
-                return;
-            }
-            
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-
-            try {
-                // Get form data
-                const formData = new FormData(this);
-                const data = {
-                    username: formData.get('username'),
-                    violation: formData.get('violation'),
-                    timestamp: formData.get('timestamp')
-                };
-
-                let discordSuccess = false;
-                let emailSuccess = false;
-
-                // Send to Discord if selected
-                if (sendToDiscord) {
-                    try {
-                        const discordResponse = await fetch(DISCORD_WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                content: `<@&1369250776903450685> New Player Report:`,
-                                embeds: [{
-                                    title: '🚨 New Player Report',
-                                    color: 0x3498db,
-                                    fields: [
-                                        {
-                                            name: '👤 Username',
-                                            value: data.username,
-                                            inline: true
-                                        },
-                                        {
-                                            name: '⚠️ Violation Type',
-                                            value: data.violation,
-                                            inline: true
-                                        },
-                                        {
-                                            name: '📝 Details',
-                                            value: data.timestamp
-                                        }
-                                    ],
-                                    timestamp: new Date().toISOString()
-                                }]
-                            })
-                        });
-                        
-                        if (!discordResponse.ok) {
-                            throw new Error(`Discord webhook failed: ${discordResponse.status}`);
-                        }
-                        discordSuccess = true;
-                    } catch (error) {
-                        console.error('Discord webhook error:', error);
-                        discordSuccess = false;
-                    }
-                }
-
-                // Send to email if selected
-                if (sendToEmail) {
-                    try {
-                        const formResponse = await fetch('https://formspree.io/f/moveylzy', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        });
-                        
-                        if (!formResponse.ok) {
-                            throw new Error(`Email submission failed: ${formResponse.status}`);
-                        }
-                        emailSuccess = true;
-                    } catch (error) {
-                        console.error('Email submission error:', error);
-                        emailSuccess = false;
-                    }
-                }
-
-                // Handle success/failure based on selected methods
-                if ((sendToDiscord && discordSuccess) || (sendToEmail && emailSuccess)) {
-                    submitButton.innerHTML = '<i class="fas fa-check"></i> Sent Successfully!';
-                    submitButton.style.background = '#4CAF50';
-                    this.reset();
-                    setTimeout(() => {
-                        submitButton.innerHTML = originalText;
-                        submitButton.style.background = '';
-                        submitButton.disabled = false;
-                    }, 3000);
-                } else {
-                    throw new Error('All selected submissions failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                submitButton.innerHTML = '<i class="fas fa-times"></i> Failed to Send';
-                submitButton.style.background = '#f44336';
-                setTimeout(() => {
-                    submitButton.innerHTML = originalText;
-                    submitButton.style.background = '';
-                    submitButton.disabled = false;
-                }, 3000);
-            }
-        });
-    </script>
-
     <style>
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--nav-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
         .form-header {
             text-align: center;
-            margin: 3rem auto;
+            margin-bottom: 2rem;
             padding-bottom: 1.5rem;
-            border-bottom: 2px solid #2c3e50;
-            max-width: 800px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .form-header i {
-            font-size: 3rem;
-            color: #2c3e50;
+            font-size: 2.5rem;
+            color: #780000;
             margin-bottom: 1rem;
-            background: linear-gradient(45deg, #2c3e50, #3498db);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .form-header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin: 1rem 0;
-            background: linear-gradient(45deg, #2c3e50, #3498db);
+            background: linear-gradient(45deg, #780000, #a30000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .form-subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .modern-form {
-            display: grid;
-            gap: 2rem;
-            padding: 0 1rem;
-            max-width: 800px;
-            margin: 0 auto;
+            color: var(--secondary-text);
+            font-size: 1.1rem;
+            opacity: 0.8;
         }
 
         .modern-form .form-group {
-            margin-bottom: 0;
+            margin-bottom: 1.5rem;
         }
 
         .modern-form label {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
-            color: #2c3e50;
-            font-weight: 600;
-            font-size: 1.1rem;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
         }
 
         .modern-form label i {
-            color: #3498db;
-            font-size: 1.2rem;
+            color: #780000;
         }
 
         .modern-form input,
+        .modern-form select,
         .modern-form textarea {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid #bdc3c7;
-            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             background: var(--bg-color);
             color: var(--text-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
         .modern-form input:focus,
+        .modern-form select:focus,
         .modern-form textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            border-color: #780000;
+            box-shadow: 0 0 0 2px rgba(120, 0, 0, 0.1);
+        }
+
+        .modern-form select {
+            cursor: pointer;
         }
 
         .modern-form textarea {
             resize: vertical;
-            min-height: 120px;
-        }
-
-        .custom-select {
-            position: relative;
-            width: 100%;
-        }
-
-        .custom-select select {
-            width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid #bdc3c7;
-            border-radius: 12px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            font-size: 1.1rem;
-            appearance: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .custom-select select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .select-arrow {
-            position: absolute;
-            right: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #3498db;
-            transition: transform 0.3s ease;
-        }
-
-        .custom-select select:focus + .select-arrow {
-            transform: translateY(-50%) rotate(180deg);
+            min-height: 100px;
         }
 
         .submit-button {
             width: 100%;
-            padding: 1.2rem;
+            padding: 1rem;
             border: none;
-            border-radius: 12px;
-            background: linear-gradient(45deg, #2c3e50, #3498db);
+            border-radius: 10px;
+            background: linear-gradient(45deg, #780000, #a30000);
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.8rem;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
+            gap: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .submit-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 20px rgba(120, 0, 0, 0.2);
         }
 
         @media (max-width: 768px) {
-            .form-header {
-                margin: 1.5rem 1rem;
-                padding-bottom: 1rem;
-            }
-
-            .form-header i {
-                font-size: 2.5rem;
+            .form-container {
+                margin: 1rem;
+                padding: 1.5rem;
             }
 
             .form-header h1 {
                 font-size: 1.8rem;
-            }
-
-            .form-subtitle {
-                font-size: 1rem;
-                padding: 0 1rem;
-            }
-
-            .modern-form {
-                padding: 0 1rem;
-                gap: 1.5rem;
-            }
-
-            .modern-form label {
-                font-size: 1rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .modern-form input,
-            .modern-form textarea,
-            .custom-select select {
-                padding: 0.8rem 1rem;
-                font-size: 1rem;
-                border-radius: 10px;
-            }
-
-            .select-arrow {
-                right: 1rem;
-            }
-
-            .submit-button {
-                padding: 1rem;
-                font-size: 1.1rem;
-                margin-top: 0.5rem;
-            }
-
-            .submit-button i {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-header {
-                margin: 1rem 0.5rem;
-            }
-
-            .form-header i {
-                font-size: 2rem;
-            }
-
-            .form-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .modern-form {
-                padding: 0 0.5rem;
-                gap: 1.2rem;
-            }
-
-            .modern-form label {
-                font-size: 0.95rem;
-            }
-
-            .modern-form input,
-            .modern-form textarea,
-            .custom-select select {
-                padding: 0.7rem 0.8rem;
-                font-size: 0.95rem;
-                border-radius: 8px;
-            }
-
-            .select-arrow {
-                right: 0.8rem;
-            }
-
-            .submit-button {
-                padding: 0.8rem;
-                font-size: 1rem;
-            }
-        }
-
-        .submission-options {
-            display: flex;
-            gap: 2rem;
-            margin-top: 0.5rem;
-        }
-
-        .option-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            background: var(--bg-color);
-            border: 2px solid #bdc3c7;
-            transition: all 0.3s ease;
-        }
-
-        .option-label:hover {
-            border-color: #3498db;
-        }
-
-        .option-label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .option-label i {
-            font-size: 1.2rem;
-        }
-
-        .option-label i.fa-discord {
-            color: #7289da;
-        }
-
-        .option-label i.fa-envelope {
-            color: #3498db;
-        }
-
-        @media (max-width: 768px) {
-            .submission-options {
-                flex-direction: column;
-                gap: 1rem;
             }
         }
     </style>

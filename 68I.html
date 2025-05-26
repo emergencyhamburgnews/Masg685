@@ -4,411 +4,852 @@
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help Center</title>
+    <title>Help Center - Masg685</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="theme-container">
             <button class="back-button" onclick="window.history.back()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun">☀</span>
             </button>
         </div>
-        <div class="hamburger">☰</div>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <div class="hamburger"><span></span></div>
         <ul class="nav-links">
             <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
             <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
             <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
             <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
             <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
-            <li><a href="tiktokdownload.html"><i class="fab fa-tiktok"></i><span>TikTok Downloader</span></a></li>
+
         </ul>
     </nav>
 
-    <!-- Search Container -->
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" class="search-input" placeholder="Search...">
-            <div class="search-results"></div>
+    <!-- Enhanced Search Container -->
+    <div class="enhanced-search-container">
+        <div class="search-header">
+            <div class="search-icon-container">
+                <i class="fas fa-search"></i>
+            </div>
+            <input type="text" class="enhanced-search-input" placeholder="Search for help topics, features, or ask a question..." autocomplete="off">
+            <button class="search-filter-btn" onclick="toggleSearchFilters()">
+                <i class="fas fa-filter"></i>
+            </button>
         </div>
+        <div class="search-filters" id="search-filters">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-category="all">All</button>
+                <button class="filter-tab" data-category="server">Server</button>
+                <button class="filter-tab" data-category="download">Downloads</button>
+                <button class="filter-tab" data-category="account">Account</button>
+                <button class="filter-tab" data-category="technical">Technical</button>
+            </div>
+        </div>
+        <div class="search-results-container" id="search-results"></div>
     </div>
 
-    <div class="chat-container">
-        <div class="chat-header">
-            <img src="masgfav.jpg" alt="Chat Logo" class="chat-logo">
-            <h1>Help Center</h1>
-            <p class="chat-subtitle">Find answers to common questions</p>
-        </div>
-        <div class="chat-content">
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot">
-                <div class="message-content">
-                        Hello! Type your question or choose from the suggestions below:
+    <div class="help-center-container">
+        <!-- Hero Section -->
+        <div class="help-hero">
+            <div class="help-hero-content">
+                <div class="help-logo-container">
+                    <img src="masgfav.jpg" alt="Help Center" class="help-logo">
+                    <div class="logo-glow"></div>
+                </div>
+                <h1 class="help-title">Help Center</h1>
+                <p class="help-subtitle">Find answers, get support, and learn everything about our services</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-questions">25+</span>
+                        <span class="stat-label">Topics Covered</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Available</span>
                     </div>
                 </div>
             </div>
-            <div id="suggestions" class="suggestions-container"></div>
         </div>
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
-            <button id="send-button">
-                <i class="fas fa-search"></i>
-            </button>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <div class="quick-action-card" onclick="handleQuickAction('join-server')">
+                    <div class="action-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Join Server</h3>
+                    <p>Get instant access to our private server</p>
+                </div>
+                <div class="quick-action-card" onclick="handleQuickAction('report-player')">
+                    <div class="action-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <h3>Report Player</h3>
+                    <p>Report inappropriate behavior quickly</p>
+                </div>
+                <div class="quick-action-card" onclick="handleQuickAction('unban-request')">
+                    <div class="action-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <h3>Unban Request</h3>
+                    <p>Appeal your ban with our form</p>
+                </div>
+                <div class="quick-action-card" onclick="handleQuickAction('download-sounds')">
+                    <div class="action-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Download Sounds</h3>
+                    <p>Get hit sounds and effects</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Interface -->
+        <div class="chat-interface">
+            <div class="chat-header">
+                <div class="chat-status">
+                    <div class="status-indicator online"></div>
+                    <span>AI Assistant Online</span>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn" onclick="clearChat()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="chat-action-btn" onclick="exportChat()">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot welcome-message">
+                    <div class="message-avatar">
+                        <img src="masgfav.jpg" alt="Assistant">
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            👋 Welcome to the Help Center! I'm here to assist you with any questions about our services. 
+                            You can ask me anything or choose from the popular topics below.
+                        </div>
+                        <div class="message-timestamp">Just now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Topics -->
+            <div class="suggested-topics" id="suggested-topics">
+                <h3>Popular Topics</h3>
+                <div class="topics-grid" id="topics-grid">
+                    <!-- Topics will be populated by JavaScript -->
+                </div>
+                <div class="topics-pagination">
+                    <button class="pagination-btn" id="prev-topics" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="pagination-info" id="pagination-info">1 / 3</span>
+                    <button class="pagination-btn" id="next-topics">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="Type your question here..." autocomplete="off">
+                    <div class="input-actions">
+                        <button class="input-action-btn" onclick="attachFile()">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="input-action-btn" onclick="toggleVoiceInput()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="send-button" id="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="input-suggestions" id="input-suggestions"></div>
+            </div>
         </div>
     </div>
 
     <style>
-        .chat-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            background: var(--nav-bg);
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
-            font-family: 'Poppins', sans-serif;
-            position: relative;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #780000, #a30000);
-            padding: 2rem;
-            text-align: center;
-            color: white;
+        /* Enhanced Help Center Styles */
+        .help-center-container {
+            min-height: 100vh;
+            background: var(--bg-color);
             position: relative;
             overflow: hidden;
         }
 
-        .chat-header::before {
+        .help-center-container::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-                        linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%),
-                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            opacity: 0.1;
+            background: radial-gradient(ellipse at 20% 20%, rgba(120, 0, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(120, 0, 0, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .chat-header h1 {
-            font-size: 2.5rem;
-            margin: 0.5rem 0;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        /* Enhanced Search Container */
+        .enhanced-search-container {
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(120, 0, 0, 0.2);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
         }
 
-        .chat-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin: 0;
-            font-weight: 300;
-        }
-
-        .chat-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid white;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .chat-logo:hover {
-            transform: scale(1.1);
-        }
-
-        .chat-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-            background: var(--bg-color);
-            padding: 1rem;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1.5rem;
-            scroll-behavior: smooth;
-            background: #232323;
-            border-radius: 15px;
-            color: #fff;
-        }
-
-        .message {
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.bot .message-content {
-            background: linear-gradient(135deg, #780000, #a30000);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 20px 20px 20px 0;
-            max-width: 85%;
-            box-shadow: 0 8px 20px rgba(120, 0, 0, 0.15);
-            position: relative;
-        }
-
-        .message.bot .message-content::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -10px;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #780000, #a30000);
-            clip-path: polygon(0 0, 100% 100%, 0 100%);
-        }
-
-        .message.user .message-content {
-            background: var(--nav-bg);
-            color: var(--text-color);
-            padding: 1.5rem;
-            border-radius: 20px 20px 0 20px;
-            max-width: 85%;
-            align-self: flex-end;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .message.user .message-content::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: -10px;
-            width: 20px;
-            height: 20px;
-            background: var(--nav-bg);
-            clip-path: polygon(0 100%, 100% 100%, 100% 0);
-        }
-
-        .suggestions-container {
-            background: var(--nav-bg);
-            border-top: 1px solid var(--border-color);
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: auto;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-        }
-
-        .suggestion-item {
-            padding: 1.2rem 1.8rem;
-            cursor: pointer;
-            border-radius: 15px;
-            margin-bottom: 0.8rem;
-            background: #292929;
-            color: #fff;
-            transition: all 0.3s ease;
+        .search-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
         }
 
-        .suggestion-item:hover {
-            background: linear-gradient(135deg, rgba(120, 0, 0, 0.1), rgba(163, 0, 0, 0.1));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(120, 0, 0, 0.15);
+        .search-icon-container {
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
         }
 
-        .suggestion-item i {
-            color: #780000;
-            width: 28px;
-            font-size: 1.4rem;
-            transition: transform 0.3s ease;
+        .enhanced-search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(120, 0, 0, 0.3);
+            border-radius: 16px;
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s ease;
         }
 
-        .suggestion-item:hover i {
-            transform: scale(1.2);
+        .enhanced-search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(120, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .answer-container {
+        .search-filter-btn {
+            background: rgba(120, 0, 0, 0.2);
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-filter-btn:hover {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .search-filters {
+            max-width: 800px;
+            margin: 1rem auto 0;
+            display: none;
+        }
+
+        .search-filters.show {
+            display: block;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            border-radius: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-tab.active, .filter-tab:hover {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Hero Section */
+        .help-hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .help-hero-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .help-logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .help-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-primary);
+            box-shadow: var(--shadow-strong);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-glow {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(20px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        .help-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .help-subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quick-action-card {
             background: var(--nav-bg);
+            border: 1px solid rgba(120, 0, 0, 0.3);
             border-radius: 20px;
             padding: 2rem;
-            margin: 1rem 0;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .answer-container::before {
+        .quick-action-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            width: 4px;
+            left: -100%;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, #780000, #a30000);
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            transition: left 0.3s ease;
         }
 
-        .answer-title {
-            font-weight: 600;
-            color: #780000;
-            margin-bottom: 1.2rem;
-            font-size: 1.2rem;
+        .quick-action-card:hover::before {
+            left: 0;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--accent-primary);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
         }
 
-        .answer-content {
+        .quick-action-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
             color: var(--text-color);
-            line-height: 1.8;
-            font-size: 1rem;
-            padding-left: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .answer-link {
-            color: #780000;
-            text-decoration: none;
-            display: inline-flex;
+        .quick-action-card p {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        /* Chat Interface */
+        .chat-interface {
+            max-width: 1000px;
+            margin: 0 auto 4rem;
+            background: var(--nav-bg);
+            border-radius: 24px;
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            box-shadow: var(--shadow-strong);
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chat-header {
+            background: var(--gradient-primary);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-top: 1.2rem;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
             font-weight: 500;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            background: rgba(120, 0, 0, 0.1);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            cursor: pointer;
             transition: all 0.3s ease;
-            gap: 8px;
         }
 
-        .answer-link:hover {
-            background: rgba(120, 0, 0, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(120, 0, 0, 0.15);
+        .chat-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .chat-input-container {
-            padding: 1.5rem;
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .message {
             display: flex;
             gap: 1rem;
-            background: var(--nav-bg);
-            border-top: 1px solid var(--border-color);
-            position: relative;
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-text {
+            background: rgba(120, 0, 0, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 16px 16px 16px 4px;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .message.user .message-text {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 16px 16px 4px 16px;
+        }
+
+        .message-timestamp {
+            font-size: 0.8rem;
+            color: var(--secondary-text);
+            margin-top: 0.5rem;
+        }
+
+        /* Suggested Topics */
+        .suggested-topics {
+            padding: 2rem;
+            border-top: 1px solid rgba(120, 0, 0, 0.2);
+        }
+
+        .suggested-topics h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .topic-card {
+            background: rgba(120, 0, 0, 0.1);
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topic-card:hover {
+            background: rgba(120, 0, 0, 0.2);
+            transform: translateX(5px);
+        }
+
+        .topic-icon {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            width: 24px;
+        }
+
+        .topic-text {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .topics-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination-btn {
+            background: rgba(120, 0, 0, 0.2);
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(120, 0, 0, 0.2);
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(120, 0, 0, 0.3);
+            border-radius: 25px;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(120, 0, 0, 0.2);
         }
 
         #user-input {
             flex: 1;
-            padding: 1.2rem 1.8rem;
-            border: 2px solid var(--border-color);
-            border-radius: 30px;
-            background: #232323;
-            color: #fff;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        #user-input::placeholder {
-            color: #bbbbbb;
-            opacity: 1;
-        }
-
-        #user-input:focus {
-            border-color: #780000;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(120, 0, 0, 0.1);
-        }
-
-        #send-button {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            background: none;
             border: none;
-            background: linear-gradient(135deg, #780000, #a30000);
+            outline: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            padding: 1rem 1.5rem;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-action-btn {
+            background: none;
+            border: none;
+            color: var(--secondary-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .input-action-btn:hover {
+            background: rgba(120, 0, 0, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .send-button {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Back Button */
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0.75rem;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 1.4rem;
-            box-shadow: 0 4px 15px rgba(120, 0, 0, 0.2);
         }
 
-        #send-button:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 8px 25px rgba(120, 0, 0, 0.3);
+        .back-button:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1);
         }
 
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .chat-container {
-                margin: 0;
-                border-radius: 0;
-                height: 100vh;
+            .enhanced-search-container {
+                padding: 1rem;
             }
 
-            .chat-header h1 {
-                font-size: 1.8rem;
+            .search-header {
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
-            .message.bot .message-content,
-            .message.user .message-content {
-                max-width: 90%;
+            .enhanced-search-input {
+                width: 100%;
             }
 
-            .suggestion-item {
-                padding: 1rem 1.5rem;
+            .help-hero {
+                padding: 2rem 1rem;
+            }
+
+            .help-title {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .quick-actions {
+                padding: 1rem;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-interface {
+                margin: 0 1rem 2rem;
+            }
+
+            .chat-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Adjustments for mobile menu sizing */
+            .nav-links {
+                font-size: 1.2rem; /* Reduce font size */
+            }
+
+            .nav-links li {
+                margin: 0.5rem 0; /* Reduce spacing */
+            }
+
+            .nav-links a {
+               padding: 0.5rem; /* Reduce padding */
             }
         }
     </style>
 
     <script>
+        // Enhanced Help Center JavaScript
         const questions = [
             {
-                text: "How to use TikTok Downloader?",
-                icon: "fab fa-tiktok",
-                answer: `To use the TikTok Downloader:
-                1. Copy the TikTok video URL you want to download
-                2. Go to the TikTok Downloader page
-                3. Paste the URL in the input box
-                4. Click "Download Video"
-                5. Click the final download button when it appears`,
-                link: "tiktokdownload.html"
-            },
-            {
+                id: 2,
                 text: "Who is Masg685?",
                 icon: "fas fa-user",
+                category: "account",
+                keywords: ["masg685", "profile", "about", "owner"],
                 answer: `Masg685 is from Australia, born on the island of Savai'i in Samoa. He's an experienced Emergency Hamburg player with over 300,000 XP as a police officer. He creates content on YouTube and TikTok.`,
                 link: "about.html"
             },
             {
-                text: "Who is Nexus?",
-                icon: "fas fa-star",
-                answer: `Nexus is one of the best police officers in Emergency Hamburg, from Ho Chi Minh City, Vietnam. He's known for his impressive skills and dedication to keeping the city safe. He's a respected member of the EH community and Masg685's best friend.`,
-                link: "about.html"
+                id: 3,
+                text: "How to join the Private Server?",
+                icon: "fas fa-server",
+                category: "server",
+                keywords: ["join", "server", "private", "roblox"],
+                answer: `To join the private server:
+                1. Visit the Private Server page
+                2. Click the "Join Server" button
+                3. Make sure to read and follow the server rules`,
+                link: "private-server.html"
             },
             {
+                id: 4,
                 text: "How to Report a Player?",
                 icon: "fas fa-flag",
+                category: "server",
+                keywords: ["report", "player", "violation", "rules"],
                 answer: `To report a player:
                 1. Go to the Private Server page
                 2. Click the "Report Player" button
@@ -417,17 +858,11 @@
                 link: "report-player.html"
             },
             {
-                text: "How to join the Private Server?",
-                icon: "fas fa-server",
-                answer: `To join the private server:
-                1. Visit the Private Server page
-                2. Click the "Join Server" button
-                3. Make sure to read and follow the server rules`,
-                link: "private-server.html"
-            },
-            {
+                id: 5,
                 text: "How to request an unban?",
                 icon: "fas fa-unlock",
+                category: "server",
+                keywords: ["unban", "appeal", "banned", "request"],
                 answer: `If you've been banned:
                 1. Go to the Private Server page
                 2. Click the "Unban Request" button
@@ -436,51 +871,11 @@
                 link: "unban-request.html"
             },
             {
-                text: "What are the server rules?",
-                icon: "fas fa-book",
-                answer: `The server has three main rule categories:
-                1. General Rules: Respect all players, no harassment, no exploits
-                2. Roleplay Rules: Stay in character, follow traffic laws, use proper communications
-                3. Consequences: Warning system leading to potential ban
-                Click below to read the complete rules.`,
-                link: "private-server.html"
-            },
-            {
-                text: "How to contact Masg685?",
-                icon: "fas fa-envelope",
-                answer: `You can contact Masg685 through:
-                1. The Contact page form
-                2. Discord server (coming soon)
-                3. Social media platforms
-                Messages will be responded to as soon as possible.`,
-                link: "contact.html"
-            },
-            {
-                text: "What roles are available in the server?",
-                icon: "fas fa-users",
-                answer: `The server offers multiple roles:
-                1. Firefighter
-                2. Police Officer
-                3. Medical Team
-                4. Truck Driver
-                5. Criminal
-                Each role has unique responsibilities and gameplay.`,
-                link: "private-server.html"
-            },
-            {
-                text: "How to use the website search?",
-                icon: "fas fa-search",
-                answer: `To search the website:
-                1. Click the search icon in the navigation bar
-                2. Type your search query
-                3. Press Enter or wait for results
-                4. Click on highlighted text to navigate
-                The search works across all pages.`,
-                link: "home.html"
-            },
-            {
-                text: "How to switch between light and dark mode?",
+                id: 6,
+                text: "How to change theme?",
                 icon: "fas fa-moon",
+                category: "technical",
+                keywords: ["theme", "dark", "light", "mode"],
                 answer: `To change the website theme:
                 1. Look for the theme toggle button in the top navigation
                 2. Click the sun/moon icon to switch between light and dark mode
@@ -488,167 +883,476 @@
                 link: "home.html"
             },
             {
-                text: "Where to find latest updates?",
+                id: 7,
+                text: "How to navigate the website?",
+                icon: "fas fa-compass",
+                category: "technical",
+                keywords: ["navigate", "menu", "pages", "navigation"],
+                answer: `To navigate the website:
+                1. Use the hamburger menu (☰) on mobile or the navigation bar on desktop
+                2. Click on any menu item to go to that page
+                3. Use the search feature (🔍) to find specific content
+                4. The floating chat button takes you to this help center`,
+                link: "home.html"
+            },
+            {
+                id: 8,
+                text: "What is Emergency Hamburg?",
+                icon: "fas fa-gamepad",
+                category: "account",
+                keywords: ["emergency hamburg", "game", "roleplay", "eh"],
+                answer: `Emergency Hamburg is a German roleplay game where players take on roles like police officers, paramedics, and firefighters. Masg685 has over 300,000 XP as a police officer and creates content about the game on YouTube.`,
+                link: "about.html"
+            },
+            {
+                id: 9,
+                text: "How to use the search feature?",
+                icon: "fas fa-search",
+                category: "technical",
+                keywords: ["search", "find", "lookup", "content"],
+                answer: `To search the website:
+                1. Click the search icon (🔍) in the navigation
+                2. Type your search query in the search box
+                3. View real-time results as you type
+                4. Click on any result to navigate to that content`,
+                link: "home.html"
+            },
+            {
+                id: 10,
+                text: "How to contact Masg685?",
+                icon: "fas fa-envelope",
+                category: "account",
+                keywords: ["contact", "message", "reach", "email"],
+                answer: `To contact Masg685:
+                1. Go to the Contact page from the navigation menu
+                2. Fill out the contact form with your name, email, and message
+                3. Click Submit to send your message
+                4. You can also reach him through his social media channels`,
+                link: "contact.html"
+            },
+            {
+                id: 11,
+                text: "How to download sound effects?",
+                icon: "fas fa-download",
+                category: "download",
+                keywords: ["sounds", "download", "audio", "effects"],
+                answer: `To download sound effects:
+                1. Go to the Home page and scroll to the Sound Effects section
+                2. Click the play button (▶) to preview any sound
+                3. Click the download button (↓) to download the sound file
+                4. The file will be saved to your device's downloads folder`,
+                link: "home.html"
+            },
+            {
+                id: 12,
+                text: "Where to find social media links?",
+                icon: "fab fa-youtube",
+                category: "account",
+                keywords: ["social", "youtube", "links", "channels"],
+                answer: `Social media links can be found:
+                1. On the Home page in the social media section
+                2. Icons for YouTube and other platforms are displayed
+                3. Click any icon to visit that social media profile
+                4. Don't forget to subscribe and follow for updates!`,
+                link: "home.html"
+            },
+            {
+                id: 13,
+                text: "How to access the help center?",
+                icon: "fas fa-question-circle",
+                category: "technical",
+                keywords: ["help", "support", "68I", "assistance"],
+                answer: `To access the help center:
+                1. Click the floating chat button (💬) on any page
+                2. Or directly visit the Help Center page
+                3. Browse categories or use the search feature
+                4. Click on any question to get detailed answers`,
+                link: "68I.html"
+            },
+            {
+                id: 14,
+                text: "What updates are available?",
                 icon: "fas fa-bell",
-                answer: `To stay updated:
-                1. Visit the Updates page regularly
-                2. Check the announcements section
-                3. Join the Discord server (coming soon)
-                4. Follow social media accounts`,
+                category: "technical",
+                keywords: ["updates", "news", "announcements", "latest"],
+                answer: `To see the latest updates:
+                1. Visit the Updates page from the navigation menu
+                2. View chronological posts about website improvements
+                3. See bug fixes, new features, and announcements
+                4. Updates include mobile improvements and new functionality`,
                 link: "update.html"
             },
             {
-                text: "What are the server requirements?",
-                icon: "fas fa-laptop",
-                answer: `To join the server, you need:
-                1. A stable internet connection
-                2. Emergency Hamburg game installed
-                3. Discord account (for communication)
-                4. Microphone for voice chat
-                5. Basic understanding of the game mechanics`,
-                link: "private-server.html"
-            },
-            {
-                text: "How to become a moderator?",
-                icon: "fas fa-shield-alt",
-                answer: `To become a moderator:
-                1. Be an active and respectful member
-                2. Help other players
-                3. Report issues and violations
-                4. Apply through the contact form
-                5. Complete a training period`,
-                link: "contact.html"
-            },
-            {
-                text: "What events are hosted?",
-                icon: "fas fa-calendar-alt",
-                answer: `Regular events include:
-                1. Police training sessions
-                2. Emergency response drills
-                3. Community meetups
-                4. Special roleplay scenarios
-                5. Holiday celebrations`,
-                link: "update.html"
-            },
-            {
-                text: "How to report bugs?",
+                id: 15,
+                text: "How to report issues with the website?",
                 icon: "fas fa-bug",
-                answer: `To report bugs:
-                1. Document the issue with screenshots/video
-                2. Note the steps to reproduce
-                3. Submit through the contact form
-                4. Include your game version
-                5. Wait for the fix in updates`,
+                category: "technical",
+                keywords: ["bug", "issue", "problem", "error"],
+                answer: `To report website issues:
+                1. Use the Contact form to describe the problem
+                2. Include details about what you were doing when it occurred
+                3. Mention your device type (mobile/desktop) and browser
+                4. Issues are typically resolved quickly`,
                 link: "contact.html"
-            },
-            {
-                text: "What are the voice chat rules?",
-                icon: "fas fa-microphone",
-                answer: `Voice chat guidelines:
-                1. Use push-to-talk
-                2. Keep background noise minimal
-                3. Use appropriate language
-                4. Follow roleplay communications
-                5. Respect other players' space`,
-                link: "private-server.html"
-            },
-            {
-                text: "How to earn XP faster?",
-                icon: "fas fa-star",
-                answer: `Tips to earn XP:
-                1. Complete daily missions
-                2. Participate in events
-                3. Help other players
-                4. Follow roleplay guidelines
-                5. Stay active in the community`,
-                link: "private-server.html"
-            },
-            {
-                text: "What are the server backups?",
-                icon: "fas fa-database",
-                answer: `Server backup information:
-                1. Daily automatic backups
-                2. Manual backup before updates
-                3. 7-day backup retention
-                4. Emergency restore available
-                5. Contact admin for recovery`,
-                link: "contact.html"
-            },
-            {
-                text: "How to join the Discord?",
-                icon: "fab fa-discord",
-                answer: `To join our Discord:
-                1. Visit the Private Server page
-                2. Click the Discord invite link
-                3. Accept the server rules
-                4. Choose your roles
-                5. Start chatting with the community`,
-                link: "private-server.html"
             }
         ];
 
-        const userInput = document.getElementById('user-input');
-        const suggestionsContainer = document.getElementById('suggestions');
-        const chatMessages = document.getElementById('chat-messages');
-        const sendButton = document.getElementById('send-button');
+        let currentPage = 0;
+        const questionsPerPage = 6;
+        const totalPages = Math.ceil(questions.length / questionsPerPage);
+        let currentFilter = 'all';
 
-        function showSuggestions(filter = '') {
-            const filteredQuestions = questions.filter(q => 
-                q.text.toLowerCase().includes(filter.toLowerCase())
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            displayTopics();
+            setupEventListeners();
+            updatePagination();
+        });
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-theme', savedTheme);
+        }
+
+        function setupEventListeners() {
+            // Theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+            // Search functionality
+            const searchInput = document.querySelector('.enhanced-search-input');
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('focus', () => {
+                document.getElementById('search-results').style.display = 'block';
+            });
+
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    setActiveFilter(e.target.getAttribute('data-category'));
+                });
+            });
+
+            // Chat input
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleUserMessage();
+                }
+            });
+
+            sendButton.addEventListener('click', handleUserMessage);
+
+            // Pagination
+            document.getElementById('prev-topics').addEventListener('click', () => {
+                if (currentPage > 0) {
+                    currentPage--;
+                    displayTopics();
+                    updatePagination();
+                }
+            });
+
+            document.getElementById('next-topics').addEventListener('click', () => {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    displayTopics();
+                    updatePagination();
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        function toggleSearchFilters() {
+            const filters = document.getElementById('search-filters');
+            filters.classList.toggle('show');
+        }
+
+        function setActiveFilter(category) {
+            currentFilter = category;
+
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+
+            // Reset pagination and display filtered topics
+            currentPage = 0;
+            displayTopics();
+            updatePagination();
+        }
+
+        function displayTopics() {
+            const topicsGrid = document.getElementById('topics-grid');
+            const filteredQuestions = currentFilter === 'all' 
+                ? questions 
+                : questions.filter(q => q.category === currentFilter);
+
+            const startIndex = currentPage * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, filteredQuestions.length);
+            const pageQuestions = filteredQuestions.slice(startIndex, endIndex);
+
+            topicsGrid.innerHTML = pageQuestions.map(question => `
+                <div class="topic-card" onclick="showAnswer(${question.id})">
+                    <i class="${question.icon} topic-icon"></i>
+                    <span class="topic-text">${question.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function updatePagination() {
+            const filteredQuestions = currentFilter === 'all' 
+                ? questions 
+                : questions.filter(q => q.category === currentFilter);
+            const totalFilteredPages = Math.ceil(filteredQuestions.length / questionsPerPage);
+
+            document.getElementById('prev-topics').disabled = currentPage === 0;
+            document.getElementById('next-topics').disabled = currentPage >= totalFilteredPages - 1;
+            document.getElementById('pagination-info').textContent = `${currentPage + 1} / ${totalFilteredPages}`;
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            const resultsContainer = document.getElementById('search-results');
+
+            if (query.length < 2) {
+                resultsContainer.style.display = 'none';
+                return;
+            }
+
+            const matchedQuestions = questions.filter(q => 
+                q.text.toLowerCase().includes(query) ||
+                q.keywords.some(keyword => keyword.toLowerCase().includes(query))
             );
 
-            if (filteredQuestions.length > 0) {
-                suggestionsContainer.style.display = 'block';
-                suggestionsContainer.innerHTML = filteredQuestions
-                    .map(q => `
-                        <div class="suggestion-item" onclick="showAnswer('${q.text}')">
-                            <i class="${q.icon}"></i>
-                            ${q.text}
-                        </div>
-                    `).join('');
-            } else {
-                suggestionsContainer.style.display = 'none';
-            }
-        }
-
-        function showAnswer(questionText) {
-            const question = questions.find(q => q.text === questionText);
-            if (question) {
-                const answerDiv = document.createElement('div');
-                answerDiv.className = 'message bot';
-                answerDiv.innerHTML = `
-                    <div class="message-content">
-                        <div class="answer-container">
-                            <div class="answer-title">${question.text}</div>
-                            <div class="answer-content">${question.answer}</div>
-                            <a href="${question.link}" class="answer-link">Learn more →</a>
-                        </div>
+            if (matchedQuestions.length > 0) {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = `
+                    <div style="padding: 1rem; background: var(--nav-bg); border-radius: 12px; border: 1px solid rgba(120, 0, 0, 0.3);">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-color);">Search Results</h4>
+                        ${matchedQuestions.map(q => `
+                            <div class="topic-card" onclick="showAnswer(${q.id})" style="margin-bottom: 0.5rem;">
+                                <i class="${q.icon} topic-icon"></i>
+                                <span class="topic-text">${q.text}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 `;
-                chatMessages.appendChild(answerDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                    userInput.value = '';
-                suggestionsContainer.style.display = 'none';
+            } else {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = `
+                    <div style="padding: 1rem; background: var(--nav-bg); border-radius: 12px; border: 1px solid rgba(120, 0, 0, 0.3); text-align: center; color: var(--secondary-text);">
+                        No results found for "${query}"
+                    </div>
+                `;
             }
         }
 
-        userInput.addEventListener('input', () => {
-            showSuggestions(userInput.value);
-        });
+        function showAnswer(questionId) {
+            const question = questions.find(q => q.id === questionId);
+            if (!question) return;
 
-        userInput.addEventListener('focus', () => {
-            showSuggestions(userInput.value);
-        });
+            const chatMessages = document.getElementById('chat-messages');
+            const timestamp = new Date().toLocaleTimeString();
 
-        sendButton.addEventListener('click', () => {
-            const query = userInput.value.trim();
-            if (query) {
-                showSuggestions(query);
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${question.text}</div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+                <div class="message-avatar">
+                    <div style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        U
+                    </div>
+                </div>
+            `;
+
+            // Add bot response
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot';
+            botMessage.innerHTML = `
+                <div class="message-avatar">
+                    <img src="masgfav.jpg" alt="Assistant">
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        ${question.answer}
+                        <br><br>
+                        <a href="${question.link}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">
+                            Learn more →
+                        </a>
+                    </div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+            `;
+
+            chatMessages.appendChild(userMessage);
+            chatMessages.appendChild(botMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Clear search
+            document.querySelector('.enhanced-search-input').value = '';
+            document.getElementById('search-results').style.display = 'none';
+        }
+
+        function handleUserMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const timestamp = new Date().toLocaleTimeString();
+
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${message}</div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+                <div class="message-avatar">
+                    <div style="width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        U
+                    </div>
+                </div>
+            `;
+
+            // Find matching answer
+            let matchedQuestion;
+
+             if (message.toLowerCase().includes("hi") || message.toLowerCase().includes("hello")) {
+                matchedQuestion = {
+                    answer: "Hi there! How can I help you today?",
+                    link: "home.html" // You might want to adjust the link here
+                };
+            } else {
+                matchedQuestion = questions.find(q =>
+                    q.keywords.some(keyword => message.toLowerCase().includes(keyword.toLowerCase()))
+                );
+            }
+
+            let response = "I'm sorry, I don't have a specific answer for that question. Please try browsing the topics above or contact support for more help.";
+            let link = "contact.html";
+
+            if (matchedQuestion) {
+                response = matchedQuestion.answer;
+                link = matchedQuestion.link;
+            }
+
+            // Add bot response
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot';
+            botMessage.innerHTML = `
+                <div class="message-avatar">
+                    <img src="masgfav.jpg" alt="Assistant">
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        ${response}
+                        <br><br>
+                        <a href="${link}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">
+                            Learn more →
+                        </a>
+                    </div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+            `;
+
+            chatMessages.appendChild(userMessage);
+            chatMessages.appendChild(botMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            userInput.value = '';
+        }
+
+        function handleQuickAction(action) {
+            switch(action) {
+                case 'join-server':
+                    window.location.href = 'private-server.html';
+                    break;
+                case 'report-player':
+                    window.location.href = 'report-player.html';
+                    break;
+                case 'unban-request':
+                    window.location.href = 'unban-request.html';
+                    break;
+                case 'download-sounds':
+                    window.location.href = 'home.html#sound-effects';
+                    break;
+            }
+        }
+
+        function clearChat() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div class="message bot welcome-message">
+                    <div class="message-avatar">
+                        <img src="masgfav.jpg" alt="Assistant">
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            👋 Welcome to the Help Center! I'm here to assist you with any questions about our services. 
+                            You can ask me anything or choose from the popular topics below.
+                        </div>
+                        <div class="message-timestamp">Just now</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportChat() {
+            const messages = document.querySelectorAll('.message');
+            let chatText = 'Help Center Chat Export\n\n';
+
+            messages.forEach(message => {
+                const text = message.querySelector('.message-text').textContent;
+                const timestamp = message.querySelector('.message-timestamp').textContent;
+                const sender = message.classList.contains('user') ? 'You' : 'Assistant';
+
+                chatText += `[${timestamp}] ${sender}: ${text}\n\n`;
+            });
+
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'help-center-chat.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function attachFile() {
+            alert('File attachment feature coming soon!');
+        }
+
+        function toggleVoiceInput() {
+            alert('Voice input feature coming soon!');
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.enhanced-search-container')) {
+                document.getElementById('search-results').style.display = 'none';
             }
         });
-
-        // Show all suggestions initially
-        showSuggestions();
     </script>
+
+    <script src="javascript.js"></script>
 </body>
 </html>
