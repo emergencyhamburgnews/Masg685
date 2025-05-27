@@ -36,6 +36,10 @@
 }
 
 /* Reset and Base Styles */
+:root {
+    --base-font-size: 16px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -46,11 +50,27 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: var(--base-font-size);
     line-height: 1.6;
     color: var(--text-color);
     background: var(--bg-color);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-x: hidden;
+}
+
+/* Animation controls */
+.no-animations * {
+    animation-duration: 0.001s !important;
+    animation-delay: 0.001s !important;
+    transition-duration: 0.001s !important;
+    transition-delay: 0.001s !important;
+}
+
+.reduced-motion * {
+    animation-duration: 0.1s !important;
+    animation-delay: 0.001s !important;
+    transition-duration: 0.1s !important;
+    transition-delay: 0.001s !important;
 }
 
 html {
@@ -1432,6 +1452,44 @@ button:focus, input:focus, textarea:focus, select:focus {
     [data-theme="light"] {
         --border-color: #333333;
     }
+}
+
+/* Enhanced accessibility features */
+.high-contrast {
+    --border-color: #666666 !important;
+    --accent-primary: #ff0066 !important;
+    --text-color: #ffffff !important;
+    --bg-color: #000000 !important;
+}
+
+[data-theme="light"].high-contrast {
+    --border-color: #333333 !important;
+    --accent-primary: #cc0000 !important;
+    --text-color: #000000 !important;
+    --bg-color: #ffffff !important;
+}
+
+.enhanced-focus *:focus {
+    outline: 3px solid var(--accent-primary) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 6px rgba(120, 0, 0, 0.3) !important;
+}
+
+/* Auto-save indicator */
+.auto-save-enabled input:focus,
+.auto-save-enabled textarea:focus {
+    position: relative;
+}
+
+.auto-save-enabled input:focus::after,
+.auto-save-enabled textarea:focus::after {
+    content: '💾';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    opacity: 0.7;
 }
 
 /* Reduced motion support */

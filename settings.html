@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masg685 Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta property="og:image" content="img1.jpg">
+    <meta property="og:image:alt" content="Masg685 Profile Image">
+    <meta property="og:url" content="settings.html">
+    <meta name="twitter:image" content="img1.jpg">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="theme-container">
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="sun">☀</span>
+            </button>
+            <button class="search-toggle" onclick="openSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="hamburger">☰</div>
+        <ul class="nav-links">
+            <li><a href="home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+            <li><a href="about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+            <li><a href="update.html"><i class="fas fa-bell"></i><span>Updates</span></a></li>
+            <li><a href="private-server.html"><i class="fas fa-server"></i><span>Private Server</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i><span data-translate="settings">Settings</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <div class="search-box">
+            <button class="close-search" aria-label="Close search">×</button>
+            <input type="text" class="search-input" placeholder="Search across all pages...">
+            <div class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Settings Container -->
+    <div class="settings-container">
+        <div class="settings-header">
+            <div class="settings-icon-container">
+                <i class="fas fa-cog"></i>
+            </div>
+            <h1 class="settings-title">Settings</h1>
+            <p class="settings-subtitle">Customize your experience</p>
+        </div>
+
+        <div class="settings-content">
+            <!-- Color Scheme Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-palette"></i>
+                    <h2>Color Scheme</h2>
+                </div>
+                <div class="color-schemes-grid">
+                    <div class="color-scheme-card" data-scheme="dark">
+                        <div class="scheme-preview dark-preview">
+                            <div class="preview-nav"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Dark Theme</h3>
+                        <p>Easy on the eyes for extended use</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot" style="background: #0a0a0a;"></span>
+                            <span class="color-dot" style="background: #780000;"></span>
+                            <span class="color-dot" style="background: #ffffff;"></span>
+                        </div>
+                    </div>
+
+                    <div class="color-scheme-card" data-scheme="light">
+                        <div class="scheme-preview light-preview">
+                            <div class="preview-nav"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Light Theme</h3>
+                        <p>Clean and bright for daytime use</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot" style="background: #ffffff;"></span>
+                            <span class="color-dot" style="background: #780000;"></span>
+                            <span class="color-dot" style="background: #333333;"></span>
+                        </div>
+                    </div>
+
+                    <div class="color-scheme-card" data-scheme="blue">
+                        <div class="scheme-preview blue-preview">
+                            <div class="preview-nav"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Ocean Blue</h3>
+                        <p>Calming blue tones for focus</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot" style="background: #0f1419;"></span>
+                            <span class="color-dot" style="background: #0093e9;"></span>
+                            <span class="color-dot" style="background: #ffffff;"></span>
+                        </div>
+                    </div>
+
+                    <div class="color-scheme-card" data-scheme="purple">
+                        <div class="scheme-preview purple-preview">
+                            <div class="preview-nav"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Royal Purple</h3>
+                        <p>Elegant purple for a premium feel</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot" style="background: #1a0933;"></span>
+                            <span class="color-dot" style="background: #8b5cf6;"></span>
+                            <span class="color-dot" style="background: #ffffff;"></span>
+                        </div>
+                    </div>
+
+                    <div class="color-scheme-card" data-scheme="green">
+                        <div class="scheme-preview green-preview">
+                            <div class="preview-nav"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Forest Green</h3>
+                        <p>Natural green for a refreshing look</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot" style="background: #0f1b0f;"></span>
+                            <span class="color-dot" style="background: #10b981;"></span>
+                            <span class="color-dot" style="background: #ffffff;"></span>
+                        </div>
+                    </div>
+
+                    <div class="color-scheme-card" data-scheme="auto">
+                        <div class="scheme-preview auto-preview">
+                            <div class="preview-nav gradient-bg"></div>
+                            <div class="preview-content">
+                                <div class="preview-text"></div>
+                                <div class="preview-text short"></div>
+                            </div>
+                        </div>
+                        <h3>Auto Mode</h3>
+                        <p>Follows your system preference</p>
+                        <div class="scheme-colors">
+                            <span class="color-dot gradient-dot"></span>
+                            <span class="color-dot" style="background: #780000;"></span>
+                            <span class="color-dot gradient-dot-2"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Settings Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-desktop"></i>
+                    <h2>Display Settings</h2>
+                </div>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Animations</h3>
+                            <p>Enable smooth transitions and effects</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animations-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Sound Effects</h3>
+                            <p>Play sounds for interactions</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sounds-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Reduced Motion</h3>
+                            <p>Minimize animations for accessibility</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="reduced-motion-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Font Settings Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-font"></i>
+                    <h2>Typography</h2>
+                </div>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Font Size</h3>
+                            <p>Adjust text size for better readability</p>
+                        </div>
+                        <div class="font-size-controls">
+                            <button class="font-btn" data-size="small">A</button>
+                            <button class="font-btn active" data-size="medium">A</button>
+                            <button class="font-btn" data-size="large">A</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessibility Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-universal-access"></i>
+                    <h2>Accessibility</h2>
+                </div>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>High Contrast</h3>
+                            <p>Increase contrast for better visibility</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="high-contrast-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Focus Indicators</h3>
+                            <p>Enhanced focus outlines for navigation</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="focus-indicators-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h2>Performance</h2>
+                </div>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Auto-save Forms</h3>
+                            <p>Automatically save form data as you type</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="auto-save-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Preload Images</h3>
+                            <p>Load images before they're needed for faster browsing</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="preload-images-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>Privacy</h2>
+                </div>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Remember Preferences</h3>
+                            <p>Save your settings across browser sessions</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="remember-preferences-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div class="setting-info">
+                            <h3>Analytics</h3>
+                            <p>Help improve the site by sharing usage data</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <i class="fas fa-refresh"></i>
+                    <h2>Reset</h2>
+                </div>
+                <div class="reset-options">
+                    <button class="reset-btn" onclick="resetSettings()">
+                        <i class="fas fa-undo"></i>
+                        Reset to Default
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Settings Page Styles */
+        .settings-container {
+            min-height: 100vh;
+            background: var(--bg-color);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 20% 20%, rgba(120, 0, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(120, 0, 0, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .settings-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .settings-icon-container {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .settings-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .settings-subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+        }
+
+        .settings-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .settings-section {
+            background: var(--nav-bg);
+            border: 1px solid rgba(120, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(120, 0, 0, 0.2);
+        }
+
+        .section-header i {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        /* Color Scheme Cards */
+        .color-schemes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .color-scheme-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(120, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-scheme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--accent-primary);
+        }
+
+        .color-scheme-card.active {
+            border-color: var(--accent-primary);
+            background: rgba(120, 0, 0, 0.1);
+        }
+
+        .scheme-preview {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-nav {
+            height: 30%;
+            width: 100%;
+        }
+
+        .preview-content {
+            height: 70%;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .preview-text {
+            height: 8px;
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+
+        .preview-text.short {
+            width: 60%;
+        }
+
+        /* Dark Preview */
+        .dark-preview {
+            background: #0a0a0a;
+        }
+
+        .dark-preview .preview-nav {
+            background: #1a1a1a;
+        }
+
+        .dark-preview .preview-text {
+            background: #ffffff;
+        }
+
+        /* Light Preview */
+        .light-preview {
+            background: #ffffff;
+        }
+
+        .light-preview .preview-nav {
+            background: #f5f5f5;
+        }
+
+        .light-preview .preview-text {
+            background: #333333;
+        }
+
+        /* Blue Preview */
+        .blue-preview {
+            background: #0f1419;
+        }
+
+        .blue-preview .preview-nav {
+            background: linear-gradient(90deg, #0093e9 0%, #80d0c7 100%);
+        }
+
+        .blue-preview .preview-text {
+            background: #ffffff;
+        }
+
+        /* Purple Preview */
+        .purple-preview {
+            background: #1a0933;
+        }
+
+        .purple-preview .preview-nav {
+            background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);
+        }
+
+        .purple-preview .preview-text {
+            background: #ffffff;
+        }
+
+        /* Green Preview */
+        .green-preview {
+            background: #0f1b0f;
+        }
+
+        .green-preview .preview-nav {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .green-preview .preview-text {
+            background: #ffffff;
+        }
+
+        /* Auto Preview */
+        .auto-preview {
+            background: linear-gradient(45deg, #0a0a0a 50%, #ffffff 50%);
+        }
+
+        .auto-preview .preview-nav.gradient-bg {
+            background: linear-gradient(90deg, #780000 0%, #a30000 100%);
+        }
+
+        .auto-preview .preview-text {
+            background: #888888;
+        }
+
+        .color-scheme-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .color-scheme-card p {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            margin-bottom: 1rem;
+        }
+
+        .scheme-colors {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .gradient-dot {
+            background: linear-gradient(45deg, #780000, #a30000);
+        }
+
+        .gradient-dot-2 {
+            background: linear-gradient(45deg, #333333, #ffffff);
+        }
+
+        /* Settings Options */
+        .settings-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(120, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .setting-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .setting-info p {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            margin: 0;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: 0.4s;
+            border-radius: 34px;
+            border: 1px solid rgba(120, 0, 0, 0.3);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: var(--gradient-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Font Size Controls */
+        .font-size-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .font-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(120, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .font-btn[data-size="small"] {
+            font-size: 0.8rem;
+        }
+
+        .font-btn[data-size="medium"] {
+            font-size: 1rem;
+        }
+
+        .font-btn[data-size="large"] {
+            font-size: 1.2rem;
+        }
+
+        .font-btn:hover,
+        .font-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Reset Options */
+        .reset-options {
+            text-align: center;
+        }
+
+        .reset-btn {
+            background: rgba(255, 69, 58, 0.2);
+            border: 2px solid rgba(255, 69, 58, 0.5);
+            color: #ff453a;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 69, 58, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 1rem;
+            }
+
+            .settings-title {
+                font-size: 2rem;
+            }
+
+            .color-schemes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .setting-option {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .settings-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+
+
+
+    <script src="javascript.js"></script>
+</body>
+</html>

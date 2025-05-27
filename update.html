@@ -4,12 +4,16 @@
     <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updates</title>
+    <title>Masg685 Website Updates</title>
+    <meta property="og:image" content="img1.jpg">
+    <meta property="og:image:alt" content="Masg685 Profile Image">
+    <meta property="og:url" content="update.html">
+    <meta name="twitter:image" content="img1.jpg">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    
+
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -29,7 +33,7 @@
             <li><a href="contact.html"><i class="fas fa-envelope"></i><span data-translate="contact">Contact</span></a></li>
             <li><a href="update.html"><i class="fas fa-bell"></i><span data-translate="updates">Updates</span></a></li>
             <li><a href="private-server.html"><i class="fas fa-server"></i><span data-translate="privateServer">Private Server</span></a></li>
-            
+            <li><a href="settings.html"><i class="fas fa-cog"></i><span data-translate="settings">Settings</span></a></li>
         </ul>
     </nav>
 
@@ -47,6 +51,36 @@
             <h1>Website Updates</h1>
             <p class="updates-subtitle">Track all changes and improvements to the website</p>
         </div>
+
+        <div class="updates-timeline">
+            <!-- Latest Update -->
+            <div class="timeline-item current">
+                <div class="timeline-date">
+                    <span class="date">May 24, 2025</span>
+                    <span class="badge">New</span>
+                </div>
+                <div class="timeline-content">
+                    <div class="update-card">
+                        <div class="card-header">
+                            <i class="fas fa-tools"></i>
+                            <h2>Fix & New</h2>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-wrench"></i> What We Fixed</h3>
+                            <ul>
+                                <li>Fixed an issue where the Discord server list was not loading or displaying.</li>
+                            </ul>
+                        </div>
+                        <div class="changes-section">
+                            <h3><i class="fas fa-plus-circle"></i> What We Added & Improved</h3>
+                            <ul>
+                                <li>Added a new Settings page that allows users to customize their color and other preferences.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         <div class="updates-timeline">
             <!-- Latest Update -->
@@ -441,7 +475,7 @@
         document.getElementById('show-previous').addEventListener('click', function() {
             const previousUpdates = document.getElementById('previous-updates');
             const button = this;
-            
+
             if (previousUpdates.style.display === 'none') {
                 previousUpdates.style.display = 'block';
                 button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Previous Updates';
