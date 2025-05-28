@@ -758,9 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize settings page functionality if on settings page
-    if (window.location.pathname.includes('settings.html')) {
-        initializeSettings();
-        setupSettingsEventListeners();
+    if (window.location.pathname.includes('settings.html') || window.location.href.includes('settings.html')) {
+        setTimeout(() => {
+            initializeSettings();
+            setupSettingsEventListeners();
+        }, 100);
     }
 
     // Loading screen is handled by showLoadingScreenIfNeeded() above
@@ -768,111 +770,172 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Settings page functions
 function initializeSettings() {
-    const savedScheme = localStorage.getItem('colorScheme') || 'dark';
-    const savedAnimations = localStorage.getItem('animations') !== 'false';
-    const savedSounds = localStorage.getItem('sounds') !== 'false';
-    const savedReducedMotion = localStorage.getItem('reducedMotion') === 'true';
-    const savedFontSize = localStorage.getItem('fontSize') || 'medium';
-    const savedHighContrast = localStorage.getItem('highContrast') === 'true';
-    const savedFocusIndicators = localStorage.getItem('focusIndicators') !== 'false';
-    const savedAutoSave = localStorage.getItem('autoSaveForms') !== 'false';
-    const savedPreloadImages = localStorage.getItem('preloadImages') !== 'false';
-    const savedRememberPrefs = localStorage.getItem('rememberPreferences') !== 'false';
-    const savedAnalytics = localStorage.getItem('analytics') === 'true';
+    try {
+        // Get saved settings with fallbacks
+        const savedScheme = localStorage.getItem('colorScheme') || 'dark';
+        const savedAnimations = localStorage.getItem('animations') !== 'false';
+        const savedSounds = localStorage.getItem('sounds') !== 'false';
+        const savedReducedMotion = localStorage.getItem('reducedMotion') === 'true';
+        const savedFontSize = localStorage.getItem('fontSize') || 'medium';
+        const savedHighContrast = localStorage.getItem('highContrast') === 'true';
+        const savedFocusIndicators = localStorage.getItem('focusIndicators') !== 'false';
+        const savedAutoSave = localStorage.getItem('autoSaveForms') !== 'false';
+        const savedPreloadImages = localStorage.getItem('preloadImages') !== 'false';
+        const savedRememberPrefs = localStorage.getItem('rememberPreferences') !== 'false';
+        const savedAnalytics = localStorage.getItem('analytics') === 'true';
 
-    // Apply settings
-    applyColorScheme(savedScheme);
+        // Apply color scheme first
+        applyColorScheme(savedScheme);
 
-    const animationsToggle = document.getElementById('animations-toggle');
-    if (animationsToggle) animationsToggle.checked = savedAnimations;
+        // Wait for DOM elements to be ready
+        const initializeToggles = () => {
+            const animationsToggle = document.getElementById('animations-toggle');
+            if (animationsToggle) animationsToggle.checked = savedAnimations;
 
-    const soundsToggle = document.getElementById('sounds-toggle');
-    if (soundsToggle) soundsToggle.checked = savedSounds;
+            const soundsToggle = document.getElementById('sounds-toggle');
+            if (soundsToggle) soundsToggle.checked = savedSounds;
 
-    const reducedMotionToggle = document.getElementById('reduced-motion-toggle');
-    if (reducedMotionToggle) reducedMotionToggle.checked = savedReducedMotion;
+            const reducedMotionToggle = document.getElementById('reduced-motion-toggle');
+            if (reducedMotionToggle) reducedMotionToggle.checked = savedReducedMotion;
 
-    const highContrastToggle = document.getElementById('high-contrast-toggle');
-    if (highContrastToggle) highContrastToggle.checked = savedHighContrast;
+            const highContrastToggle = document.getElementById('high-contrast-toggle');
+            if (highContrastToggle) highContrastToggle.checked = savedHighContrast;
 
-    const focusIndicatorsToggle = document.getElementById('focus-indicators-toggle');
-    if (focusIndicatorsToggle) focusIndicatorsToggle.checked = savedFocusIndicators;
+            const focusIndicatorsToggle = document.getElementById('focus-indicators-toggle');
+            if (focusIndicatorsToggle) focusIndicatorsToggle.checked = savedFocusIndicators;
 
-    const autoSaveToggle = document.getElementById('auto-save-toggle');
-    if (autoSaveToggle) autoSaveToggle.checked = savedAutoSave;
+            const autoSaveToggle = document.getElementById('auto-save-toggle');
+            if (autoSaveToggle) autoSaveToggle.checked = savedAutoSave;
 
-    const preloadImagesToggle = document.getElementById('preload-images-toggle');
-    if (preloadImagesToggle) preloadImagesToggle.checked = savedPreloadImages;
+            const preloadImagesToggle = document.getElementById('preload-images-toggle');
+            if (preloadImagesToggle) preloadImagesToggle.checked = savedPreloadImages;
 
-    const rememberPrefsToggle = document.getElementById('remember-preferences-toggle');
-    if (rememberPrefsToggle) rememberPrefsToggle.checked = savedRememberPrefs;
+            const rememberPrefsToggle = document.getElementById('remember-preferences-toggle');
+            if (rememberPrefsToggle) rememberPrefsToggle.checked = savedRememberPrefs;
 
-    const analyticsToggle = document.getElementById('analytics-toggle');
-    if (analyticsToggle) analyticsToggle.checked = savedAnalytics;
+            const analyticsToggle = document.getElementById('analytics-toggle');
+            if (analyticsToggle) analyticsToggle.checked = savedAnalytics;
 
-    applyFontSize(savedFontSize);
+            // Apply font size
+            applyFontSize(savedFontSize);
 
-    // Mark active scheme and font size
-    const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
-    if (activeSchemeCard) activeSchemeCard.classList.add('active');
+            // Mark active scheme and font size
+            setTimeout(() => {
+                const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
+                if (activeSchemeCard) {
+                    document.querySelectorAll('.color-scheme-card').forEach(card => card.classList.remove('active'));
+                    activeSchemeCard.classList.add('active');
+                }
 
-    const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
-    if (activeFontBtn) activeFontBtn.classList.add('active');
+                const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
+                if (activeFontBtn) {
+                    document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+                    activeFontBtn.classList.add('active');
+                }
+            }, 100);
+        };
+
+        // Initialize immediately and also with delay to ensure elements are ready
+        initializeToggles();
+        setTimeout(initializeToggles, 200);
+
+    } catch (error) {
+        console.warn('Error initializing settings:', error);
+        // Fallback to default dark theme
+        applyColorScheme('dark');
+    }
 }
 
 function setupSettingsEventListeners() {
-    // Color scheme selection
-    document.querySelectorAll('.color-scheme-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const scheme = this.getAttribute('data-scheme');
-            selectColorScheme(scheme);
+    // Wait for elements to be available
+    setTimeout(() => {
+        // Color scheme selection
+        document.querySelectorAll('.color-scheme-card').forEach(card => {
+            // Remove existing listeners to prevent duplicates
+            card.removeEventListener('click', handleColorSchemeClick);
+            card.addEventListener('click', handleColorSchemeClick);
         });
-    });
 
-    // Toggle switches
-    const animationsToggle = document.getElementById('animations-toggle');
-    if (animationsToggle) {
-        animationsToggle.addEventListener('change', function() {
-            localStorage.setItem('animations', this.checked);
-            applyAnimationSettings(this.checked);
-        });
-    }
+        // Toggle switches
+        const animationsToggle = document.getElementById('animations-toggle');
+        if (animationsToggle) {
+            animationsToggle.addEventListener('change', function() {
+                try {
+                    localStorage.setItem('animations', this.checked);
+                    applyAnimationSettings(this.checked);
+                } catch (e) {
+                    console.warn('Could not save animations setting:', e);
+                }
+            });
+        }
 
-    const soundsToggle = document.getElementById('sounds-toggle');
-    if (soundsToggle) {
-        soundsToggle.addEventListener('change', function() {
-            localStorage.setItem('sounds', this.checked);
-        });
-    }
+        const soundsToggle = document.getElementById('sounds-toggle');
+        if (soundsToggle) {
+            soundsToggle.addEventListener('change', function() {
+                try {
+                    localStorage.setItem('sounds', this.checked);
+                } catch (e) {
+                    console.warn('Could not save sounds setting:', e);
+                }
+            });
+        }
 
-    const reducedMotionToggle = document.getElementById('reduced-motion-toggle');
-    if (reducedMotionToggle) {
-        reducedMotionToggle.addEventListener('change', function() {
-            localStorage.setItem('reducedMotion', this.checked);
-            applyReducedMotion(this.checked);
-        });
-    }
+        const reducedMotionToggle = document.getElementById('reduced-motion-toggle');
+        if (reducedMotionToggle) {
+            reducedMotionToggle.addEventListener('change', function() {
+                try {
+                    localStorage.setItem('reducedMotion', this.checked);
+                    applyReducedMotion(this.checked);
+                } catch (e) {
+                    console.warn('Could not save reduced motion setting:', e);
+                }
+            });
+        }
 
-    // Font size buttons
-    document.querySelectorAll('.font-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const size = this.getAttribute('data-size');
-            selectFontSize(size);
+        // Font size buttons
+        document.querySelectorAll('.font-btn').forEach(btn => {
+            btn.removeEventListener('click', handleFontSizeClick);
+            btn.addEventListener('click', handleFontSizeClick);
         });
-    });
+    }, 50);
+}
+
+// Separate handler functions to prevent duplicates
+function handleColorSchemeClick() {
+    const scheme = this.getAttribute('data-scheme');
+    selectColorScheme(scheme);
+}
+
+function handleFontSizeClick() {
+    const size = this.getAttribute('data-size');
+    selectFontSize(size);
 }
 
 function selectColorScheme(scheme) {
+    // Remove active class from all cards
     document.querySelectorAll('.color-scheme-card').forEach(card => {
         card.classList.remove('active');
     });
 
+    // Add active class to selected card
     const selectedCard = document.querySelector(`[data-scheme="${scheme}"]`);
-    if (selectedCard) selectedCard.classList.add('active');
+    if (selectedCard) {
+        selectedCard.classList.add('active');
+    }
 
+    // Apply the color scheme immediately
     applyColorScheme(scheme);
-    localStorage.setItem('colorScheme', scheme);
-    localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
+    
+    // Save to localStorage
+    try {
+        localStorage.setItem('colorScheme', scheme);
+        localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
+    } catch (e) {
+        console.warn('Could not save to localStorage:', e);
+    }
+
+    // Force a style update
+    document.documentElement.style.setProperty('--force-update', Math.random());
 }
 
 function selectFontSize(size) {
@@ -1084,6 +1147,129 @@ if (window.matchMedia) {
     });
 }
 
+// Image download functionality
+function downloadImage(imageSrc, fileName) {
+    try {
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = imageSrc;
+        link.download = fileName || 'image';
+        
+        // Add cross-origin attribute for external images
+        link.setAttribute('crossorigin', 'anonymous');
+        
+        // Append to body and trigger download
+        document.body.appendChild(link);
+        
+        // For mobile Safari compatibility
+        if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
+            link.target = '_blank';
+        }
+        
+        link.click();
+        
+        // Clean up
+        setTimeout(() => {
+            if (document.body.contains(link)) {
+                document.body.removeChild(link);
+            }
+        }, 100);
+        
+        // Show feedback to user
+        showDownloadFeedback('Image downloaded successfully!');
+        
+    } catch (error) {
+        console.error('Download failed:', error);
+        showDownloadFeedback('Download failed. Please try again.', true);
+    }
+}
+
+// Show download feedback to user
+function showDownloadFeedback(message, isError = false) {
+    // Remove any existing feedback
+    const existingFeedback = document.querySelector('.download-feedback');
+    if (existingFeedback) {
+        existingFeedback.remove();
+    }
+    
+    // Create feedback element
+    const feedback = document.createElement('div');
+    feedback.className = 'download-feedback';
+    feedback.textContent = message;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${isError ? '#ff4444' : '#4CAF50'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(feedback);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        if (document.body.contains(feedback)) {
+            feedback.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (document.body.contains(feedback)) {
+                    document.body.removeChild(feedback);
+                }
+            }, 300);
+        }
+    }, 3000);
+}
+
+async function downloadAllImages() {
+    const images = [
+        { src: 'img8.jpg', name: 'Masg685_Image_8.jpg' },
+        { src: 'img9.jpg', name: 'Masg685_Image_9.jpg' },
+        { src: 'img10.png', name: 'Masg685_Image_10.png' },
+        { src: 'img11.png', name: 'Masg685_Image_11.png' },
+        { src: 'img12.png', name: 'Masg685_Image_12.png' },
+        { src: 'img13.png', name: 'Masg685_Image_13.png' },
+        { src: 'img14.jpg', name: 'Masg685_Image_14.jpg' },
+        { src: 'img15.jpg', name: 'Masg685_Image_15.jpg' },
+        { src: 'img16.jpg', name: 'Masg685_Image_16.jpg' }
+    ];
+
+    const downloadAllBtn = document.querySelector('.download-all-button');
+    const originalText = downloadAllBtn.innerHTML;
+    
+    // Show progress
+    downloadAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+    downloadAllBtn.disabled = true;
+
+    // Download each image with a small delay
+    for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        downloadImage(image.src, image.name);
+        
+        // Update progress
+        downloadAllBtn.innerHTML = `<i class="fas fa-download"></i> Downloaded ${i + 1}/${images.length}`;
+        
+        // Small delay between downloads to prevent browser blocking
+        await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    // Reset button
+    downloadAllBtn.innerHTML = '<i class="fas fa-check"></i> All Downloaded!';
+    downloadAllBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    
+    setTimeout(() => {
+        downloadAllBtn.innerHTML = originalText;
+        downloadAllBtn.style.background = '';
+        downloadAllBtn.disabled = false;
+    }, 3000);
+}
+
 // Make functions globally available
 window.openSearch = openSearch;
 window.performSearch = performSearch;
@@ -1093,4 +1279,6 @@ window.selectFontSize = selectFontSize;
 window.login = login;
 window.playSound = playSound;
 window.downloadSound = downloadSound;
+window.downloadImage = downloadImage;
+window.downloadAllImages = downloadAllImages;
 window.goBack = goBack;
