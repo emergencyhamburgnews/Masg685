@@ -759,10 +759,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize settings page functionality if on settings page
     if (window.location.pathname.includes('settings.html') || window.location.href.includes('settings.html')) {
+        // Use multiple timing checks to ensure initialization
+        initializeSettings();
+        setupSettingsEventListeners();
+        
         setTimeout(() => {
             initializeSettings();
             setupSettingsEventListeners();
         }, 100);
+        
+        setTimeout(() => {
+            initializeSettings();
+            setupSettingsEventListeners();
+        }, 500);
     }
 
     // Loading screen is handled by showLoadingScreenIfNeeded() above
@@ -771,6 +780,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Settings page functions
 function initializeSettings() {
     try {
+        // Check if we're actually on the settings page
+        if (!document.querySelector('.settings-container')) {
+            return;
+        }
+
         // Get saved settings with fallbacks
         const savedScheme = localStorage.getItem('colorScheme') || 'dark';
         const savedAnimations = localStorage.getItem('animations') !== 'false';
@@ -820,24 +834,23 @@ function initializeSettings() {
             applyFontSize(savedFontSize);
 
             // Mark active scheme and font size
-            setTimeout(() => {
-                const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
-                if (activeSchemeCard) {
-                    document.querySelectorAll('.color-scheme-card').forEach(card => card.classList.remove('active'));
-                    activeSchemeCard.classList.add('active');
-                }
+            const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
+            if (activeSchemeCard) {
+                document.querySelectorAll('.color-scheme-card').forEach(card => card.classList.remove('active'));
+                activeSchemeCard.classList.add('active');
+            }
 
-                const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
-                if (activeFontBtn) {
-                    document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
-                    activeFontBtn.classList.add('active');
-                }
-            }, 100);
+            const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
+            if (activeFontBtn) {
+                document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+                activeFontBtn.classList.add('active');
+            }
         };
 
         // Initialize immediately and also with delay to ensure elements are ready
         initializeToggles();
-        setTimeout(initializeToggles, 200);
+        setTimeout(initializeToggles, 100);
+        setTimeout(initializeToggles, 300);
 
     } catch (error) {
         console.warn('Error initializing settings:', error);
@@ -847,18 +860,27 @@ function initializeSettings() {
 }
 
 function setupSettingsEventListeners() {
-    // Wait for elements to be available
-    setTimeout(() => {
+    // Check if we're actually on the settings page
+    if (!document.querySelector('.settings-container')) {
+        return;
+    }
+
+    // Wait for elements to be available with retries
+    const setupListeners = () => {
         // Color scheme selection
-        document.querySelectorAll('.color-scheme-card').forEach(card => {
-            // Remove existing listeners to prevent duplicates
-            card.removeEventListener('click', handleColorSchemeClick);
-            card.addEventListener('click', handleColorSchemeClick);
-        });
+        const schemeCards = document.querySelectorAll('.color-scheme-card');
+        if (schemeCards.length > 0) {
+            schemeCards.forEach(card => {
+                // Remove existing listeners to prevent duplicates
+                card.removeEventListener('click', handleColorSchemeClick);
+                card.addEventListener('click', handleColorSchemeClick);
+            });
+        }
 
         // Toggle switches
         const animationsToggle = document.getElementById('animations-toggle');
-        if (animationsToggle) {
+        if (animationsToggle && !animationsToggle.hasAttribute('data-listener-added')) {
+            animationsToggle.setAttribute('data-listener-added', 'true');
             animationsToggle.addEventListener('change', function() {
                 try {
                     localStorage.setItem('animations', this.checked);
@@ -870,7 +892,8 @@ function setupSettingsEventListeners() {
         }
 
         const soundsToggle = document.getElementById('sounds-toggle');
-        if (soundsToggle) {
+        if (soundsToggle && !soundsToggle.hasAttribute('data-listener-added')) {
+            soundsToggle.setAttribute('data-listener-added', 'true');
             soundsToggle.addEventListener('change', function() {
                 try {
                     localStorage.setItem('sounds', this.checked);
@@ -881,7 +904,8 @@ function setupSettingsEventListeners() {
         }
 
         const reducedMotionToggle = document.getElementById('reduced-motion-toggle');
-        if (reducedMotionToggle) {
+        if (reducedMotionToggle && !reducedMotionToggle.hasAttribute('data-listener-added')) {
+            reducedMotionToggle.setAttribute('data-listener-added', 'true');
             reducedMotionToggle.addEventListener('change', function() {
                 try {
                     localStorage.setItem('reducedMotion', this.checked);
@@ -893,11 +917,23 @@ function setupSettingsEventListeners() {
         }
 
         // Font size buttons
-        document.querySelectorAll('.font-btn').forEach(btn => {
-            btn.removeEventListener('click', handleFontSizeClick);
-            btn.addEventListener('click', handleFontSizeClick);
-        });
-    }, 50);
+        const fontBtns = document.querySelectorAll('.font-btn');
+        if (fontBtns.length > 0) {
+            fontBtns.forEach(btn => {
+                if (!btn.hasAttribute('data-listener-added')) {
+                    btn.setAttribute('data-listener-added', 'true');
+                    btn.removeEventListener('click', handleFontSizeClick);
+                    btn.addEventListener('click', handleFontSizeClick);
+                }
+            });
+        }
+    };
+
+    // Try multiple times to ensure elements are ready
+    setupListeners();
+    setTimeout(setupListeners, 50);
+    setTimeout(setupListeners, 200);
+    setTimeout(setupListeners, 500);
 }
 
 // Separate handler functions to prevent duplicates
