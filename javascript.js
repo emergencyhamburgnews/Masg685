@@ -761,6 +761,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('settings.html') || window.location.href.includes('settings.html')) {
         console.log('Detected settings page, initializing...');
         
+        // Force immediate initialization
+        initializeSettings();
+        setupSettingsEventListeners();
+        
         // Use multiple timing checks to ensure initialization with longer delays
         setTimeout(() => {
             initializeSettings();
@@ -777,6 +781,11 @@ document.addEventListener('DOMContentLoaded', () => {
             setupSettingsEventListeners();
         }, 1000);
         
+        setTimeout(() => {
+            initializeSettings();
+            setupSettingsEventListeners();
+        }, 2000);
+        
         // Also try when the page is fully loaded
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -784,6 +793,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 setupSettingsEventListeners();
             }, 200);
         });
+        
+        // Try again after a longer delay to ensure everything is ready
+        setTimeout(() => {
+            initializeSettings();
+            setupSettingsEventListeners();
+        }, 3000);
     }
 
     // Loading screen is handled by showLoadingScreenIfNeeded() above
@@ -1031,6 +1046,29 @@ function selectColorScheme(scheme) {
     console.log('Selecting color scheme:', scheme);
     
     try {
+        // Save to localStorage first
+        try {
+            localStorage.setItem('colorScheme', scheme);
+            localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
+            console.log('Saved scheme to localStorage:', scheme);
+        } catch (e) {
+            console.error('Could not save to localStorage:', e);
+        }
+
+        // Apply the color scheme immediately with force
+        applyColorScheme(scheme);
+        console.log('Applied color scheme:', scheme);
+        
+        // Force multiple style updates
+        setTimeout(() => {
+            applyColorScheme(scheme);
+            document.documentElement.setAttribute('data-theme', scheme === 'light' ? 'light' : 'dark');
+        }, 50);
+        
+        setTimeout(() => {
+            applyColorScheme(scheme);
+        }, 100);
+
         // Remove active class from all cards
         const allCards = document.querySelectorAll('.color-scheme-card');
         allCards.forEach(card => {
@@ -1045,25 +1083,15 @@ function selectColorScheme(scheme) {
         } else {
             console.warn('Could not find selected card for scheme:', scheme);
         }
-
-        // Apply the color scheme immediately
-        applyColorScheme(scheme);
-        console.log('Applied color scheme:', scheme);
         
-        // Save to localStorage
-        try {
-            localStorage.setItem('colorScheme', scheme);
-            localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
-            console.log('Saved scheme to localStorage:', scheme);
-        } catch (e) {
-            console.error('Could not save to localStorage:', e);
-        }
-
-        // Force a style recalculation
+        // Force a style recalculation and reflow
         document.documentElement.style.setProperty('--force-update', Math.random());
+        document.body.offsetHeight; // Force reflow
         
-        // Trigger a reflow to ensure styles are applied
+        // Force repaint
+        document.body.style.display = 'none';
         document.body.offsetHeight;
+        document.body.style.display = '';
         
         // Show feedback to user
         const feedback = document.createElement('div');
@@ -1072,31 +1100,28 @@ function selectColorScheme(scheme) {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: var(--accent-primary);
+            background: #4CAF50;
             color: white;
             padding: 12px 20px;
             border-radius: 8px;
             z-index: 10000;
             font-family: Arial, sans-serif;
             font-size: 14px;
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         `;
         
         document.body.appendChild(feedback);
         
         setTimeout(() => {
             if (document.body.contains(feedback)) {
-                feedback.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (document.body.contains(feedback)) {
-                        document.body.removeChild(feedback);
-                    }
-                }, 300);
+                document.body.removeChild(feedback);
             }
         }, 2000);
         
     } catch (error) {
         console.error('Error in selectColorScheme:', error);
+        // Fallback - try to apply the scheme anyway
+        applyColorScheme(scheme);
     }
 }
 
