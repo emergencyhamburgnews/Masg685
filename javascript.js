@@ -759,10 +759,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize settings page functionality if on settings page
     if (window.location.pathname.includes('settings.html') || window.location.href.includes('settings.html')) {
-        // Use multiple timing checks to ensure initialization
-        initializeSettings();
-        setupSettingsEventListeners();
+        console.log('Detected settings page, initializing...');
         
+        // Use multiple timing checks to ensure initialization with longer delays
         setTimeout(() => {
             initializeSettings();
             setupSettingsEventListeners();
@@ -772,6 +771,19 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeSettings();
             setupSettingsEventListeners();
         }, 500);
+        
+        setTimeout(() => {
+            initializeSettings();
+            setupSettingsEventListeners();
+        }, 1000);
+        
+        // Also try when the page is fully loaded
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                initializeSettings();
+                setupSettingsEventListeners();
+            }, 200);
+        });
     }
 
     // Loading screen is handled by showLoadingScreenIfNeeded() above
@@ -784,6 +796,8 @@ function initializeSettings() {
         if (!document.querySelector('.settings-container')) {
             return;
         }
+
+        console.log('Initializing settings page...');
 
         // Get saved settings with fallbacks
         const savedScheme = localStorage.getItem('colorScheme') || 'dark';
@@ -798,13 +812,19 @@ function initializeSettings() {
         const savedRememberPrefs = localStorage.getItem('rememberPreferences') !== 'false';
         const savedAnalytics = localStorage.getItem('analytics') === 'true';
 
+        console.log('Current saved scheme:', savedScheme);
+
         // Apply color scheme first
         applyColorScheme(savedScheme);
 
-        // Wait for DOM elements to be ready
+        // Wait for DOM elements to be ready with more robust checking
         const initializeToggles = () => {
+            // Initialize toggles
             const animationsToggle = document.getElementById('animations-toggle');
-            if (animationsToggle) animationsToggle.checked = savedAnimations;
+            if (animationsToggle) {
+                animationsToggle.checked = savedAnimations;
+                console.log('Set animations toggle:', savedAnimations);
+            }
 
             const soundsToggle = document.getElementById('sounds-toggle');
             if (soundsToggle) soundsToggle.checked = savedSounds;
@@ -833,27 +853,49 @@ function initializeSettings() {
             // Apply font size
             applyFontSize(savedFontSize);
 
-            // Mark active scheme and font size
-            const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
-            if (activeSchemeCard) {
-                document.querySelectorAll('.color-scheme-card').forEach(card => card.classList.remove('active'));
-                activeSchemeCard.classList.add('active');
+            // Mark active scheme and font size with better error handling
+            const schemeCards = document.querySelectorAll('.color-scheme-card');
+            if (schemeCards.length > 0) {
+                schemeCards.forEach(card => card.classList.remove('active'));
+                const activeSchemeCard = document.querySelector(`[data-scheme="${savedScheme}"]`);
+                if (activeSchemeCard) {
+                    activeSchemeCard.classList.add('active');
+                    console.log('Set active scheme card:', savedScheme);
+                } else {
+                    console.warn('Could not find scheme card for:', savedScheme);
+                }
             }
 
-            const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
-            if (activeFontBtn) {
-                document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
-                activeFontBtn.classList.add('active');
+            const fontBtns = document.querySelectorAll('.font-btn');
+            if (fontBtns.length > 0) {
+                fontBtns.forEach(btn => btn.classList.remove('active'));
+                const activeFontBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
+                if (activeFontBtn) {
+                    activeFontBtn.classList.add('active');
+                }
             }
         };
 
-        // Initialize immediately and also with delay to ensure elements are ready
-        initializeToggles();
-        setTimeout(initializeToggles, 100);
-        setTimeout(initializeToggles, 300);
+        // Initialize with multiple attempts to ensure elements are ready
+        const maxAttempts = 10;
+        let attempts = 0;
+        
+        const tryInitialize = () => {
+            attempts++;
+            const schemeCards = document.querySelectorAll('.color-scheme-card');
+            
+            if (schemeCards.length > 0 || attempts >= maxAttempts) {
+                initializeToggles();
+                console.log('Settings initialized after', attempts, 'attempts');
+            } else {
+                setTimeout(tryInitialize, 100);
+            }
+        };
+
+        tryInitialize();
 
     } catch (error) {
-        console.warn('Error initializing settings:', error);
+        console.error('Error initializing settings:', error);
         // Fallback to default dark theme
         applyColorScheme('dark');
     }
@@ -865,19 +907,36 @@ function setupSettingsEventListeners() {
         return;
     }
 
+    console.log('Setting up settings event listeners...');
+
     // Wait for elements to be available with retries
     const setupListeners = () => {
-        // Color scheme selection
+        // Color scheme selection with improved event handling
         const schemeCards = document.querySelectorAll('.color-scheme-card');
+        console.log('Found scheme cards:', schemeCards.length);
+        
         if (schemeCards.length > 0) {
-            schemeCards.forEach(card => {
+            schemeCards.forEach((card, index) => {
                 // Remove existing listeners to prevent duplicates
-                card.removeEventListener('click', handleColorSchemeClick);
-                card.addEventListener('click', handleColorSchemeClick);
+                const newCard = card.cloneNode(true);
+                card.parentNode.replaceChild(newCard, card);
+                
+                // Add new listener
+                newCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const scheme = this.getAttribute('data-scheme');
+                    console.log('Color scheme clicked:', scheme);
+                    if (scheme) {
+                        selectColorScheme(scheme);
+                    }
+                });
+                
+                console.log('Added listener to scheme card:', index, newCard.getAttribute('data-scheme'));
             });
         }
 
-        // Toggle switches
+        // Toggle switches with improved handling
         const animationsToggle = document.getElementById('animations-toggle');
         if (animationsToggle && !animationsToggle.hasAttribute('data-listener-added')) {
             animationsToggle.setAttribute('data-listener-added', 'true');
@@ -885,6 +944,7 @@ function setupSettingsEventListeners() {
                 try {
                     localStorage.setItem('animations', this.checked);
                     applyAnimationSettings(this.checked);
+                    console.log('Animations setting changed:', this.checked);
                 } catch (e) {
                     console.warn('Could not save animations setting:', e);
                 }
@@ -916,24 +976,44 @@ function setupSettingsEventListeners() {
             });
         }
 
-        // Font size buttons
+        // Font size buttons with improved handling
         const fontBtns = document.querySelectorAll('.font-btn');
         if (fontBtns.length > 0) {
-            fontBtns.forEach(btn => {
+            fontBtns.forEach((btn, index) => {
                 if (!btn.hasAttribute('data-listener-added')) {
                     btn.setAttribute('data-listener-added', 'true');
-                    btn.removeEventListener('click', handleFontSizeClick);
-                    btn.addEventListener('click', handleFontSizeClick);
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const size = this.getAttribute('data-size');
+                        console.log('Font size clicked:', size);
+                        if (size) {
+                            selectFontSize(size);
+                        }
+                    });
+                    console.log('Added listener to font button:', index, btn.getAttribute('data-size'));
                 }
             });
         }
     };
 
-    // Try multiple times to ensure elements are ready
-    setupListeners();
-    setTimeout(setupListeners, 50);
-    setTimeout(setupListeners, 200);
-    setTimeout(setupListeners, 500);
+    // Try multiple times with longer delays to ensure elements are ready
+    const maxAttempts = 10;
+    let attempts = 0;
+    
+    const trySetupListeners = () => {
+        attempts++;
+        const schemeCards = document.querySelectorAll('.color-scheme-card');
+        
+        if (schemeCards.length > 0 || attempts >= maxAttempts) {
+            setupListeners();
+            console.log('Event listeners set up after', attempts, 'attempts');
+        } else {
+            setTimeout(trySetupListeners, 200);
+        }
+    };
+
+    trySetupListeners();
 }
 
 // Separate handler functions to prevent duplicates
@@ -948,30 +1028,76 @@ function handleFontSizeClick() {
 }
 
 function selectColorScheme(scheme) {
-    // Remove active class from all cards
-    document.querySelectorAll('.color-scheme-card').forEach(card => {
-        card.classList.remove('active');
-    });
-
-    // Add active class to selected card
-    const selectedCard = document.querySelector(`[data-scheme="${scheme}"]`);
-    if (selectedCard) {
-        selectedCard.classList.add('active');
-    }
-
-    // Apply the color scheme immediately
-    applyColorScheme(scheme);
+    console.log('Selecting color scheme:', scheme);
     
-    // Save to localStorage
     try {
-        localStorage.setItem('colorScheme', scheme);
-        localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
-    } catch (e) {
-        console.warn('Could not save to localStorage:', e);
-    }
+        // Remove active class from all cards
+        const allCards = document.querySelectorAll('.color-scheme-card');
+        allCards.forEach(card => {
+            card.classList.remove('active');
+        });
 
-    // Force a style update
-    document.documentElement.style.setProperty('--force-update', Math.random());
+        // Add active class to selected card
+        const selectedCard = document.querySelector(`[data-scheme="${scheme}"]`);
+        if (selectedCard) {
+            selectedCard.classList.add('active');
+            console.log('Added active class to selected card');
+        } else {
+            console.warn('Could not find selected card for scheme:', scheme);
+        }
+
+        // Apply the color scheme immediately
+        applyColorScheme(scheme);
+        console.log('Applied color scheme:', scheme);
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('colorScheme', scheme);
+            localStorage.setItem('theme', scheme === 'light' ? 'light' : 'dark');
+            console.log('Saved scheme to localStorage:', scheme);
+        } catch (e) {
+            console.error('Could not save to localStorage:', e);
+        }
+
+        // Force a style recalculation
+        document.documentElement.style.setProperty('--force-update', Math.random());
+        
+        // Trigger a reflow to ensure styles are applied
+        document.body.offsetHeight;
+        
+        // Show feedback to user
+        const feedback = document.createElement('div');
+        feedback.textContent = `Theme changed to ${scheme}`;
+        feedback.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(feedback);
+        
+        setTimeout(() => {
+            if (document.body.contains(feedback)) {
+                feedback.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (document.body.contains(feedback)) {
+                        document.body.removeChild(feedback);
+                    }
+                }, 300);
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error in selectColorScheme:', error);
+    }
 }
 
 function selectFontSize(size) {
