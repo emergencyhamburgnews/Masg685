@@ -337,7 +337,7 @@ body {
     top: 100%;
     left: 0;
     right: 0;
-    background-color: #000000;
+    background: var(--navbar-bg);
     border-top: 2px solid #c0c0c0;
     flex-direction: column;
     padding: 1rem 2rem;
