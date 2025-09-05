@@ -96,7 +96,7 @@ function loadPageContent() {
             loadAboutContent();
             break;
         case 'shop':
-            loadShopContent();
+            // loadShopContent(); // Disabled - using static HTML content
             break;
     }
 }
@@ -573,5 +573,38 @@ function applyNoticeSetting() {
         } else {
             noticeBanner.classList.remove('hidden');
         }
+    }
+}
+
+// Confirm purchase dialog
+function confirmPurchase(event) {
+    event.preventDefault();
+    
+    // Show custom modal
+    const modal = document.getElementById('purchase-modal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// Close purchase modal
+function closePurchaseModal() {
+    const modal = document.getElementById('purchase-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Go to Roblox
+function goToRoblox() {
+    window.open('https://www.roblox.com', '_blank');
+    closePurchaseModal();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('purchase-modal');
+    if (event.target === modal) {
+        closePurchaseModal();
     }
 }
