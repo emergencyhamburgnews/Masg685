@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masg685 - Settings</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply settings immediately to prevent glitch
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply notice setting
+            const noticeEnabled = localStorage.getItem('noticeEnabled');
+            const noticeBanner = document.getElementById('website-notice');
+            if (noticeBanner && noticeEnabled === 'false') {
+                noticeBanner.classList.add('hidden');
+            }
+            
+            // Apply navbar color setting
+            const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+            document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <!-- Website Notice Banner -->
+        <div class="notice-banner" id="website-notice">
+            <div class="notice-content">
+                <span class="notice-icon">⚠️</span>
+                <span class="notice-text">Notice: My website is not fully finished yet.</span>
+            </div>
+        </div>
+        
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-name">Masq685</span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.1</a></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="settings.html" class="nav-link active">Settings</a>
+            </div>
+            <div class="nav-controls">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                </button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="settings.html" class="nav-link active">Settings</a>
+                <div class="mobile-theme-toggle">
+                    <span>Theme</span>
+                    <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                        <img id="mobile-theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="settings-section">
+                <h1 id="settings-title">Settings</h1>
+                <p class="settings-subtitle">Customize your website experience</p>
+                
+                <div class="settings-container">
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Website Notice</h3>
+                            <p>Show or hide the notice banner at the top of the website</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notice-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="setting-status" id="notice-status">Enabled</span>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Theme Preference</h3>
+                            <p>Choose between light and dark mode</p>
+                        </div>
+                        <div class="setting-control">
+                            <select id="theme-selector" class="theme-selector">
+                                <option value="light">Light Mode</option>
+                                <option value="dark">Dark Mode</option>
+                                <option value="auto">Auto (System)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Navbar Background Color</h3>
+                            <p>Choose your preferred navbar background color</p>
+                        </div>
+                        <div class="setting-control">
+                            <select id="navbar-color-selector" class="theme-selector">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="yellow">Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <h3>Reset Settings</h3>
+                            <p>Reset all settings to their default values</p>
+                        </div>
+                        <div class="setting-control">
+                            <button id="reset-settings" class="reset-button">Reset All Settings</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-info">
+                    <h3>About Settings</h3>
+                    <p>Your settings are saved locally in your browser and will persist across visits to this website. You can change these settings at any time.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="data-loader.js"></script>
+    <script src="script.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

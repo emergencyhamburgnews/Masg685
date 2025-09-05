@@ -3,13 +3,12 @@ let websiteData = {};
 
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure all elements are rendered
-    setTimeout(() => {
-        loadWebsiteData();
-        initializeTheme();
-        loadUpdateContent();
-        initializeAnimatedGreeting();
-    }, 100);
+    loadWebsiteData();
+    initializeTheme();
+    initializeNavbarColor();
+    loadUpdateContent();
+    initializeAnimatedGreeting();
+    applyNoticeSetting();
 });
 
 // Load data from data.json file
@@ -24,19 +23,8 @@ async function loadWebsiteData() {
         loadPageContent();
     } catch (error) {
         console.error('Error loading website data:', error);
-        // Try to load from localStorage first
-        const savedData = localStorage.getItem('websiteData');
-        if (savedData) {
-            try {
-                websiteData = JSON.parse(savedData);
-                loadPageContent();
-                return;
-            } catch (e) {
-                console.error('Error parsing saved data:', e);
-            }
-        }
-        // Use the data from data-loader.js if available
-        if (typeof window.websiteData !== 'undefined') {
+        // Fallback to data-loader.js
+        if (window.websiteData) {
             websiteData = window.websiteData;
             loadPageContent();
             return;
@@ -250,6 +238,8 @@ function loadEmergencyHamburgContent() {
     const policeXpElement = document.getElementById('police-xp');
     const fireMedicalXpElement = document.getElementById('fire-medical-xp');
     const truckXpElement = document.getElementById('truck-xp');
+    const adacXpElement = document.getElementById('adac-xp');
+    const busDriverXpElement = document.getElementById('bus-driver-xp');
     
     if (emergencyTitleElement && websiteData.emergencyHamburg.title) {
         emergencyTitleElement.textContent = websiteData.emergencyHamburg.title;
@@ -269,6 +259,14 @@ function loadEmergencyHamburgContent() {
     
     if (truckXpElement && websiteData.emergencyHamburg.stats && websiteData.emergencyHamburg.stats.truckXp) {
         truckXpElement.textContent = websiteData.emergencyHamburg.stats.truckXp;
+    }
+    
+    if (adacXpElement && websiteData.emergencyHamburg.stats && websiteData.emergencyHamburg.stats.adacXp) {
+        adacXpElement.textContent = websiteData.emergencyHamburg.stats.adacXp;
+    }
+    
+    if (busDriverXpElement && websiteData.emergencyHamburg.stats && websiteData.emergencyHamburg.stats.busDriverXp) {
+        busDriverXpElement.textContent = websiteData.emergencyHamburg.stats.busDriverXp;
     }
 }
 
@@ -557,3 +555,23 @@ function removeWebsiteNotice() {
 
 // Uncomment the line below when your website is finished to remove the notice
 // removeWebsiteNotice();
+
+// Initialize navbar color on page load
+function initializeNavbarColor() {
+    const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+    document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+}
+
+// Apply notice banner setting on page load
+function applyNoticeSetting() {
+    const noticeEnabled = localStorage.getItem('noticeEnabled');
+    const noticeBanner = document.getElementById('website-notice');
+    
+    if (noticeBanner) {
+        if (noticeEnabled === 'false') {
+            noticeBanner.classList.add('hidden');
+        } else {
+            noticeBanner.classList.remove('hidden');
+        }
+    }
+}

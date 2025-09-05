@@ -1,0 +1,184 @@
+// Settings functionality
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSettings();
+});
+
+// Initialize settings page
+function initializeSettings() {
+    loadSettings();
+    setupEventListeners();
+    updateThemeSelector();
+    updateNavbarColorSelector();
+}
+
+// Load saved settings from localStorage
+function loadSettings() {
+    // Load notice banner setting
+    const noticeEnabled = localStorage.getItem('noticeEnabled');
+    const noticeToggle = document.getElementById('notice-toggle');
+    const noticeStatus = document.getElementById('notice-status');
+    
+    if (noticeEnabled === 'false') {
+        noticeToggle.checked = false;
+        noticeStatus.textContent = 'Disabled';
+        hideNoticeBanner();
+    } else {
+        noticeToggle.checked = true;
+        noticeStatus.textContent = 'Enabled';
+        showNoticeBanner();
+    }
+    
+    // Load theme setting
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.value = savedTheme;
+    
+    // Load navbar color setting
+    const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarColorSelector = document.getElementById('navbar-color-selector');
+    navbarColorSelector.value = savedNavbarColor;
+}
+
+// Setup event listeners for settings controls
+function setupEventListeners() {
+    // Notice toggle
+    const noticeToggle = document.getElementById('notice-toggle');
+    const noticeStatus = document.getElementById('notice-status');
+    
+    noticeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            localStorage.setItem('noticeEnabled', 'true');
+            noticeStatus.textContent = 'Enabled';
+            showNoticeBanner();
+        } else {
+            localStorage.setItem('noticeEnabled', 'false');
+            noticeStatus.textContent = 'Disabled';
+            hideNoticeBanner();
+        }
+    });
+    
+    // Theme selector
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.addEventListener('change', function() {
+        const selectedTheme = this.value;
+        
+        if (selectedTheme === 'auto') {
+            // Use system preference
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            setTheme(systemTheme);
+            localStorage.setItem('theme', 'auto');
+        } else {
+            setTheme(selectedTheme);
+            localStorage.setItem('theme', selectedTheme);
+        }
+    });
+    
+    // Navbar color selector
+    const navbarColorSelector = document.getElementById('navbar-color-selector');
+    navbarColorSelector.addEventListener('change', function() {
+        const selectedColor = this.value;
+        setNavbarColor(selectedColor);
+        localStorage.setItem('navbarColor', selectedColor);
+    });
+    
+    // Reset settings button
+    const resetButton = document.getElementById('reset-settings');
+    resetButton.addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset all settings to their default values?')) {
+            resetAllSettings();
+        }
+    });
+    
+    // Listen for system theme changes when auto is selected
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'auto') {
+            const systemTheme = this.matches ? 'dark' : 'light';
+            setTheme(systemTheme);
+        }
+    });
+}
+
+// Show notice banner
+function showNoticeBanner() {
+    const noticeBanner = document.getElementById('website-notice');
+    if (noticeBanner) {
+        noticeBanner.classList.remove('hidden');
+    }
+}
+
+// Hide notice banner
+function hideNoticeBanner() {
+    const noticeBanner = document.getElementById('website-notice');
+    if (noticeBanner) {
+        noticeBanner.classList.add('hidden');
+    }
+}
+
+// Update theme selector to reflect current theme
+function updateThemeSelector() {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const themeSelector = document.getElementById('theme-selector');
+    
+    if (themeSelector) {
+        themeSelector.value = currentTheme;
+    }
+}
+
+// Set navbar color
+function setNavbarColor(color) {
+    document.documentElement.setAttribute('data-navbar-color', color);
+}
+
+// Update navbar color selector to reflect current color
+function updateNavbarColorSelector() {
+    const currentColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarColorSelector = document.getElementById('navbar-color-selector');
+    
+    if (navbarColorSelector) {
+        navbarColorSelector.value = currentColor;
+    }
+}
+
+// Reset all settings to default values
+function resetAllSettings() {
+    // Reset notice banner
+    localStorage.setItem('noticeEnabled', 'true');
+    const noticeToggle = document.getElementById('notice-toggle');
+    const noticeStatus = document.getElementById('notice-status');
+    noticeToggle.checked = true;
+    noticeStatus.textContent = 'Enabled';
+    showNoticeBanner();
+    
+    // Reset theme
+    localStorage.setItem('theme', 'light');
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.value = 'light';
+    setTheme('light');
+    
+    // Reset navbar color
+    localStorage.setItem('navbarColor', 'black');
+    const navbarColorSelector = document.getElementById('navbar-color-selector');
+    navbarColorSelector.value = 'black';
+    setNavbarColor('black');
+    
+    // Show confirmation
+    alert('All settings have been reset to their default values!');
+}
+
+// Apply notice banner setting on page load (for other pages)
+function applyNoticeSetting() {
+    const noticeEnabled = localStorage.getItem('noticeEnabled');
+    const noticeBanner = document.getElementById('website-notice');
+    
+    if (noticeBanner) {
+        if (noticeEnabled === 'false') {
+            noticeBanner.classList.add('hidden');
+        } else {
+            noticeBanner.classList.remove('hidden');
+        }
+    }
+}
+
+// Call this function on all pages to apply notice setting
+applyNoticeSetting();

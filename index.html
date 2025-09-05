@@ -33,6 +33,21 @@
     
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply settings immediately to prevent glitch
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply notice setting
+            const noticeEnabled = localStorage.getItem('noticeEnabled');
+            const noticeBanner = document.getElementById('website-notice');
+            if (noticeBanner && noticeEnabled === 'false') {
+                noticeBanner.classList.add('hidden');
+            }
+            
+            // Apply navbar color setting
+            const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+            document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+        });
+    </script>
 </head>
 <body>
     <nav class="navbar">
@@ -47,12 +62,13 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.1</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link active">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="shop.html" class="nav-link">Shop</a>
+                <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-controls">
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -68,11 +84,12 @@
                 <a href="index.html" class="nav-link active">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="shop.html" class="nav-link">Shop</a>
+                <a href="settings.html" class="nav-link">Settings</a>
                 <div class="mobile-theme-toggle">
+                    <span>Theme</span>
                     <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                         <img id="mobile-theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
                     </button>
-                    <span>Theme</span>
                 </div>
             </div>
         </div>
@@ -113,7 +130,7 @@
                     <img id="youtube-logo" src="robloxlogo.png" alt="YouTube Logo">
                 </a>
                 <a href="#" id="tiktok-link" class="social-logo-link" target="_blank">
-                    <img id="tiktok-logo" src="tiktok logo.png" alt="TikTok Logo">
+                    <img id="tiktok-logo" src="tiktok-logo.png" alt="TikTok Logo">
                 </a>
             </div>
         </div>

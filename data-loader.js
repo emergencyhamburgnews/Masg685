@@ -15,7 +15,9 @@ window.websiteData = {
       "gamepass": "+9",
       "policeXp": "+312,213XP Total",
       "fireMedicalXp": "+20,352XP Total",
-      "truckXp": "+1,721XP Total"
+      "truckXp": "+1,721XP Total",
+      "adacXp": "+2,035XP Total",
+      "busDriverXp": "+1,454XP Total"
     }
   },
   "favouriteGames": {
@@ -63,23 +65,35 @@ window.websiteData = {
       "link": "#"
     },
     "tiktok": {
-      "logo": "tiktok logo.png",
+      "logo": "tiktok-logo.png",
       "link": "#"
     }
   },
   "updates": {
-    "title": "Website Update V3.0",
+    "title": "Website Update V3.1.0",
     "description": [
-      "Added new theme toggle functionality for light and dark modes",
-      "Improved mobile responsiveness across all pages",
-      "Enhanced social media sharing with better meta tags",
-      "Redesigned hero section with modern gradient backgrounds",
-      "Added Emergency Hamburg stats section on About page",
-      "Created new Favourite Games section",
-      "Improved product cards design on Shop page",
-      "Added clickable social media logos with hover effects",
-      "Enhanced overall user experience and visual design",
-      "Fixed mobile navigation and hamburger menu functionality"
+      "🎨 NEW: Settings page with customizable preferences",
+      "🎨 NEW: Navbar background color customization (Black, Red, Blue, Green, Yellow)",
+      "🎨 NEW: Smart name color switching (Red name on black/other colors, Black name on red)",
+      "🎨 NEW: Modern navbar link design with hover effects and active states",
+      "🎨 NEW: Notice banner toggle in settings (can disable website notice)",
+      "🔧 FIXED: Mobile navbar layout and positioning issues",
+      "🔧 FIXED: About page containers disappearing on Netlify deployment",
+      "🔧 FIXED: Mobile About page layout - containers now display side-by-side",
+      "🔧 FIXED: Notice banner glitch when navigating between pages",
+      "🔧 FIXED: Data loading issues and missing content sections",
+      "🔧 FIXED: TikTok logo filename inconsistency",
+      "🔧 FIXED: Duplicate ID issues in About page",
+      "⚡ IMPROVED: Theme toggle functionality for light and dark modes",
+      "⚡ IMPROVED: Mobile responsiveness across all pages",
+      "⚡ IMPROVED: Social media sharing with better meta tags",
+      "⚡ IMPROVED: Hero section with modern gradient backgrounds",
+      "⚡ IMPROVED: Emergency Hamburg stats section on About page",
+      "⚡ IMPROVED: Favourite Games section display",
+      "⚡ IMPROVED: Product cards design on Shop page",
+      "⚡ IMPROVED: Clickable social media logos with hover effects",
+      "⚡ IMPROVED: Overall user experience and visual design",
+      "⚡ IMPROVED: Mobile navigation and hamburger menu functionality"
     ]
   }
 };
