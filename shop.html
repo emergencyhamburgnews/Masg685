@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masg685 - Shop</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <!-- Website Notice Banner -->
+        <div class="notice-banner" id="website-notice">
+            <div class="notice-content">
+                <span class="notice-icon">⚠️</span>
+                <span class="notice-text">Notice: My website is not fully finished yet.</span>
+            </div>
+        </div>
+        
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-name">Masq685</span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3</a></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link active">Shop</a>
+            </div>
+            <div class="nav-controls">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                </button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link active">Shop</a>
+                <div class="mobile-theme-toggle">
+                    <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                        <img id="mobile-theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                    </button>
+                    <span>Theme</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="shop-section">
+                <h1 id="shop-title">Shop</h1>
+                <p class="shop-subtitle" id="shop-subtitle">Check out my latest Roblox clothing items!</p>
+                
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be loaded dynamically from JSON -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="data-loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

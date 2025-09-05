@@ -1,489 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/jpeg" href="masgfav.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masg685 Website Updates</title>
-    <meta property="og:image" content="img1.jpg">
-    <meta property="og:image:alt" content="Masg685 Profile Image">
-    <meta property="og:url" content="update.html">
-    <meta name="twitter:image" content="img1.jpg">
+    <title>Updates - Masg685</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
+    
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Updates - Masg685">
+    <meta property="og:description" content="Latest updates and news from Masg685">
+    <meta property="og:image" content="masglogo.png">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Masg685">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Updates - Masg685">
+    <meta name="twitter:description" content="Latest updates and news from Masg685">
+    <meta name="twitter:image" content="masglogo.png">
+    
+    <!-- General Meta Tags -->
+    <meta name="description" content="Latest updates and news from Masg685">
+    <meta name="keywords" content="updates, news, masg685, emergency hamburg">
+    
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-
-    <!-- Navbar -->
     <nav class="navbar">
-        <div class="theme-container">
-            <button id="theme-toggle" class="theme-toggle">
-                <span class="sun" style="font-family: system-ui;">☀</span>
-            </button>
-            <button class="search-toggle" onclick="openSearch()">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-        <div class="hamburger"><span></span></div>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <ul class="nav-links">
-            <li><a href="home.html"><i class="fas fa-home"></i><span data-translate="home">Home</span></a></li>
-            <li><a href="about.html"><i class="fas fa-user"></i><span data-translate="about">About</span></a></li>
-            <li><a href="contact.html"><i class="fas fa-envelope"></i><span data-translate="contact">Contact</span></a></li>
-            <li><a href="update.html"><i class="fas fa-bell"></i><span data-translate="updates">Updates</span></a></li>
-            <li><a href="private-server.html"><i class="fas fa-server"></i><span data-translate="privateServer">Private Server</span></a></li>
-            <li><a href="settings.html"><i class="fas fa-cog"></i><span data-translate="settings">Settings</span></a></li>
-        </ul>
-    </nav>
-
-    <!-- Search Container -->
-    <div class="search-container">
-        <div class="search-box">
-            <button class="close-search" aria-label="Close search">×</button>
-            <input type="text" class="search-input" placeholder="Search across all pages...">
-            <div class="search-results"></div>
-        </div>
-    </div>
-
-    <div class="updates-container">
-        <div class="updates-header">
-            <h1>Website Updates</h1>
-            <p class="updates-subtitle">Track all changes and improvements to the website</p>
-        </div>
-
-        <div class="updates-timeline">
-            <!-- Latest Update -->
-            <div class="timeline-item current">
-                <div class="timeline-date">
-                    <span class="date">May 24, 2025</span>
-                    <span class="badge">New</span>
-                </div>
-                <div class="timeline-content">
-                    <div class="update-card">
-                        <div class="card-header">
-                            <i class="fas fa-tools"></i>
-                            <h2>Fix & New</h2>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-wrench"></i> What We Fixed</h3>
-                            <ul>
-                                <li>Fixed an issue where the Discord server list was not loading or displaying.</li>
-                            </ul>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-plus-circle"></i> What We Added & Improved</h3>
-                            <ul>
-                                <li>Added a new Settings page that allows users to customize their color and other preferences.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <!-- Website Notice Banner -->
+        <div class="notice-banner" id="website-notice">
+            <div class="notice-content">
+                <span class="notice-icon">⚠️</span>
+                <span class="notice-text">Notice: My website is not fully finished yet.</span>
             </div>
-
-
-        <div class="updates-timeline">
-            <!-- Latest Update -->
-            <div class="timeline-item current">
-                <div class="timeline-date">
-                    <span class="date">May 23, 2025</span>
-                    <span class="badge">Latest</span>
-                </div>
-                <div class="timeline-content">
-                    <div class="update-card">
-                        <div class="card-header">
-                            <i class="fas fa-palette"></i>
-                            <h2>Major Design & UI Improvements</h2>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-wrench"></i> What We Fixed</h3>
-                            <ul>
-                                <li>Fixed search bar design with better styling and backdrop blur effects</li>
-                                <li>Redesigned search results container with proper theming and hover effects</li>
-                                <li>Fixed mobile hamburger menu with proper 3-line design in center of box</li>
-                                <li>Improved mobile responsiveness for all form elements and containers</li>
-                                <li>Fixed AI chat responses to properly handle "Hi" and "Hello" greetings</li>
-                                <li>Enhanced mobile menu sizing and positioning issues</li>
-                            </ul>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-plus-circle"></i> What We Added & Improved</h3>
-                            <ul>
-                                <li>Completely new modern color scheme with gradient designs (#780000 to black)</li>
-                                <li>Enhanced 68I.html (Help Center) with better AI chat functionality</li>
-                                <li>Improved search functionality across all pages with real-time filtering</li>
-                                <li>Added better mobile design optimization for all devices</li>
-                                <li>Enhanced button designs with gradient effects and hover animations</li>
-                                <li>Improved navigation menu with better icons and spacing</li>
-                                <li>Added comprehensive help center with 25+ topics and AI assistance</li>
-                                <li>Better backdrop blur effects for navigation and search containers</li>
-                            </ul>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-trash"></i> What We Removed</h3>
-                            <ul>
-                                <li>Removed all TikTok download page functionality and related code</li>
-                                <li>Cleaned up JavaScript and CSS files from TikTok-related functions</li>
-                                <li>Removed TikTok references from navigation and question lists</li>
-                                <li>Streamlined codebase by removing unused TikTok components</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-name">Masq685</span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3</a></span>
             </div>
-
-            <!-- Previous Update -->
-            <div class="timeline-item">
-                <div class="timeline-date">
-                    <span class="date">April 2025</span>
-                </div>
-                <div class="timeline-content">
-                    <div class="update-card">
-                        <div class="card-header">
-                            <i class="fas fa-tools"></i>
-                            <h2>Contact Form & Integration Fixes</h2>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-wrench"></i> What We Fixed</h3>
-                            <ul>
-                                <li>Fixed contact form submission for both owner and Nexus (manager) pages</li>
-                                <li>Fixed Formspree integration and form not found errors</li>
-                                <li>Fixed JavaScript errors and improved error handling for forms</li>
-                            </ul>
-                        </div>
-                        <div class="changes-section">
-                            <h3><i class="fas fa-plus-circle"></i> What We Added & Improved</h3>
-                            <ul>
-                                <li>Modern, beautiful new design for both contact forms</li>
-                                <li>Wider and taller contact form boxes for better usability</li>
-                                <li>Distinct color themes for owner and Nexus contact pages</li>
-                                <li>Manager profile and contact button improvements</li>
-                                <li>Better feedback and thank-you messages on form submission</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
             </div>
-
-            <!-- Previous Updates Toggle -->
-            <div class="timeline-toggle">
-                <button id="show-previous" class="toggle-button">
-                    <i class="fas fa-history"></i>
-                    Show Previous Updates
+            <div class="nav-controls">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
                 </button>
             </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <div class="mobile-theme-toggle">
+                    <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                        <img id="mobile-theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                    </button>
+                    <span>Theme</span>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-            <!-- Previous Updates (Initially Hidden) -->
-            <div id="previous-updates" style="display: none;">
-                <!-- Last Week's Update -->
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <span class="date">Last Week</span>
+    <main class="main-content">
+        <div class="container">
+            <div class="update-section">
+                <!-- Profile Section -->
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <img src="masglogo.png" alt="Masg685 Profile" class="profile-img">
                     </div>
-                    <div class="timeline-content">
-                        <div class="update-card">
-                            <div class="card-header">
-                                <i class="fas fa-tools"></i>
-                                <h2>Technical Improvements</h2>
-                            </div>
-                            <div class="changes-section">
-                                <h3><i class="fas fa-wrench"></i> Fixes & Improvements</h3>
-                                <ul>
-                                    <li>Fixed mobile menu button visibility</li>
-                                    <li>Fixed scroll-to-top button styling</li>
-                                    <li>Fixed Roblox profile avatar loading</li>
-                                    <li>Improved navigation layout and spacing</li>
-                                    <li>Adjusted text sizes for better readability</li>
-                                    <li>Fixed search functionality to only highlight page content</li>
-                                    <li>Improved Enter key functionality in search</li>
-                                    <li>Enhanced navigation menu with icons</li>
-                                    <li>Updated search bar design with blur effect</li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name">Masg685</h1>
                     </div>
                 </div>
 
-                <!-- March Update -->
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <span class="date">March 2025</span>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="update-card">
-                            <div class="card-header">
-                                <i class="fas fa-magic"></i>
-                                <h2>Feature Update</h2>
-                            </div>
-                            <div class="changes-section">
-                                <h3><i class="fas fa-check-circle"></i> New Features</h3>
-                                <ul>
-                                    <li>Added dark/light mode toggle</li>
-                                    <li>Improved mobile navigation</li>
-                                    <li>Enhanced overall site responsiveness</li>
-                                    <li>Added floating chat feature</li>
-                                </ul>
-                            </div>
-                        </div>
+                <!-- Update Content -->
+                <div class="update-content">
+                    <h2 class="update-title" id="update-title">Website Update V3.0</h2>
+                    <div class="update-description" id="update-description">
+                        <p>• Added new theme toggle functionality for light and dark modes</p>
+                        <p>• Improved mobile responsiveness across all pages</p>
+                        <p>• Enhanced social media sharing with better meta tags</p>
+                        <p>• Redesigned hero section with modern gradient backgrounds</p>
+                        <p>• Added Emergency Hamburg stats section on About page</p>
+                        <p>• Created new Favourite Games section</p>
+                        <p>• Improved product cards design on Shop page</p>
+                        <p>• Added clickable social media logos with hover effects</p>
+                        <p>• Enhanced overall user experience and visual design</p>
+                        <p>• Fixed mobile navigation and hamburger menu functionality</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer>
-        <p>© 2025</p>
-    </footer>
-    <button class="scroll-top" aria-label="Scroll to top"></button>
-    <a href="68I.html" class="floating-chat">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMCA0djEySDZsLTQgNFY0YzAtMS4xLjktMiAyLTJoMTRjMS4xIDAgMiAuOSAyIDJ6TTYgMTJoMTJ2LTJINnYyem0wLTNoMTJWN0g2djJ6Ii8+PC9zdmc+" alt="Chat" class="chat-icon">
-    </a>
-    <script src="javascript.js"></script>
-
-    <style>
-        .updates-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        .updates-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .updates-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #780000, #a30000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientFlow 3s ease infinite;
-        }
-
-        .updates-subtitle {
-            color: var(--secondary-text);
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        .updates-timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .updates-timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, #780000, transparent);
-            top: 0;
-        }
-
-        .timeline-item {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-
-        .timeline-date {
-            position: absolute;
-            left: 0;
-            width: 150px;
-            text-align: right;
-            padding-right: 2rem;
-        }
-
-        .timeline-date .date {
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .timeline-date .badge {
-            background: linear-gradient(45deg, #780000, #a30000);
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-        }
-
-        .timeline-content {
-            flex: 1;
-            max-width: 800px;
-            margin-left: 150px;
-            position: relative;
-        }
-
-        .timeline-content::before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 15px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #780000;
-            border: 3px solid var(--bg-color);
-            z-index: 1;
-        }
-
-        .update-card {
-            background: var(--nav-bg);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            margin-left: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .update-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .card-header i {
-            font-size: 1.5rem;
-            color: #780000;
-        }
-
-        .card-header h2 {
-            font-size: 1.3rem;
-            color: var(--text-color);
-            margin: 0;
-        }
-
-        .changes-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .changes-section h3 {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            color: var(--text-color);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
-
-        .changes-section h3 i {
-            color: #780000;
-        }
-
-        .changes-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .changes-section li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.8rem;
-            color: var(--secondary-text);
-            line-height: 1.4;
-        }
-
-        .changes-section li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #780000;
-        }
-
-        .timeline-toggle {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .toggle-button {
-            background: none;
-            border: 2px solid #780000;
-            color: var(--text-color);
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0 auto;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-button:hover {
-            background: #780000;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .toggle-button i {
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 768px) {
-            .updates-header h1 {
-                font-size: 2rem;
-            }
-
-            .timeline-date {
-                position: relative;
-                width: auto;
-                text-align: left;
-                padding-right: 0;
-                margin-bottom: 1rem;
-            }
-
-            .timeline-content {
-                margin-left: 0;
-            }
-
-            .update-card {
-                margin-left: 0;
-            }
-
-            .updates-timeline::before {
-                left: 20px;
-            }
-
-            .timeline-content::before {
-                left: -28px;
-            }
-
-            .timeline-item {
-                flex-direction: column;
-            }
-        }
-    </style>
-
-    <script>
-        document.getElementById('show-previous').addEventListener('click', function() {
-            const previousUpdates = document.getElementById('previous-updates');
-            const button = this;
-
-            if (previousUpdates.style.display === 'none') {
-                previousUpdates.style.display = 'block';
-                button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Previous Updates';
-            } else {
-                previousUpdates.style.display = 'none';
-                button.innerHTML = '<i class="fas fa-history"></i> Show Previous Updates';
-            }
-        });
-    </script>
+    <script src="data-loader.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

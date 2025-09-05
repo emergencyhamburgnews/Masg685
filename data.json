@@ -1,0 +1,54 @@
+{
+  "home": {
+    "title": "Welcome to My Website",
+    "description": "Join my RP private server in Emergency Hamburg.",
+    "image": "img4.jpg"
+  },
+  "about": {
+    "title": "About Me",
+    "content": "Hi, My gaming name is Masg685 and I'm from Australia, I was born on the island of Savai'i in Samoa.\n\nIn 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I've earned over 300,000 XP as police officer, which is known as one of the best teams in the game.\n\nLater, I started creating content on social Media beginning with Youtube and then expanding to TikTok. if you haven't subscribed yet, please do it really helps me out."
+  },
+  "emergencyHamburg": {
+    "title": "Emergency Hamburg",
+    "stats": {
+      "gamepass": "+9",
+      "policeXp": "+312,213XP Total",
+      "fireMedicalXp": "+20,352XP Total",
+      "truckXp": "+1,721XP Total"
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Check out my latest Roblox clothing items!",
+    "products": [
+      {
+        "id": 1,
+        "name": "Cool Blue Shirt",
+        "description": "A stylish blue shirt perfect for any Roblox avatar. Made with premium virtual materials!",
+        "image": "https://via.placeholder.com/300x250/4a90e2/ffffff?text=Blue+Shirt",
+        "price": 50,
+        "buyLink": "#"
+      },
+      {
+        "id": 2,
+        "name": "Classic Black Pants",
+        "description": "Comfortable and stylish black pants that go with any outfit. A must-have for your wardrobe!",
+        "image": "https://via.placeholder.com/300x250/2c3e50/ffffff?text=Black+Pants",
+        "price": 75,
+        "buyLink": "#"
+      },
+      {
+        "id": 3,
+        "name": "Red Gaming Hoodie",
+        "description": "Show your gaming spirit with this awesome red hoodie. Perfect for virtual adventures!",
+        "image": "https://via.placeholder.com/300x250/e74c3c/ffffff?text=Red+Hoodie",
+        "price": 100,
+        "buyLink": "#"
+      }
+    ]
+  },
+  "socialMedia": {
+    "title": "Social Media",
+    "logo": "https://via.placeholder.com/50x50/4a90e2/ffffff?text=Logo"
+  }
+}
