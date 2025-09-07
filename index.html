@@ -62,7 +62,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.0.3</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.4</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link active">Home</a>
@@ -85,6 +85,16 @@
                 <a href="about.html" class="nav-link">About</a>
                 <a href="shop.html" class="nav-link">Shop</a>
                 <a href="settings.html" class="nav-link">Settings</a>
+                <div class="mobile-social-links">
+                    <a href="https://www.roblox.com/users/5255024681/profile" target="_blank" class="mobile-social-link">
+                        <img src="robloxlogo.png" alt="Roblox" class="mobile-social-icon">
+                        <span>Roblox</span>
+                    </a>
+                    <a href="https://www.tiktok.com/@masg685" target="_blank" class="mobile-social-link" rel="noopener noreferrer">
+                        <img src="tiktok-logo.png" alt="TikTok" class="mobile-social-icon">
+                        <span>TikTok</span>
+                    </a>
+                </div>
                 <div class="mobile-theme-toggle">
                     <span>Theme</span>
                     <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -117,26 +127,60 @@
                 </div>
                 <div class="intro-text">
                     <p class="greeting" id="animated-greeting">Talofa lava</p>
-                    <p class="intro-description">Hi, I’m Masg! I create content for Emergency Hamburg on TikTok. I’m also learning how to build my own Roblox game. Follow me on TikTok and add me on Roblox to join the fun!</p>
+                    <p class="intro-description">Hi, I'm Masg! I create content for Emergency Hamburg on TikTok. I'm also learning how to build my own Roblox game. Follow me on TikTok and add me on Roblox to join the fun!</p>
                     <p class="about-link-text">On this page, you can read more <a href="about.html" class="about-link">about me</a></p>
+                </div>
+                <div class="social-media">
+                    <h3>Social Media</h3>
+                    <div class="social-logos">
+                        <a href="https://www.roblox.com/users/5255024681/profile" id="roblox-link" class="social-logo-link" target="_blank">
+                            <img id="roblox-logo" src="robloxlogo.png" alt="Roblox Logo">
+                        </a>
+                        <a href="https://www.tiktok.com/@masg685" id="tiktok-link" class="social-logo-link" target="_blank" rel="noopener noreferrer">
+                            <img id="tiktok-logo" src="tiktok-logo.png" alt="TikTok Logo">
+                        </a>
+                    </div>
                 </div>
             </section>
         </div>
         
-        <div class="social-media">
-            <h3>Social Media</h3>
-            <div class="social-logos">
-                <a href="#" id="youtube-link" class="social-logo-link" target="_blank">
-                    <img id="youtube-logo" src="robloxlogo.png" alt="YouTube Logo">
-                </a>
-                <a href="#" id="tiktok-link" class="social-logo-link" target="_blank">
-                    <img id="tiktok-logo" src="tiktok-logo.png" alt="TikTok Logo">
-                </a>
+        <!-- Rating System Section -->
+        <div class="rating-section">
+            <h2>Rate My Website</h2>
+            <div class="rating-container">
+                <div class="stars" id="stars">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <div class="rating-info">
+                    <div class="average-rating" id="average-rating">Average: 0% (0 votes)</div>
+                    <div class="rating-message" id="rating-message">Click a star to rate!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <div class="comment-form">
+                <textarea id="comment-input" placeholder="Write your comment here..." maxlength="200"></textarea>
+                <button id="submit-comment" class="submit-btn">
+                    <span style="font-size: 1.2rem;">📤</span>
+                    Submit Comment
+                </button>
+                <div class="comment-counter" id="comment-counter">Comments: 0/5</div>
+            </div>
+            <div class="comments-list" id="comments-list">
+                <!-- Comments will be loaded here -->
             </div>
         </div>
     </main>
 
     <script src="data-loader.js"></script>
     <script src="script.js"></script>
+    <script src="rating-comments.js"></script>
 </body>
 </html>

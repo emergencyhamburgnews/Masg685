@@ -310,7 +310,7 @@ body {
 }
 
 .hamburger span {
-    width: 25px;
+    width: 28px;
     height: 3px;
     background-color: white;
     margin: 3px 0;
@@ -596,16 +596,18 @@ body {
 
 /* Social Media section - improved design */
 .social-media {
-    position: absolute;
-    bottom: 2rem;
-    right: 2rem;
+    margin-top: 1.5rem;
     background: var(--social-bg);
     padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--shadow);
     backdrop-filter: blur(10px);
-    z-index: 3;
     transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hide mobile social logos on desktop */
+.mobile-social-logos {
+    display: none;
 }
 
 .social-media h3 {
@@ -1324,8 +1326,362 @@ input:checked + .toggle-slider:before {
         display: flex;
     }
     
+    .mobile-social-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-social-link {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.5rem;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+    }
+    
+    .mobile-social-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-social-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+    
+    .mobile-social-link:has(.mobile-social-icon[alt="TikTok"]) .mobile-social-icon {
+        background-color: white;
+        border-radius: 4px;
+        padding: 2px;
+    }
+    
     .nav-controls {
         display: none;
+    }
+}
+
+/* Rating System Styles */
+.rating-section {
+    margin: 2rem 0;
+}
+
+.rating-section h2 {
+    color: #ff6b35;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.rating-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.8rem;
+    font-size: 3.5rem;
+    cursor: pointer;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+.star {
+    color: #ddd;
+    transition: all 0.3s ease;
+    user-select: none;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.star:hover {
+    color: #ffd700;
+    transform: scale(1.3) rotate(10deg);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    filter: brightness(1.2);
+}
+
+.star.active {
+    color: #ffd700;
+    transform: scale(1.2);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+    filter: brightness(1.3);
+}
+
+.rating-info {
+    text-align: center;
+}
+
+.average-rating {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff6b35;
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.rating-message {
+    color: #ff6b35;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Q&A Section Styles */
+.qa-section {
+    margin-top: 3rem;
+    max-width: 800px;
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left;
+}
+
+.qa-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.qa-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.qa-item {
+    margin-bottom: 0;
+}
+
+.question {
+    color: #FFD700;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.answer {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease;
+}
+
+/* Comments Section Styles */
+.comments-section {
+    margin: 2rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.comments-section h2 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.comment-form {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+#comment-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+#comment-input:focus {
+    outline: none;
+    border-color: #780000;
+    box-shadow: 0 0 0 3px rgba(120, 0, 0, 0.1);
+}
+
+.submit-btn {
+    background: #780000;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-weight: bold;
+    gap: 0.5rem;
+}
+
+.submit-btn:hover {
+    background: #5a0000;
+}
+
+.submit-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.comment-counter {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.comment-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #780000;
+    font-size: 1rem;
+}
+
+.comment-date {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.comment-text {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.error-message {
+    background: #ff4444;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.success-message {
+    background: #44ff44;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .rating-section,
+    .comments-section {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .qa-section {
+        margin-top: 2rem;
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .qa-title {
+        font-size: 2rem;
+        text-align: left;
+    }
+    
+    .qa-content {
+        gap: 1.5rem;
+    }
+    
+    .question {
+        font-size: 1.1rem;
+    }
+    
+    .answer {
+        font-size: 0.9rem;
+    }
+    
+    
+    .stars {
+        font-size: 2rem;
+    }
+    
+    .rating-section h2,
+    .comments-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    #comment-input {
+        min-height: 80px;
+        padding: 0.8rem;
+    }
+    
+    .comment-item {
+        padding: 0.8rem;
     }
     
     .notice-content {
@@ -1352,10 +1708,16 @@ input:checked + .toggle-slider:before {
     }
     
     .social-media {
-        position: static;
-        margin-top: 2rem;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.9);
+        display: none;
+    }
+    
+    .social-media h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .social-logos {
+        gap: 0.8rem;
     }
     
     .profile-section {
@@ -1538,6 +1900,30 @@ input:checked + .toggle-slider:before {
     .hero-image img {
         height: 250px;
     }
+    
+    .qa-section {
+        margin-top: 1.5rem;
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
+    
+    .qa-title {
+        font-size: 1.8rem;
+        text-align: left;
+    }
+    
+    .qa-content {
+        gap: 1rem;
+    }
+    
+    .question {
+        font-size: 1rem;
+    }
+    
+    .answer {
+        font-size: 0.8rem;
+    }
+    
     
     .about-content h1 {
         font-size: 1.8rem;
