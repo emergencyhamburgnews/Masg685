@@ -29,6 +29,10 @@ class RatingCommentSystem {
             
             // Set up real-time listeners
             this.setupRealtimeListeners();
+            
+            // Check for auto-reset
+            this.checkAutoReset();
+            
             console.log('Firebase system initialized successfully');
         } catch (error) {
             console.error('Error initializing Firebase system:', error);
@@ -61,11 +65,21 @@ class RatingCommentSystem {
     }
 
     async submitRating(rating) {
+        // Check if user already rated
+        const hasRated = localStorage.getItem('userHasRated');
+        if (hasRated) {
+            this.showMessage('You have already rated! You can only rate once.', 'error');
+            return;
+        }
+
         // Update local display immediately (always works)
         this.totalRating += rating;
         this.ratingCount += 1;
         this.updateRatingDisplay(this.totalRating, this.ratingCount);
         this.updateStars(rating);
+        
+        // Mark user as having rated
+        localStorage.setItem('userHasRated', 'true');
         
         // Try to save to Firebase (optional)
         try {
@@ -153,7 +167,7 @@ class RatingCommentSystem {
 
     async submitComment(commentText) {
         if (!commentText.trim()) {
-            alert('Please enter a comment!');
+            this.showMessage('Please enter a comment!', 'error');
             return;
         }
 
@@ -238,6 +252,225 @@ class RatingCommentSystem {
         if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
         if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
         return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    }
+
+    // Function to reset everything (ratings and comments)
+    async resetEverything() {
+        try {
+            console.log('Starting reset...');
+            
+            // Reset local data FIRST (immediate visual feedback)
+            this.totalRating = 0;
+            this.ratingCount = 0;
+            this.comments = [];
+            this.updateRatingDisplay(0, 0);
+            this.displayComments();
+            
+            // Clear localStorage
+            localStorage.removeItem('userHasRated');
+            localStorage.removeItem('lastCommentReset');
+            
+            console.log('Local data reset complete');
+            
+            // Try to clear Firebase data
+            try {
+                const { db, collection, getDocs, doc, deleteDoc } = window.firebaseApp;
+                
+                // Clear all ratings
+                const ratingsSnapshot = await getDocs(collection(db, 'ratings'));
+                console.log(`Found ${ratingsSnapshot.size} ratings to delete`);
+                
+                const ratingDeletePromises = [];
+                ratingsSnapshot.forEach((docSnapshot) => {
+                    ratingDeletePromises.push(deleteDoc(doc(db, 'ratings', docSnapshot.id)));
+                });
+                
+                // Clear all comments
+                const commentsSnapshot = await getDocs(collection(db, 'comments'));
+                console.log(`Found ${commentsSnapshot.size} comments to delete`);
+                
+                const commentDeletePromises = [];
+                commentsSnapshot.forEach((docSnapshot) => {
+                    commentDeletePromises.push(deleteDoc(doc(db, 'comments', docSnapshot.id)));
+                });
+                
+                await Promise.all([...ratingDeletePromises, ...commentDeletePromises]);
+                console.log('Firebase data cleared successfully');
+            } catch (firebaseError) {
+                console.log('Firebase clear failed, but local reset worked:', firebaseError);
+            }
+            
+            this.showMessage('Everything has been reset! Starting fresh.', 'success');
+            console.log('Reset completed successfully!');
+        } catch (error) {
+            console.error('Error resetting:', error);
+            this.showMessage('Failed to reset. Please try again.', 'error');
+        }
+    }
+
+    // Simple reset function for immediate use
+    forceReset() {
+        console.log('Force resetting...');
+        this.totalRating = 0;
+        this.ratingCount = 0;
+        this.comments = [];
+        this.updateRatingDisplay(0, 0);
+        this.displayComments();
+        localStorage.removeItem('userHasRated');
+        localStorage.removeItem('lastCommentReset');
+        this.showMessage('Force reset complete!', 'success');
+        console.log('Force reset done!');
+    }
+
+    // Emergency reset - direct DOM manipulation
+    emergencyReset() {
+        console.log('Emergency reset starting...');
+        
+        // Directly update the DOM elements using IDs
+        const averageRating = document.getElementById('average-rating');
+        const ratingMessage = document.getElementById('rating-message');
+        
+        if (averageRating) {
+            averageRating.textContent = 'Average: 0% (0 votes)';
+            console.log('Updated average rating display');
+        } else {
+            console.log('Could not find average-rating element');
+        }
+        
+        if (ratingMessage) {
+            ratingMessage.textContent = 'Click a star to rate!';
+            console.log('Updated rating message');
+        } else {
+            console.log('Could not find rating-message element');
+        }
+        
+        // Reset all stars to empty
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.classList.remove('active');
+        });
+        console.log(`Reset ${stars.length} stars`);
+        
+        // Reset internal data
+        this.totalRating = 0;
+        this.ratingCount = 0;
+        this.comments = [];
+        
+        // Clear localStorage
+        localStorage.removeItem('userHasRated');
+        localStorage.removeItem('lastCommentReset');
+        
+        // Clear comments display
+        const commentsContainer = document.querySelector('.comments-container');
+        if (commentsContainer) {
+            commentsContainer.innerHTML = '<p style="text-align: center; color: var(--text-color); opacity: 0.7;">No comments yet. Be the first to comment!</p>';
+        }
+        
+        this.showMessage('Emergency reset complete! Ratings are now 0!', 'success');
+        console.log('Emergency reset completed!');
+    }
+
+    // SUPER SIMPLE RESET - Just change the text directly
+    simpleReset() {
+        // Find and change the rating text directly
+        const ratingElement = document.querySelector('#average-rating');
+        if (ratingElement) {
+            ratingElement.innerHTML = 'Average: 0% (0 votes)';
+        }
+        
+        // Find and change the message
+        const messageElement = document.querySelector('#rating-message');
+        if (messageElement) {
+            messageElement.innerHTML = 'Click a star to rate!';
+        }
+        
+        // Clear stars
+        document.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
+        
+        // Clear localStorage
+        localStorage.clear();
+        
+        alert('RESET COMPLETE! Ratings are now 0!');
+    }
+
+    // Function to show messages inside the website
+    showMessage(text, type = 'info') {
+        // Remove existing message
+        const existingMessage = document.getElementById('system-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create new message
+        const message = document.createElement('div');
+        message.id = 'system-message';
+        message.textContent = text;
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        `;
+
+        if (type === 'error') {
+            message.style.backgroundColor = '#ff4444';
+            message.style.color = 'white';
+        } else if (type === 'success') {
+            message.style.backgroundColor = '#44ff44';
+            message.style.color = 'black';
+        } else {
+            message.style.backgroundColor = '#4444ff';
+            message.style.color = 'white';
+        }
+
+        document.body.appendChild(message);
+
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            if (message.parentNode) {
+                message.remove();
+            }
+        }, 4000);
+    }
+
+    // Auto-reset comments every 5 weeks
+    checkAutoReset() {
+        const lastReset = localStorage.getItem('lastCommentReset');
+        const now = new Date();
+        const fiveWeeks = 5 * 7 * 24 * 60 * 60 * 1000; // 5 weeks in milliseconds
+
+        if (!lastReset || (now - new Date(lastReset)) > fiveWeeks) {
+            this.autoResetComments();
+            localStorage.setItem('lastCommentReset', now.toISOString());
+        }
+    }
+
+    async autoResetComments() {
+        try {
+            const { db, collection, getDocs, doc, deleteDoc } = window.firebaseApp;
+            const commentsSnapshot = await getDocs(collection(db, 'comments'));
+            
+            const deletePromises = [];
+            commentsSnapshot.forEach((docSnapshot) => {
+                deletePromises.push(deleteDoc(doc(db, 'comments', docSnapshot.id)));
+            });
+            
+            await Promise.all(deletePromises);
+            this.comments = [];
+            this.displayComments();
+            this.showMessage('Comments have been automatically reset!', 'success');
+            console.log('Comments auto-reset completed!');
+        } catch (error) {
+            console.error('Error auto-resetting comments:', error);
+        }
     }
 }
 
