@@ -1501,6 +1501,74 @@ input:checked + .toggle-slider:before {
     margin-right: auto;
 }
 
+.comments-header {
+    margin-bottom: 1.5rem;
+}
+
+.comments-container {
+    margin-top: 1rem;
+}
+
+.comment-item {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.comment-time {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.comment-text {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.see-more-btn {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin: 1rem auto 0;
+    display: block;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.see-more-btn:hover {
+    background: var(--border-color);
+}
+
 .comments-section h2 {
     color: var(--text-color);
     margin-bottom: 1.5rem;
@@ -1640,6 +1708,16 @@ input:checked + .toggle-slider:before {
     .comments-section {
         padding: 1.5rem;
         margin: 1.5rem 0;
+    }
+    
+    
+    .comment-avatar {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .comment-item {
+        padding: 0.8rem;
     }
     
     .qa-section {
@@ -1922,6 +2000,20 @@ input:checked + .toggle-slider:before {
     
     .answer {
         font-size: 0.8rem;
+    }
+    
+    
+    .comment-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .comment-item {
+        padding: 0.6rem;
+    }
+    
+    .comment-header {
+        gap: 0.5rem;
     }
     
     
