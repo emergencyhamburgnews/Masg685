@@ -33,6 +33,9 @@ class RatingCommentSystem {
             // Check for auto-reset
             this.checkAutoReset();
             
+            // Load user's rating if they already rated
+            this.loadUserRating();
+            
             console.log('Firebase system initialized successfully');
         } catch (error) {
             console.error('Error initializing Firebase system:', error);
@@ -76,10 +79,11 @@ class RatingCommentSystem {
         this.totalRating += rating;
         this.ratingCount += 1;
         this.updateRatingDisplay(this.totalRating, this.ratingCount);
-        this.updateStars(rating);
+        this.showUserRating(rating);
         
-        // Mark user as having rated
+        // Mark user as having rated and store their rating
         localStorage.setItem('userHasRated', 'true');
+        localStorage.setItem('userRating', rating.toString());
         
         // Try to save to Firebase (optional)
         try {
@@ -112,6 +116,30 @@ class RatingCommentSystem {
                 star.classList.remove('active');
             }
         });
+    }
+
+    // Show user's personal rating
+    showUserRating(rating) {
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('user-rated');
+                star.classList.add('active');
+            } else {
+                star.classList.remove('user-rated');
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    // Load user's rating from localStorage
+    loadUserRating() {
+        const userRating = localStorage.getItem('userRating');
+        if (userRating) {
+            const rating = parseInt(userRating);
+            this.showUserRating(rating);
+            console.log('Loaded user rating:', rating);
+        }
     }
 
     setupRealtimeListeners() {
@@ -166,22 +194,60 @@ class RatingCommentSystem {
     }
 
     async submitComment(commentText) {
-        if (!commentText.trim()) {
+        console.log('submitComment called with:', commentText);
+        
+        if (!commentText || !commentText.trim()) {
             this.showMessage('Please enter a comment!', 'error');
             return;
         }
 
+        // Check if user already commented
+        const hasCommented = localStorage.getItem('userHasCommented');
+        if (hasCommented) {
+            this.showMessage('You have already commented! You can only comment once.', 'error');
+            return;
+        }
+
+        // Check for bad words
+        const badWords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'stupid', 'idiot', 'hate', 'kill', 'die', 'crap', 'hell', 'wtf', 'omg', 'fucking', 'shitty', 'damned', 'bitchy', 'ass', 'dumb', 'moron', 'retard', 'gay', 'lesbian', 'nigger', 'nigga', 'faggot', 'whore', 'slut', 'porn', 'sex', 'pornography', 'xxx', 'adult', 'nude', 'naked'];
+        const commentLower = commentText.toLowerCase();
+        
+        for (let badWord of badWords) {
+            if (commentLower.includes(badWord)) {
+                this.showMessage('Please keep your comment appropriate and respectful!', 'error');
+                return;
+            }
+        }
+
+        console.log('Adding comment locally...');
+        
+        // Generate a random color for the avatar
+        const avatarColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'];
+        const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+        
         // Add comment locally immediately
         const newComment = {
             id: 'local_' + Date.now(),
             text: commentText.trim(),
             author: 'Guest User',
-            timestamp: new Date()
+            timestamp: new Date(),
+            avatarColor: randomColor
         };
         
         this.comments.unshift(newComment);
         this.displayComments();
-        document.getElementById('comment-input').value = '';
+        
+        // Clear the input field
+        const commentInput = document.getElementById('comment-input');
+        if (commentInput) {
+            commentInput.value = '';
+        }
+        
+        // Mark user as having commented
+        localStorage.setItem('userHasCommented', 'true');
+        
+        this.showMessage('Comment added successfully!', 'success');
+        console.log('Comment added locally successfully!');
         
         // Try to save to Firebase (optional)
         try {
@@ -189,7 +255,8 @@ class RatingCommentSystem {
             await addDoc(collection(db, 'comments'), {
                 text: commentText.trim(),
                 author: 'Guest User',
-                timestamp: new Date()
+                timestamp: new Date(),
+                avatarColor: randomColor
             });
             console.log('Comment saved to Firebase successfully!');
         } catch (error) {
@@ -199,23 +266,38 @@ class RatingCommentSystem {
     }
 
     displayComments() {
+        console.log('displayComments called, total comments:', this.comments.length);
         const commentsContainer = document.getElementById('comments-container');
+        
+        if (!commentsContainer) {
+            console.error('Comments container not found!');
+            return;
+        }
+        
         const commentsToShow = this.showingAllComments ? this.comments : this.comments.slice(0, 5);
+        console.log('Comments to show:', commentsToShow.length);
         
         commentsContainer.innerHTML = '';
         
         if (commentsToShow.length === 0) {
             commentsContainer.innerHTML = '<p style="text-align: center; color: var(--text-color); opacity: 0.7;">No comments yet. Be the first to comment!</p>';
+            console.log('No comments to display, showing default message');
             return;
         }
 
-        commentsToShow.forEach(comment => {
+        commentsToShow.forEach((comment, index) => {
+            console.log(`Creating comment ${index + 1}:`, comment);
+            
+            // Use the comment's avatar color or generate a random one
+            const avatarColor = comment.avatarColor || this.getRandomAvatarColor();
+            
             const commentElement = document.createElement('div');
             commentElement.className = 'comment-item';
             commentElement.innerHTML = `
                 <div class="comment-header">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI4IiB5PSI4Ij4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDOC42ODYyOSAxNCA2IDE2LjY4NjMgNiAyMEgxOEMxOCAxNi42ODYzIDE1LjMxMzcgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+" 
-                         alt="Guest" class="comment-avatar">
+                    <div class="comment-avatar" style="background-color: ${avatarColor}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
+                        ${comment.author.charAt(0)}
+                    </div>
                     <div class="comment-author">${comment.author}</div>
                     <div class="comment-time">${this.formatTime(comment.timestamp)}</div>
                 </div>
@@ -224,6 +306,7 @@ class RatingCommentSystem {
             commentsContainer.appendChild(commentElement);
         });
 
+        console.log('Comments displayed successfully');
         // Update "See More" button
         this.updateSeeMoreButton();
     }
@@ -245,13 +328,31 @@ class RatingCommentSystem {
 
     formatTime(timestamp) {
         const now = new Date();
-        const commentTime = timestamp.toDate();
+        let commentTime;
+        
+        // Handle both Firebase timestamps and regular Date objects
+        if (timestamp && typeof timestamp.toDate === 'function') {
+            // Firebase timestamp
+            commentTime = timestamp.toDate();
+        } else if (timestamp instanceof Date) {
+            // Regular Date object
+            commentTime = timestamp;
+        } else {
+            // Fallback
+            commentTime = new Date(timestamp);
+        }
+        
         const diffInSeconds = Math.floor((now - commentTime) / 1000);
         
         if (diffInSeconds < 60) return 'Just now';
         if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
         if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
         return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    }
+
+    getRandomAvatarColor() {
+        const avatarColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'];
+        return avatarColors[Math.floor(Math.random() * avatarColors.length)];
     }
 
     // Function to reset everything (ratings and comments)
@@ -268,6 +369,8 @@ class RatingCommentSystem {
             
             // Clear localStorage
             localStorage.removeItem('userHasRated');
+            localStorage.removeItem('userRating');
+            localStorage.removeItem('userHasCommented');
             localStorage.removeItem('lastCommentReset');
             
             console.log('Local data reset complete');
@@ -358,6 +461,8 @@ class RatingCommentSystem {
         
         // Clear localStorage
         localStorage.removeItem('userHasRated');
+        localStorage.removeItem('userRating');
+        localStorage.removeItem('userHasCommented');
         localStorage.removeItem('lastCommentReset');
         
         // Clear comments display
@@ -388,7 +493,10 @@ class RatingCommentSystem {
         document.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
         
         // Clear localStorage
-        localStorage.clear();
+        localStorage.removeItem('userHasRated');
+        localStorage.removeItem('userRating');
+        localStorage.removeItem('userHasCommented');
+        localStorage.removeItem('lastCommentReset');
         
         alert('RESET COMPLETE! Ratings are now 0!');
     }
@@ -486,20 +594,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('submit-comment').addEventListener('click', () => {
-        const commentText = document.getElementById('comment-input').value;
-        window.ratingCommentSystem.submitComment(commentText);
-    });
+    // Comment submit button event listener
+    const submitButton = document.getElementById('submit-comment');
+    if (submitButton) {
+        submitButton.addEventListener('click', () => {
+            console.log('Submit button clicked!');
+            const commentText = document.getElementById('comment-input').value;
+            console.log('Comment text:', commentText);
+            window.ratingCommentSystem.submitComment(commentText);
+        });
+        console.log('Submit button event listener attached');
+    } else {
+        console.error('Submit button not found!');
+    }
 
-    document.getElementById('see-more-btn').addEventListener('click', () => {
-        window.ratingCommentSystem.toggleSeeMore();
-    });
+    // See more button event listener
+    const seeMoreButton = document.getElementById('see-more-btn');
+    if (seeMoreButton) {
+        seeMoreButton.addEventListener('click', () => {
+            window.ratingCommentSystem.toggleSeeMore();
+        });
+        console.log('See more button event listener attached');
+    }
 
     // Allow Enter key to submit comments
-    document.getElementById('comment-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const commentText = document.getElementById('comment-input').value;
-            window.ratingCommentSystem.submitComment(commentText);
-        }
-    });
+    const commentInput = document.getElementById('comment-input');
+    if (commentInput) {
+        commentInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                console.log('Enter key pressed!');
+                const commentText = document.getElementById('comment-input').value;
+                console.log('Comment text:', commentText);
+                window.ratingCommentSystem.submitComment(commentText);
+            }
+        });
+        console.log('Comment input event listener attached');
+    } else {
+        console.error('Comment input not found!');
+    }
 });

@@ -13,12 +13,13 @@
     <script>
         // Apply settings immediately to prevent glitch
         document.addEventListener('DOMContentLoaded', function() {
-            // Apply notice setting
+            // Apply notice setting - but don't hide it, let Firebase control it
             const noticeEnabled = localStorage.getItem('noticeEnabled');
             const noticeBanner = document.getElementById('website-notice');
-            if (noticeBanner && noticeEnabled === 'false') {
-                noticeBanner.classList.add('hidden');
-            }
+            // Don't hide the notice banner - let Firebase content system control it
+            // if (noticeBanner && noticeEnabled === 'false') {
+            //     noticeBanner.classList.add('hidden');
+            // }
             
             // Apply navbar color setting
             const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
@@ -152,7 +153,35 @@
         </div>
     </main>
 
-    <script src="data-loader.js"></script>
+    <!-- Firebase CDN -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2MJ6qW7kKkXXR4xHkAb2uyWv-j5BIsAk",
+            authDomain: "masgwebsite-4631e.firebaseapp.com",
+            projectId: "masgwebsite-4631e",
+            storageBucket: "masgwebsite-4631e.firebasestorage.app",
+            messagingSenderId: "1093684867477",
+            appId: "1:1093684867477:web:53f018205d2bb8b260469c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Make Firebase available globally
+        window.firebaseApp = { db, auth, provider, collection, addDoc, getDocs, query, orderBy, limit, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc, signInWithPopup, signOut, onAuthStateChanged };
+        
+        console.log('Firebase initialized on settings page');
+    </script>
+    
+    <script src="firebase-simple.js"></script>
     <script src="script.js"></script>
     <script src="settings.js"></script>
 </body>

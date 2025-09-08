@@ -88,3 +88,8 @@ MyWebsite2/
 - Use the Export/Import feature to backup your content
 - All placeholder images can be replaced with your own
 - The design is fully responsive and will work on any device
+
+## Rating reset command
+
+localStorage.clear()
+location.reload()

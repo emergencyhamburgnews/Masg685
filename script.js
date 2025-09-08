@@ -11,25 +11,32 @@ document.addEventListener('DOMContentLoaded', function() {
     applyNoticeSetting();
 });
 
-// Load data from data.json file
+// Load data from Firebase
 async function loadWebsiteData() {
     try {
-        const response = await fetch('data.json');
-        if (!response.ok) {
-            throw new Error('Failed to load data.json');
+        // Wait for Firebase content manager to load
+        if (window.firebaseContentManager) {
+            // Content will be loaded by Firebase content manager
+            console.log('Waiting for Firebase content to load...');
+            // Set up a listener for when content is ready
+            const checkContent = () => {
+                if (window.websiteData && Object.keys(window.websiteData).length > 0) {
+                    websiteData = window.websiteData;
+                    console.log('Firebase content loaded:', websiteData);
+                    loadPageContent();
+                } else {
+                    setTimeout(checkContent, 100);
+                }
+            };
+            checkContent();
+        } else {
+            // Fallback to default data
+            websiteData = getDefaultData();
+            loadPageContent();
         }
-        const jsonData = await response.json();
-        websiteData = jsonData;
-        loadPageContent();
     } catch (error) {
         console.error('Error loading website data:', error);
-        // Fallback to data-loader.js
-        if (window.websiteData) {
-            websiteData = window.websiteData;
-            loadPageContent();
-            return;
-        }
-        // Fallback to default data if JSON file is not found
+        // Fallback to default data
         websiteData = getDefaultData();
         loadPageContent();
     }
