@@ -167,10 +167,26 @@ class RatingCommentSystem {
         // Real-time comment updates
         const commentsQuery = query(collection(db, 'comments'), orderBy('timestamp', 'desc'));
         onSnapshot(commentsQuery, (snapshot) => {
+            // Store local comments before clearing
+            const localComments = this.comments.filter(comment => comment.id.startsWith('local_'));
+            
             this.comments = [];
             snapshot.forEach(doc => {
                 this.comments.push({ id: doc.id, ...doc.data() });
             });
+            
+            // Re-add local comments that haven't been synced yet
+            localComments.forEach(localComment => {
+                const existsInFirebase = this.comments.some(comment => 
+                    comment.text === localComment.text && 
+                    comment.author === localComment.author &&
+                    Math.abs(new Date(comment.timestamp) - new Date(localComment.timestamp)) < 5000 // Within 5 seconds
+                );
+                if (!existsInFirebase) {
+                    this.comments.unshift(localComment);
+                }
+            });
+            
             this.displayComments();
         });
     }
@@ -208,12 +224,31 @@ class RatingCommentSystem {
             return;
         }
 
-        // Check for bad words
-        const badWords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'stupid', 'idiot', 'hate', 'kill', 'die', 'crap', 'hell', 'wtf', 'omg', 'fucking', 'shitty', 'damned', 'bitchy', 'ass', 'dumb', 'moron', 'retard', 'gay', 'lesbian', 'nigger', 'nigga', 'faggot', 'whore', 'slut', 'porn', 'sex', 'pornography', 'xxx', 'adult', 'nude', 'naked'];
+        // Check for bad words with improved filtering
+        const badWords = [
+            // Basic bad words
+            'fuck', 'shit', 'damn', 'bitch', 'asshole', 'stupid', 'idiot', 'hate', 'kill', 'die', 'crap', 'hell', 'wtf', 'omg', 'fucking', 'shitty', 'damned', 'bitchy', 'ass', 'dumb', 'moron', 'retard', 'gay', 'lesbian', 'nigger', 'nigga', 'faggot', 'whore', 'slut', 'porn', 'sex', 'pornography', 'xxx', 'adult', 'nude', 'naked',
+            // More bad words
+            'bastard', 'cunt', 'cock', 'dick', 'penis', 'vagina', 'boobs', 'tits', 'breast', 'pussy', 'ass', 'butt', 'arse', 'fart', 'poop', 'pee', 'piss', 'urine', 'feces', 'crap', 'bullshit', 'horseshit', 'cowshit', 'dogshit', 'ratshit', 'pissed', 'pissed off', 'piss off', 'fuck off', 'fuck you', 'fuck this', 'fuck that', 'fuck up', 'fuck up', 'fucked up', 'fucking hell', 'holy shit', 'what the fuck', 'oh my god', 'jesus christ', 'goddamn', 'bloody hell', 'son of a bitch', 'piece of shit', 'you suck', 'you are stupid', 'you are dumb', 'you are an idiot', 'kill yourself', 'go die', 'fuck this', 'fuck that', 'bullshit', 'this is shit', 'that is shit', 'so stupid', 'so dumb', 'so annoying', 'hate this', 'hate you', 'fuck up', 'screw you', 'damn it', 'shit happens', 'fucking awesome', 'fucking great', 'fucking bad', 'fucking good', 'fucking stupid', 'fucking idiot', 'fucking moron', 'fucking retarded', 'fucking gay', 'fucking lesbian', 'fucking nigger', 'fucking nigga', 'fucking faggot', 'fucking whore', 'fucking slut', 'fucking porn', 'fucking sex', 'fucking adult', 'fucking nude', 'fucking naked',
+            // Variations with spaces
+            'f u c k', 's h i t', 'd a m n', 'b i t c h', 'a s s h o l e', 's t u p i d', 'i d i o t', 'h a t e', 'k i l l', 'd i e', 'c r a p', 'h e l l', 'w t f', 'o m g', 'f u c k i n g', 's h i t t y', 'd a m n e d', 'b i t c h y', 'a s s', 'd u m b', 'm o r o n', 'r e t a r d', 'g a y', 'l e s b i a n', 'n i g g e r', 'n i g g a', 'f a g g o t', 'w h o r e', 's l u t', 'p o r n', 's e x', 'p o r n o g r a p h y', 'x x x', 'a d u l t', 'n u d e', 'n a k e d',
+            // Variations with special characters
+            'f@ck', 'sh!t', 'd@mn', 'b!tch', 'a$$hole', 'st*pid', '!d!ot', 'h@te', 'k!ll', 'd!e', 'cr@p', 'h3ll', 'wtf', '0mg', 'f*cking', 'sh!tty', 'd@mned', 'b!tchy', 'a$$', 'd*mb', 'm0r0n', 'r3t@rd', 'g@y', 'l3sb!@n', 'n!gg3r', 'n!gg@', 'f@gg0t', 'wh0r3', 'sl*t', 'p0rn', 's3x', 'p0rn0gr@phy', 'xxx', '4dult', 'nud3', 'n@k3d'
+        ];
+        
+        // More precise word boundary checking to avoid false positives
         const commentLower = commentText.toLowerCase();
         
         for (let badWord of badWords) {
-            if (commentLower.includes(badWord)) {
+            // Use word boundary regex to avoid partial matches
+            const regex = new RegExp('\\b' + badWord.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+            if (regex.test(commentLower)) {
+                this.showMessage('Please keep your comment appropriate and respectful!', 'error');
+                return;
+            }
+            
+            // Also check for exact matches (for words with spaces)
+            if (commentLower.includes(badWord.toLowerCase())) {
                 this.showMessage('Please keep your comment appropriate and respectful!', 'error');
                 return;
             }
@@ -580,6 +615,28 @@ class RatingCommentSystem {
             console.error('Error auto-resetting comments:', error);
         }
     }
+
+    // Check when next auto-reset will happen
+    getNextResetDate() {
+        const lastReset = localStorage.getItem('lastCommentReset');
+        if (!lastReset) {
+            return 'No reset date set yet';
+        }
+        
+        const lastResetDate = new Date(lastReset);
+        const nextResetDate = new Date(lastResetDate.getTime() + (5 * 7 * 24 * 60 * 60 * 1000)); // 5 weeks
+        const now = new Date();
+        const timeUntilReset = nextResetDate - now;
+        
+        if (timeUntilReset <= 0) {
+            return 'Reset is due now!';
+        }
+        
+        const days = Math.floor(timeUntilReset / (24 * 60 * 60 * 1000));
+        const hours = Math.floor((timeUntilReset % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        
+        return `Next reset in ${days} days and ${hours} hours (${nextResetDate.toLocaleDateString()})`;
+    }
 }
 
 // Initialize the system when DOM is loaded
@@ -633,3 +690,48 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Comment input not found!');
     }
 });
+
+// Global functions for testing
+window.checkNextReset = () => {
+    if (window.ratingCommentSystem) {
+        const nextReset = window.ratingCommentSystem.getNextResetDate();
+        console.log('Next comment reset:', nextReset);
+        alert(nextReset);
+    }
+};
+
+window.testBadWords = (text) => {
+    if (window.ratingCommentSystem) {
+        // Test the bad word filter with same logic as the actual filter
+        const badWords = [
+            // Basic bad words
+            'fuck', 'shit', 'damn', 'bitch', 'asshole', 'stupid', 'idiot', 'hate', 'kill', 'die', 'crap', 'hell', 'wtf', 'omg', 'fucking', 'shitty', 'damned', 'bitchy', 'ass', 'dumb', 'moron', 'retard', 'gay', 'lesbian', 'nigger', 'nigga', 'faggot', 'whore', 'slut', 'porn', 'sex', 'pornography', 'xxx', 'adult', 'nude', 'naked',
+            // More bad words
+            'bastard', 'cunt', 'cock', 'dick', 'penis', 'vagina', 'boobs', 'tits', 'breast', 'pussy', 'ass', 'butt', 'arse', 'fart', 'poop', 'pee', 'piss', 'urine', 'feces', 'crap', 'bullshit', 'horseshit', 'cowshit', 'dogshit', 'ratshit', 'pissed', 'pissed off', 'piss off', 'fuck off', 'fuck you', 'fuck this', 'fuck that', 'fuck up', 'fuck up', 'fucked up', 'fucking hell', 'holy shit', 'what the fuck', 'oh my god', 'jesus christ', 'goddamn', 'bloody hell', 'son of a bitch', 'piece of shit', 'you suck', 'you are stupid', 'you are dumb', 'you are an idiot', 'kill yourself', 'go die', 'fuck this', 'fuck that', 'bullshit', 'this is shit', 'that is shit', 'so stupid', 'so dumb', 'so annoying', 'hate this', 'hate you', 'fuck up', 'screw you', 'damn it', 'shit happens', 'fucking awesome', 'fucking great', 'fucking bad', 'fucking good', 'fucking stupid', 'fucking idiot', 'fucking moron', 'fucking retarded', 'fucking gay', 'fucking lesbian', 'fucking nigger', 'fucking nigga', 'fucking faggot', 'fucking whore', 'fucking slut', 'fucking porn', 'fucking sex', 'fucking adult', 'fucking nude', 'fucking naked',
+            // Variations with spaces
+            'f u c k', 's h i t', 'd a m n', 'b i t c h', 'a s s h o l e', 's t u p i d', 'i d i o t', 'h a t e', 'k i l l', 'd i e', 'c r a p', 'h e l l', 'w t f', 'o m g', 'f u c k i n g', 's h i t t y', 'd a m n e d', 'b i t c h y', 'a s s', 'd u m b', 'm o r o n', 'r e t a r d', 'g a y', 'l e s b i a n', 'n i g g e r', 'n i g g a', 'f a g g o t', 'w h o r e', 's l u t', 'p o r n', 's e x', 'p o r n o g r a p h y', 'x x x', 'a d u l t', 'n u d e', 'n a k e d',
+            // Variations with special characters
+            'f@ck', 'sh!t', 'd@mn', 'b!tch', 'a$$hole', 'st*pid', '!d!ot', 'h@te', 'k!ll', 'd!e', 'cr@p', 'h3ll', 'wtf', '0mg', 'f*cking', 'sh!tty', 'd@mned', 'b!tchy', 'a$$', 'd*mb', 'm0r0n', 'r3t@rd', 'g@y', 'l3sb!@n', 'n!gg3r', 'n!gg@', 'f@gg0t', 'wh0r3', 'sl*t', 'p0rn', 's3x', 'p0rn0gr@phy', 'xxx', '4dult', 'nud3', 'n@k3d'
+        ];
+        
+        const commentLower = text.toLowerCase();
+        
+        for (let badWord of badWords) {
+            // Use word boundary regex to avoid partial matches
+            const regex = new RegExp('\\b' + badWord.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+            if (regex.test(commentLower)) {
+                console.log('BAD WORD DETECTED:', badWord);
+                return false;
+            }
+            
+            // Also check for exact matches (for words with spaces)
+            if (commentLower.includes(badWord.toLowerCase())) {
+                console.log('BAD WORD DETECTED (exact):', badWord);
+                return false;
+            }
+        }
+        
+        console.log('Text is clean!');
+        return true;
+    }
+};
