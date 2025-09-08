@@ -402,11 +402,26 @@ class RatingCommentSystem {
             this.updateRatingDisplay(0, 0);
             this.displayComments();
             
-            // Clear localStorage
+            // Clear ALL localStorage related to ratings and comments
             localStorage.removeItem('userHasRated');
             localStorage.removeItem('userRating');
             localStorage.removeItem('userHasCommented');
             localStorage.removeItem('lastCommentReset');
+            localStorage.removeItem('userRatingValue');
+            localStorage.removeItem('hasRated');
+            localStorage.removeItem('hasCommented');
+            localStorage.removeItem('ratingSubmitted');
+            localStorage.removeItem('commentSubmitted');
+            
+            // Also clear any other potential localStorage items
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('rating') || key.includes('comment') || key.includes('user'))) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
             
             console.log('Local data reset complete');
             
@@ -698,6 +713,44 @@ window.checkNextReset = () => {
         console.log('Next comment reset:', nextReset);
         alert(nextReset);
     }
+};
+
+// Reset functions
+window.forceReset = () => {
+    if (window.ratingCommentSystem) {
+        window.ratingCommentSystem.forceReset();
+    }
+};
+
+window.simpleReset = () => {
+    if (window.ratingCommentSystem) {
+        window.ratingCommentSystem.simpleReset();
+    }
+};
+
+window.emergencyReset = () => {
+    if (window.ratingCommentSystem) {
+        window.ratingCommentSystem.emergencyReset();
+    }
+};
+
+window.resetEverything = () => {
+    if (window.ratingCommentSystem) {
+        window.ratingCommentSystem.resetEverything();
+    }
+};
+
+window.autoResetComments = () => {
+    if (window.ratingCommentSystem) {
+        window.ratingCommentSystem.autoResetComments();
+    }
+};
+
+// Complete localStorage reset
+window.clearAllStorage = () => {
+    localStorage.clear();
+    console.log('All localStorage cleared!');
+    alert('All localStorage cleared! Users can now rate and comment again.');
 };
 
 window.testBadWords = (text) => {
