@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
     initializeTheme();
     initializeNavbarColor();
+    initializeGlowColor();
     loadUpdateContent();
     initializeAnimatedGreeting();
     applyNoticeSetting();
+    applyGlowColorSetting();
+    initializeSearch();
 });
 
 // Load data from Firebase
@@ -569,6 +572,13 @@ function initializeNavbarColor() {
     document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
 }
 
+// Initialize glow color on page load
+function initializeGlowColor() {
+    const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+    document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+    console.log('Glow color initialized:', savedGlowColor); // Debug log
+}
+
 // Apply notice banner setting on page load
 function applyNoticeSetting() {
     const noticeEnabled = localStorage.getItem('noticeEnabled');
@@ -582,6 +592,33 @@ function applyNoticeSetting() {
         }
     }
 }
+
+// Apply glow color setting on page load
+function applyGlowColorSetting() {
+    const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+    document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+    console.log('Glow color applied:', savedGlowColor);
+}
+
+// Update meta tags dynamically (only title for home page)
+function updateMetaTags(metaData) {
+    if (!metaData) return;
+    
+    // Only update if we're on the home page (index.html)
+    const currentPage = window.location.pathname.split('/').pop();
+    if (currentPage !== 'index.html' && currentPage !== '') return;
+    
+    // Update title
+    const titleElement = document.getElementById('dynamic-title');
+    if (titleElement && metaData.title) {
+        titleElement.textContent = metaData.title;
+    }
+    
+    console.log('Meta tags updated for home page:', metaData);
+}
+
+// Make updateMetaTags globally available
+window.updateMetaTags = updateMetaTags;
 
 // Confirm purchase dialog
 function confirmPurchase(event) {
@@ -614,4 +651,305 @@ window.onclick = function(event) {
     if (event.target === modal) {
         closePurchaseModal();
     }
+}
+
+// Search functionality
+function initializeSearch() {
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const searchResults = document.getElementById('search-results');
+    
+    // Initialize desktop search
+    if (searchInput && searchBtn && searchResults) {
+        initializeSearchBar(searchInput, searchBtn, searchResults);
+    }
+}
+
+function initializeSearchBar(searchInput, searchBtn, searchResults) {
+    
+    let searchTimeout;
+    
+    // Search data structure
+    const searchData = [
+        {
+            title: "Home",
+            description: "Welcome to Masg685's website. Learn about Emergency Hamburg, view updates, and connect with the community.",
+            page: "index.html",
+            elementId: "hero-section",
+            keywords: ["home", "welcome", "masg685", "main", "landing"]
+        },
+        {
+            title: "About Me",
+            description: "Learn about Masg685, Emergency Hamburg player with over 300,000 XP as police officer. Born in Samoa, now in Australia.",
+            page: "about.html",
+            elementId: "about-title",
+            keywords: ["about", "masg685", "emergency hamburg", "police", "samoa", "australia", "xp", "stats", "qa", "questions"]
+        },
+        {
+            title: "Shop",
+            description: "Browse and purchase Roblox clothing items and accessories. Currently under development.",
+            page: "shop.html",
+            elementId: "shop-title",
+            keywords: ["shop", "store", "roblox", "clothing", "items", "buy", "purchase", "robux"]
+        },
+        {
+            title: "Settings",
+            description: "Customize your website experience with theme settings, navbar colors, and notification preferences.",
+            page: "settings.html",
+            elementId: "settings-title",
+            keywords: ["settings", "preferences", "theme", "dark mode", "light mode", "navbar", "color", "notifications"]
+        },
+        {
+            title: "Updates",
+            description: "Latest website updates and version history. Track new features and improvements.",
+            page: "update.html",
+            elementId: "update-title",
+            keywords: ["updates", "version", "changelog", "news", "features", "improvements", "v3.0.8"]
+        },
+        {
+            title: "Emergency Hamburg",
+            description: "German roleplay game where Masg685 has earned over 300,000 XP as police officer. Features multiple job roles and teams.",
+            page: "about.html",
+            elementId: "emergency-title",
+            keywords: ["emergency hamburg", "german", "roleplay", "police", "fire", "medical", "adac", "bus driver", "truck driver", "controller"]
+        },
+        {
+            title: "Social Media",
+            description: "Connect with Masg685 on TikTok and Roblox. Follow for Emergency Hamburg content and updates.",
+            page: "index.html",
+            elementId: "social-media",
+            keywords: ["social media", "tiktok", "roblox", "follow", "connect", "content", "videos"]
+        },
+        {
+            title: "Rating System",
+            description: "Rate the website and leave comments. Share your feedback with the community.",
+            page: "index.html",
+            elementId: "rating-section",
+            keywords: ["rating", "stars", "comments", "feedback", "review", "rate"]
+        },
+        {
+            title: "Q&A Section",
+            description: "Frequently asked questions about Masg685, Emergency Hamburg, and gaming experiences.",
+            page: "about.html",
+            elementId: "qa-section",
+            keywords: ["qa", "questions", "answers", "faq", "frequently asked", "gaming", "roblox", "emergency hamburg"]
+        },
+        {
+            title: "Theme Toggle",
+            description: "Switch between light and dark themes for better viewing experience.",
+            page: "settings.html",
+            elementId: "theme-selector",
+            keywords: ["theme", "dark mode", "light mode", "toggle", "appearance", "color scheme"]
+        },
+        {
+            title: "Police XP Stats",
+            description: "View Masg685's impressive police XP statistics in Emergency Hamburg.",
+            page: "about.html",
+            elementId: "police-xp",
+            keywords: ["police xp", "police stats", "312213", "300000", "police officer"]
+        },
+        {
+            title: "Fire & Medical XP",
+            description: "Check out fire and medical team experience points.",
+            page: "about.html",
+            elementId: "fire-medical-xp",
+            keywords: ["fire xp", "medical xp", "fire medical", "20352", "fire team", "medical team"]
+        },
+        {
+            title: "Comments Section",
+            description: "Read and leave comments about the website.",
+            page: "index.html",
+            elementId: "comments-section",
+            keywords: ["comments", "comment", "feedback", "reviews", "discussion"]
+        }
+    ];
+    
+    // Search function
+    function performSearch(query) {
+        if (!query || query.trim().length < 2) {
+            searchResults.classList.remove('show');
+            return;
+        }
+        
+        const searchTerm = query.toLowerCase().trim();
+        const results = searchData.filter(item => {
+            const titleMatch = item.title.toLowerCase().includes(searchTerm);
+            const descMatch = item.description.toLowerCase().includes(searchTerm);
+            const keywordMatch = item.keywords.some(keyword => keyword.includes(searchTerm));
+            return titleMatch || descMatch || keywordMatch;
+        });
+        
+        displaySearchResults(results, searchTerm);
+    }
+    
+    // Display search results
+    function displaySearchResults(results, searchTerm) {
+        searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="search-no-results">No results found for "' + searchTerm + '"</div>';
+        } else {
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+                resultItem.innerHTML = `
+                    <div class="search-result-title">${highlightSearchTerm(result.title, searchTerm)}</div>
+                    <div class="search-result-description">${highlightSearchTerm(result.description, searchTerm)}</div>
+                `;
+                
+                resultItem.addEventListener('click', () => {
+                    const currentPage = window.location.pathname.split('/').pop();
+                    const searchTerm = searchInput.value.trim();
+                    
+                    if (result.page !== currentPage) {
+                        // Navigate to different page
+                        window.location.href = result.page;
+                    } else {
+                        // Same page - scroll to element with search term highlighting
+                        scrollToElement(result.elementId, searchTerm);
+                    }
+                    
+                    searchResults.classList.remove('show');
+                    searchInput.value = '';
+                });
+                
+                searchResults.appendChild(resultItem);
+            });
+        }
+        
+        searchResults.classList.add('show');
+    }
+    
+    // Highlight search terms in results
+    function highlightSearchTerm(text, searchTerm) {
+        if (!searchTerm) return text;
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        return text.replace(regex, '<mark style="background: rgba(255, 215, 0, 0.3); padding: 0.1rem 0.2rem; border-radius: 3px;">$1</mark>');
+    }
+    
+    // Event listeners
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(e.target.value);
+        }, 300);
+    });
+    
+    searchBtn.addEventListener('click', () => {
+        performSearch(searchInput.value);
+    });
+    
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch(searchInput.value);
+        } else if (e.key === 'Escape') {
+            searchResults.classList.remove('show');
+            searchInput.blur();
+        }
+    });
+    
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            searchResults.classList.remove('show');
+        }
+    });
+    
+    // Handle keyboard navigation in search results
+    let selectedIndex = -1;
+    searchInput.addEventListener('keydown', (e) => {
+        const resultItems = searchResults.querySelectorAll('.search-result-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedIndex = Math.min(selectedIndex + 1, resultItems.length - 1);
+            updateSelection(resultItems, selectedIndex);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedIndex = Math.max(selectedIndex - 1, -1);
+            updateSelection(resultItems, selectedIndex);
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+            e.preventDefault();
+            resultItems[selectedIndex].click();
+        }
+    });
+    
+    function updateSelection(items, index) {
+        items.forEach((item, i) => {
+            item.style.backgroundColor = i === index ? 'var(--navbar-color-rgba)' : '';
+        });
+    }
+}
+
+// Function to scroll to a specific element and highlight search terms
+function scrollToElement(elementId, searchTerm = '') {
+    if (!elementId) return;
+    
+    const element = document.getElementById(elementId);
+    if (element) {
+        // Highlight search terms in the element's text content
+        if (searchTerm && searchTerm.trim().length > 1) {
+            highlightSearchTermsInElement(element, searchTerm);
+        }
+        
+        // Add a temporary highlight effect to the element
+        element.style.transition = 'background-color 0.3s ease';
+        element.style.backgroundColor = 'rgba(255, 215, 0, 0.2)';
+        
+        // Scroll to element with offset for navbar
+        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        const elementPosition = element.offsetTop - navbarHeight - 20;
+        
+        window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+        });
+        
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            element.style.backgroundColor = '';
+            // Remove text highlighting
+            removeTextHighlighting(element);
+        }, 3000);
+    }
+}
+
+// Function to highlight search terms in element text
+function highlightSearchTermsInElement(element, searchTerm) {
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    const textNodes = [];
+    let node;
+    
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+    
+    textNodes.forEach(textNode => {
+        const text = textNode.textContent;
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        
+        if (regex.test(text)) {
+            const highlightedText = text.replace(regex, '<mark class="search-highlight">$1</mark>');
+            const wrapper = document.createElement('span');
+            wrapper.innerHTML = highlightedText;
+            textNode.parentNode.replaceChild(wrapper, textNode);
+        }
+    });
+}
+
+// Function to remove text highlighting
+function removeTextHighlighting(element) {
+    const highlights = element.querySelectorAll('.search-highlight');
+    highlights.forEach(highlight => {
+        const parent = highlight.parentNode;
+        parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+        parent.normalize();
+    });
 }

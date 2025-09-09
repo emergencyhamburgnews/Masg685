@@ -3,29 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updates - Masg685</title>
+    <title id="dynamic-title">Masg685 - Updates</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
     <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
     
-    <!-- Social Media Meta Tags -->
-    <meta property="og:title" content="Updates - Masg685">
-    <meta property="og:description" content="Latest updates and news from Masg685">
-    <meta property="og:image" content="masglogo.png">
-    <meta property="og:url" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Masg685">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Updates - Masg685">
-    <meta name="twitter:description" content="Latest updates and news from Masg685">
-    <meta name="twitter:image" content="masglogo.png">
-    
-    <!-- General Meta Tags -->
-    <meta name="description" content="Latest updates and news from Masg685">
-    <meta name="keywords" content="updates, news, masg685, emergency hamburg">
     
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -59,7 +42,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.0.7</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.8</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -68,6 +51,16 @@
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search website..." autocomplete="off">
+                    <button id="search-btn" class="search-btn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                    <div id="search-results" class="search-results"></div>
+                </div>
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                     <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
                 </button>
@@ -117,8 +110,21 @@
 
                 <!-- Update Content -->
                 <div class="update-content">
-                    <h2 class="update-title" id="update-title">Website Update V3.0.6</h2>
+                    <h2 class="update-title" id="update-title">Website Update V3.0.8</h2>
                     <div class="update-description" id="update-description">
+                        <p>🎨 NEW: Dynamic meta tags system - update page titles and social media sharing info from Firebase</p>
+                        <p>🎨 NEW: Navbar link glow color customization - choose from 8 different colors in Settings</p>
+                        <p>🎨 NEW: Search bar with auto-scroll to content and text highlighting</p>
+                        <p>🔧 FIXED: Annoying red container color (#780000) - now uses clean white/blue colors</p>
+                        <p>🔧 FIXED: Mobile search bar animations - removed distracting moving effects</p>
+                        <p>🔧 FIXED: Glow color system - all 8 colors now work properly on hover</p>
+                        <p>🔧 FIXED: Mobile theme toggle visibility in dropdown menu</p>
+                        <p>⚡ IMPROVED: Mobile search bar design - distinct from desktop with better visibility</p>
+                        <p>⚡ IMPROVED: Search functionality with blue text highlighting for found content</p>
+                        <p>⚡ IMPROVED: Settings page with new glow color customization option</p>
+                        <p>⚡ IMPROVED: Meta tags system for better social media sharing</p>
+                        
+                        <h3 style="color: var(--text-color); margin-top: 2rem; margin-bottom: 1rem;">Previous Updates (V3.0.7)</h3>
                         <p>🔧 FIXED: Comment system - users can now see messages from other users in real-time</p>
                         <p>🔧 FIXED: Rating stars disappearing on light theme toggle - stars now visible in both themes</p>
                         <p>🔧 FIXED: Rating stars not staying yellow when user clicks - selected stars now remain highlighted</p>

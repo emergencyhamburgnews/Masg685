@@ -3,33 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masg685 - Home</title>
+    <title id="dynamic-title">Masg685 - Home</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
     <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
     
-    <!-- Social Media Meta Tags -->
-    <meta property="og:title" content="Masg685 - Emergency Hamburg RP Server">
-    <meta property="og:description" content="Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!">
-    <meta property="og:image" content="img4.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Emergency Hamburg Police Car - Join our RP server">
-    <meta property="og:url" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Masg685">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Masg685 - Emergency Hamburg RP Server">
-    <meta name="twitter:description" content="Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!">
-    <meta name="twitter:image" content="img4.jpg">
-    <meta name="twitter:image:alt" content="Emergency Hamburg Police Car - Join our RP server">
-    
-    <!-- General Meta Tags -->
-    <meta name="description" content="Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!">
-    <meta name="keywords" content="emergency hamburg, roblox, roleplay, police, rp server, masg685">
     
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -62,7 +41,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.0.7</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.8</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link active">Home</a>
@@ -71,6 +50,16 @@
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search website..." autocomplete="off">
+                    <button id="search-btn" class="search-btn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                    <div id="search-results" class="search-results"></div>
+                </div>
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                     <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
                 </button>
@@ -107,7 +96,7 @@
 
     <main class="main-content">
         <div class="container">
-            <section class="hero-section">
+            <section class="hero-section" id="hero-section">
                 <div class="hero-image">
                     <img id="hero-image" src="" alt="Hero Image">
                 </div>
@@ -127,10 +116,10 @@
                 </div>
                 <div class="intro-text">
                     <p class="greeting" id="animated-greeting">Talofa lava</p>
-                    <p class="intro-description">Hi, I'm Masg! I create content for Emergency Hamburg on TikTok. I'm also learning how to build my own Roblox game. Follow me on TikTok and add me on Roblox to join the fun!</p>
+                    <p class="intro-description">Hi, I'm Masg! I create content for Emergency Hamburg on TikTok. I'm also learning how to build my own Roblox game. Follow me on TikTok and add me on Roblox!</p>
                     <p class="about-link-text">On this page, you can read more <a href="about.html" class="about-link">about me</a></p>
                 </div>
-                <div class="social-media">
+                <div class="social-media" id="social-media">
                     <h3>Social Media</h3>
                     <div class="social-logos">
                         <a href="https://www.roblox.com/users/5255024681/profile" id="roblox-link" class="social-logo-link" target="_blank">
@@ -145,7 +134,7 @@
         </div>
         
         <!-- Rating System Section -->
-        <div class="rating-section">
+        <div class="rating-section" id="rating-section">
             <h2>Rate My Website</h2>
             <div class="rating-container">
                 <div class="stars" id="stars">
@@ -163,7 +152,7 @@
         </div>
 
         <!-- Comments Section -->
-        <div class="comments-section">
+        <div class="comments-section" id="comments-section">
             <h2>Comments</h2>
             <div class="comment-form">
                 <div class="comment-input-container">

@@ -59,6 +59,9 @@ class FirebaseContentManager {
             const { db, doc, setDoc } = window.firebaseApp;
             
             const defaultContent = {
+                meta: {
+                    title: "Masg685 - Emergency Hamburg RP Server"
+                },
                 home: {
                     title: "Masg685 - Home",
                     description: "Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!",
@@ -251,6 +254,11 @@ class FirebaseContentManager {
     }
 
     applyContent() {
+        // Apply meta tags
+        if (this.content.meta) {
+            this.updateMetaTags();
+        }
+
         // Apply home content
         if (this.content.home) {
             this.updateHomeContent();
@@ -263,6 +271,17 @@ class FirebaseContentManager {
 
         // Make content available globally
         window.websiteData = this.content;
+    }
+
+    updateMetaTags() {
+        const meta = this.content.meta;
+        
+        console.log('Updating meta tags:', meta);
+        
+        // Call the global updateMetaTags function
+        if (typeof window.updateMetaTags === 'function') {
+            window.updateMetaTags(meta);
+        }
     }
 
     updateHomeContent() {
@@ -421,6 +440,18 @@ class FirebaseContentManager {
                     this.content.notice = doc.data();
                     this.updateNoticeContent();
                     console.log('Notice updated in real-time:', this.content.notice);
+                }
+            });
+
+            // Listen for meta tag changes
+            onSnapshot(doc(db, 'website', 'content'), (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data();
+                    if (data.meta) {
+                        this.content.meta = data.meta;
+                        this.updateMetaTags();
+                        console.log('Meta tags updated in real-time:', this.content.meta);
+                    }
                 }
             });
         } catch (error) {

@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masg685 - About</title>
+    <title id="dynamic-title">Masg685 - About</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
     <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
+    
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -40,7 +41,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.0.7</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.0.8</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -49,6 +50,16 @@
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search website..." autocomplete="off">
+                    <button id="search-btn" class="search-btn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                    <div id="search-results" class="search-results"></div>
+                </div>
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                     <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
                 </button>
@@ -94,7 +105,7 @@
                 </div>
                 
                 <div class="about-sections-container">
-                    <div class="emergency-hamburg-section">
+                    <div class="emergency-hamburg-section" id="emergency-hamburg-section">
                         <h2 id="emergency-title">Emergency Hamburg</h2>
                         <div class="stats-box" id="stats-box">
                             <div class="stat-item">
@@ -147,7 +158,7 @@
                     </div>
                 </div>
                 
-                <div class="qa-section">
+                <div class="qa-section" id="qa-section">
                     <h2 class="qa-title">Q&A</h2>
                     <div class="qa-content">
                         <div class="qa-item">

@@ -9,6 +9,7 @@ function initializeSettings() {
     setupEventListeners();
     updateThemeSelector();
     updateNavbarColorSelector();
+    updateGlowColorSelector();
 }
 
 // Load saved settings from localStorage
@@ -37,6 +38,11 @@ function loadSettings() {
     const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
     const navbarColorSelector = document.getElementById('navbar-color-selector');
     navbarColorSelector.value = savedNavbarColor;
+    
+    // Load glow color setting
+    const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+    const glowColorSelector = document.getElementById('glow-color-selector');
+    glowColorSelector.value = savedGlowColor;
 }
 
 // Setup event listeners for settings controls
@@ -79,6 +85,14 @@ function setupEventListeners() {
         const selectedColor = this.value;
         setNavbarColor(selectedColor);
         localStorage.setItem('navbarColor', selectedColor);
+    });
+    
+    // Glow color selector
+    const glowColorSelector = document.getElementById('glow-color-selector');
+    glowColorSelector.addEventListener('change', function() {
+        const selectedColor = this.value;
+        setGlowColor(selectedColor);
+        localStorage.setItem('glowColor', selectedColor);
     });
     
     // Reset settings button
@@ -130,6 +144,11 @@ function setNavbarColor(color) {
     document.documentElement.setAttribute('data-navbar-color', color);
 }
 
+// Set glow color
+function setGlowColor(color) {
+    document.documentElement.setAttribute('data-glow-color', color);
+}
+
 // Update navbar color selector to reflect current color
 function updateNavbarColorSelector() {
     const currentColor = localStorage.getItem('navbarColor') || 'black';
@@ -137,6 +156,16 @@ function updateNavbarColorSelector() {
     
     if (navbarColorSelector) {
         navbarColorSelector.value = currentColor;
+    }
+}
+
+// Update glow color selector to reflect current color
+function updateGlowColorSelector() {
+    const currentColor = localStorage.getItem('glowColor') || 'blue';
+    const glowColorSelector = document.getElementById('glow-color-selector');
+    
+    if (glowColorSelector) {
+        glowColorSelector.value = currentColor;
     }
 }
 
@@ -162,6 +191,12 @@ function resetAllSettings() {
     navbarColorSelector.value = 'black';
     setNavbarColor('black');
     
+    // Reset glow color
+    localStorage.setItem('glowColor', 'blue');
+    const glowColorSelector = document.getElementById('glow-color-selector');
+    glowColorSelector.value = 'blue';
+    setGlowColor('blue');
+    
     // Show confirmation
     alert('All settings have been reset to their default values!');
 }
@@ -182,3 +217,13 @@ function applyNoticeSetting() {
 
 // Call this function on all pages to apply notice setting
 applyNoticeSetting();
+
+// Apply glow color setting on all pages
+function applyGlowColorSetting() {
+    const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+    document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+    console.log('Glow color applied:', savedGlowColor);
+}
+
+// Call this function on all pages to apply glow color setting
+applyGlowColorSetting();
