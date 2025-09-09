@@ -305,6 +305,16 @@ class RatingCommentsSystem {
 
     // Show message
     showMessage(message, type) {
+        // Play error sound if it's an error message
+        if (type === 'error' && typeof playErrorSound === 'function') {
+            playErrorSound();
+        }
+        
+        // Play success sound if it's a success message
+        if (type === 'success' && typeof playSuccessSound === 'function') {
+            playSuccessSound();
+        }
+
         // Remove existing messages
         const existingMessages = document.querySelectorAll('.error-message, .success-message');
         existingMessages.forEach(msg => msg.remove());

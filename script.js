@@ -1,6 +1,120 @@
 // Global variable to store website data
 let websiteData = {};
 
+// Error Sound System
+class ErrorSoundSystem {
+    constructor() {
+        this.audio = null;
+        this.volume = 0.5; // 50% volume as requested
+        this.initializeAudio();
+    }
+
+    initializeAudio() {
+        try {
+            // Create audio element for error sound
+            this.audio = new Audio('error message sound.mp3');
+            this.audio.volume = this.volume;
+            this.audio.preload = 'auto';
+            
+            // Handle audio loading errors gracefully
+            this.audio.addEventListener('error', (e) => {
+                console.warn('Error sound file not found or failed to load:', e);
+            });
+            
+            console.log('Error sound system initialized');
+        } catch (error) {
+            console.warn('Failed to initialize error sound system:', error);
+        }
+    }
+
+    playErrorSound() {
+        try {
+            if (this.audio) {
+                // Reset audio to beginning and play
+                this.audio.currentTime = 0;
+                this.audio.volume = this.volume;
+                this.audio.play().catch(error => {
+                    console.warn('Could not play error sound:', error);
+                });
+            }
+        } catch (error) {
+            console.warn('Error playing sound:', error);
+        }
+    }
+
+    setVolume(volume) {
+        this.volume = Math.max(0, Math.min(1, volume)); // Clamp between 0 and 1
+        if (this.audio) {
+            this.audio.volume = this.volume;
+        }
+    }
+}
+
+// Global error sound system instance
+const errorSoundSystem = new ErrorSoundSystem();
+
+// Function to play error sound (can be called from anywhere)
+function playErrorSound() {
+    errorSoundSystem.playErrorSound();
+}
+
+// Success Sound System
+class SuccessSoundSystem {
+    constructor() {
+        this.audio = null;
+        this.volume = 0.5; // 50% volume as requested
+        this.initializeAudio();
+    }
+
+    initializeAudio() {
+        try {
+            // Create audio element for success sound
+            this.audio = new Audio('correct message sound.mp3');
+            this.audio.volume = this.volume;
+            this.audio.preload = 'auto';
+            
+            // Handle audio loading errors gracefully
+            this.audio.addEventListener('error', (e) => {
+                console.warn('Success sound file not found or failed to load:', e);
+            });
+            
+            console.log('Success sound system initialized');
+        } catch (error) {
+            console.warn('Failed to initialize success sound system:', error);
+        }
+    }
+
+    playSuccessSound() {
+        try {
+            if (this.audio) {
+                // Reset audio to beginning and play
+                this.audio.currentTime = 0;
+                this.audio.volume = this.volume;
+                this.audio.play().catch(error => {
+                    console.warn('Could not play success sound:', error);
+                });
+            }
+        } catch (error) {
+            console.warn('Error playing success sound:', error);
+        }
+    }
+
+    setVolume(volume) {
+        this.volume = Math.max(0, Math.min(1, volume)); // Clamp between 0 and 1
+        if (this.audio) {
+            this.audio.volume = this.volume;
+        }
+    }
+}
+
+// Global success sound system instance
+const successSoundSystem = new SuccessSoundSystem();
+
+// Function to play success sound (can be called from anywhere)
+function playSuccessSound() {
+    successSoundSystem.playSuccessSound();
+}
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
@@ -39,6 +153,7 @@ async function loadWebsiteData() {
         }
     } catch (error) {
         console.error('Error loading website data:', error);
+        playErrorSound();
         // Fallback to default data
         websiteData = getDefaultData();
         loadPageContent();
@@ -217,18 +332,19 @@ function loadSocialMediaContent() {
 
 // Load about page content
 function loadAboutContent() {
-    if (!websiteData.about) return;
+    // DISABLED: Don't override the HTML content with Firebase content
+    // if (!websiteData.about) return;
     
-    const titleElement = document.getElementById('about-title');
-    const contentElement = document.getElementById('about-content');
+    // const titleElement = document.getElementById('about-title');
+    // const contentElement = document.getElementById('about-content');
     
-    if (titleElement && websiteData.about.title) {
-        titleElement.textContent = websiteData.about.title;
-    }
+    // if (titleElement && websiteData.about.title) {
+    //     titleElement.textContent = websiteData.about.title;
+    // }
     
-    if (contentElement && websiteData.about.content) {
-        contentElement.textContent = websiteData.about.content;
-    }
+    // if (contentElement && websiteData.about.content) {
+    //     contentElement.innerHTML = websiteData.about.content;
+    // }
     
     // Load Emergency Hamburg data
     loadEmergencyHamburgContent();
@@ -365,6 +481,7 @@ function loadShopContent() {
         }
     } catch (error) {
         console.error('Error loading shop content:', error);
+        playErrorSound();
         const productsGrid = document.getElementById('products-grid');
         if (productsGrid) {
             productsGrid.classList.remove('loading');
@@ -409,6 +526,7 @@ function handleBuyClick(link) {
     if (link && link !== '#') {
         window.open(link, '_blank');
     } else {
+        playSuccessSound();
         alert('Buy link not configured yet!');
     }
 }
@@ -600,25 +718,6 @@ function applyGlowColorSetting() {
     console.log('Glow color applied:', savedGlowColor);
 }
 
-// Update meta tags dynamically (only title for home page)
-function updateMetaTags(metaData) {
-    if (!metaData) return;
-    
-    // Only update if we're on the home page (index.html)
-    const currentPage = window.location.pathname.split('/').pop();
-    if (currentPage !== 'index.html' && currentPage !== '') return;
-    
-    // Update title
-    const titleElement = document.getElementById('dynamic-title');
-    if (titleElement && metaData.title) {
-        titleElement.textContent = metaData.title;
-    }
-    
-    console.log('Meta tags updated for home page:', metaData);
-}
-
-// Make updateMetaTags globally available
-window.updateMetaTags = updateMetaTags;
 
 // Confirm purchase dialog
 function confirmPurchase(event) {
@@ -704,7 +803,7 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
             description: "Latest website updates and version history. Track new features and improvements.",
             page: "update.html",
             elementId: "update-title",
-            keywords: ["updates", "version", "changelog", "news", "features", "improvements", "v3.0.8"]
+            keywords: ["updates", "version", "changelog", "news", "features", "improvements", "v3.0.9"]
         },
         {
             title: "Emergency Hamburg",

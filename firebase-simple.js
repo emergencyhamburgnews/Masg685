@@ -27,6 +27,9 @@ class SimpleFirebaseContent {
             console.log('Simple Firebase content system initialized successfully');
         } catch (error) {
             console.error('Error initializing Firebase content system:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
         }
     }
 
@@ -49,6 +52,9 @@ class SimpleFirebaseContent {
             
         } catch (error) {
             console.error('Error loading content:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
         }
     }
 
@@ -68,6 +74,9 @@ class SimpleFirebaseContent {
             
         } catch (error) {
             console.error('Error loading notice:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
         }
     }
 

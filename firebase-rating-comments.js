@@ -212,8 +212,16 @@ class RatingCommentSystem {
     async submitComment(commentText) {
         console.log('submitComment called with:', commentText);
         
+        // Prevent duplicate submissions
+        if (this.isSubmitting) {
+            console.log('Already submitting, ignoring duplicate call');
+            return;
+        }
+        this.isSubmitting = true;
+        
         if (!commentText || !commentText.trim()) {
             this.showMessage('Please enter a comment!', 'error');
+            this.isSubmitting = false;
             return;
         }
 
@@ -221,6 +229,7 @@ class RatingCommentSystem {
         const hasCommented = localStorage.getItem('userHasCommented');
         if (hasCommented) {
             this.showMessage('You have already commented! You can only comment once.', 'error');
+            this.isSubmitting = false;
             return;
         }
 
@@ -244,12 +253,14 @@ class RatingCommentSystem {
             const regex = new RegExp('\\b' + badWord.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
             if (regex.test(commentLower)) {
                 this.showMessage('Please keep your comment appropriate and respectful!', 'error');
+                this.isSubmitting = false;
                 return;
             }
             
             // Also check for exact matches (for words with spaces)
             if (commentLower.includes(badWord.toLowerCase())) {
                 this.showMessage('Please keep your comment appropriate and respectful!', 'error');
+                this.isSubmitting = false;
                 return;
             }
         }
@@ -298,6 +309,9 @@ class RatingCommentSystem {
             console.error('Firebase save failed, but comment still works locally:', error);
             // Comment still works locally even if Firebase fails
         }
+        
+        // Reset the submitting flag
+        this.isSubmitting = false;
     }
 
     displayComments() {
@@ -548,11 +562,22 @@ class RatingCommentSystem {
         localStorage.removeItem('userHasCommented');
         localStorage.removeItem('lastCommentReset');
         
+        playSuccessSound();
         alert('RESET COMPLETE! Ratings are now 0!');
     }
 
     // Function to show messages inside the website
     showMessage(text, type = 'info') {
+        // Play error sound if it's an error message
+        if (type === 'error' && typeof playErrorSound === 'function') {
+            playErrorSound();
+        }
+        
+        // Play success sound if it's a success message
+        if (type === 'success' && typeof playSuccessSound === 'function') {
+            playSuccessSound();
+        }
+
         // Remove existing message
         const existingMessage = document.getElementById('system-message');
         if (existingMessage) {
@@ -599,13 +624,13 @@ class RatingCommentSystem {
         }, 4000);
     }
 
-    // Auto-reset comments every 5 weeks
+    // Auto-reset comments every 2 weeks
     checkAutoReset() {
         const lastReset = localStorage.getItem('lastCommentReset');
         const now = new Date();
-        const fiveWeeks = 5 * 7 * 24 * 60 * 60 * 1000; // 5 weeks in milliseconds
+        const twoWeeks = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks in milliseconds
 
-        if (!lastReset || (now - new Date(lastReset)) > fiveWeeks) {
+        if (!lastReset || (now - new Date(lastReset)) > twoWeeks) {
             this.autoResetComments();
             localStorage.setItem('lastCommentReset', now.toISOString());
         }
@@ -639,7 +664,7 @@ class RatingCommentSystem {
         }
         
         const lastResetDate = new Date(lastReset);
-        const nextResetDate = new Date(lastResetDate.getTime() + (5 * 7 * 24 * 60 * 60 * 1000)); // 5 weeks
+        const nextResetDate = new Date(lastResetDate.getTime() + (2 * 7 * 24 * 60 * 60 * 1000)); // 2 weeks
         const now = new Date();
         const timeUntilReset = nextResetDate - now;
         
@@ -669,12 +694,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Comment submit button event listener
     const submitButton = document.getElementById('submit-comment');
     if (submitButton) {
-        submitButton.addEventListener('click', () => {
+        // Remove any existing event listeners to prevent duplicates
+        submitButton.removeEventListener('click', window.ratingCommentSystem.handleSubmitClick);
+        
+        // Create a bound function to avoid duplicate listeners
+        window.ratingCommentSystem.handleSubmitClick = () => {
             console.log('Submit button clicked!');
             const commentText = document.getElementById('comment-input').value;
             console.log('Comment text:', commentText);
             window.ratingCommentSystem.submitComment(commentText);
-        });
+        };
+        
+        submitButton.addEventListener('click', window.ratingCommentSystem.handleSubmitClick);
         console.log('Submit button event listener attached');
     } else {
         console.error('Submit button not found!');
@@ -692,14 +723,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Allow Enter key to submit comments
     const commentInput = document.getElementById('comment-input');
     if (commentInput) {
-        commentInput.addEventListener('keypress', (e) => {
+        // Remove any existing event listeners to prevent duplicates
+        commentInput.removeEventListener('keypress', window.ratingCommentSystem.handleEnterKey);
+        
+        // Create a bound function to avoid duplicate listeners
+        window.ratingCommentSystem.handleEnterKey = (e) => {
             if (e.key === 'Enter') {
                 console.log('Enter key pressed!');
                 const commentText = document.getElementById('comment-input').value;
                 console.log('Comment text:', commentText);
                 window.ratingCommentSystem.submitComment(commentText);
             }
-        });
+        };
+        
+        commentInput.addEventListener('keypress', window.ratingCommentSystem.handleEnterKey);
         console.log('Comment input event listener attached');
     } else {
         console.error('Comment input not found!');
@@ -711,7 +748,8 @@ window.checkNextReset = () => {
     if (window.ratingCommentSystem) {
         const nextReset = window.ratingCommentSystem.getNextResetDate();
         console.log('Next comment reset:', nextReset);
-        alert(nextReset);
+        playSuccessSound();
+    alert(nextReset);
     }
 };
 
@@ -750,6 +788,7 @@ window.autoResetComments = () => {
 window.clearAllStorage = () => {
     localStorage.clear();
     console.log('All localStorage cleared!');
+    playSuccessSound();
     alert('All localStorage cleared! Users can now rate and comment again.');
 };
 

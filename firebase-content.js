@@ -49,6 +49,9 @@ class FirebaseContentManager {
             
         } catch (error) {
             console.error('Error loading content from Firebase:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
             // Fallback to default content
             this.loadDefaultContent();
         }
@@ -59,9 +62,6 @@ class FirebaseContentManager {
             const { db, doc, setDoc } = window.firebaseApp;
             
             const defaultContent = {
-                meta: {
-                    title: "Masg685 - Emergency Hamburg RP Server"
-                },
                 home: {
                     title: "Masg685 - Home",
                     description: "Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!",
@@ -69,16 +69,16 @@ class FirebaseContentManager {
                 },
                 about: {
                     title: "About Me",
-                    content: "Hi, My gaming name is Masg685 and I'm from Australia, I was born on the island of Savai'i in Samoa.\n\nIn 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I've earned over 300,000 XP as police officer, which is known as one of the best teams in the game.\n\nLater, I started creating content on social Media beginning with Youtube and then expanding to TikTok. if you haven't subscribed yet, please do it really helps me out."
+                    content: "Hi, My gaming name is Masg685 and I'm from Australia, I was born on the island of Savai'i in Samoa.<br><br>In 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I've earned over 300,000 XP as police officer, which is known as one of the best teams in the game.<br><br>Later, I started creating content on social Media beginning with Youtube and then expanding to TikTok. if you haven't subscribed yet, please do it really helps me out."
                 },
                 emergencyHamburg: {
                     title: "Emergency Hamburg",
                     stats: {
                         gamepass: "+9",
-                        policeXp: "+312,213XP Total",
-                        fireMedicalXp: "+20,352XP Total",
+                        policeXp: "+340,610XP Total",
+                        fireMedicalXp: "+21,270XP Total",
                         truckXp: "+1,721XP Total",
-                        adacXp: "+2,035XP Total",
+                        adacXp: "+2,341XP Total",
                         busDriverXp: "+1,454XP Total"
                     }
                 },
@@ -146,6 +146,9 @@ class FirebaseContentManager {
             console.log('Default content created in Firebase');
         } catch (error) {
             console.error('Error creating default content:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
         }
     }
 
@@ -164,6 +167,9 @@ class FirebaseContentManager {
             console.log('Default notice created in Firebase');
         } catch (error) {
             console.error('Error creating default notice:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
         }
     }
 
@@ -254,15 +260,16 @@ class FirebaseContentManager {
     }
 
     applyContent() {
-        // Apply meta tags
-        if (this.content.meta) {
-            this.updateMetaTags();
-        }
-
         // Apply home content
         if (this.content.home) {
             this.updateHomeContent();
         }
+
+        // DISABLED: Don't override about content - keep original HTML
+        // Apply about content
+        // if (this.content.about) {
+        //     this.updateAboutContent();
+        // }
 
         // Apply notice content
         if (this.content.notice) {
@@ -273,16 +280,6 @@ class FirebaseContentManager {
         window.websiteData = this.content;
     }
 
-    updateMetaTags() {
-        const meta = this.content.meta;
-        
-        console.log('Updating meta tags:', meta);
-        
-        // Call the global updateMetaTags function
-        if (typeof window.updateMetaTags === 'function') {
-            window.updateMetaTags(meta);
-        }
-    }
 
     updateHomeContent() {
         const home = this.content.home;
@@ -420,6 +417,43 @@ class FirebaseContentManager {
         await this.loadContent();
     }
 
+    // Force update Firebase content with correct about text
+    async forceUpdateAboutContent() {
+        try {
+            const { db, doc, updateDoc } = window.firebaseApp;
+            
+            const correctAboutContent = {
+                about: {
+                    title: "About Me",
+                    content: "Hi, My gaming name is Masg685 and I'm from Australia, I was born on the island of Savai'i in Samoa.<br><br>In 2023, I started playing Emergency Hamburg, a roleplay game from Germany. I've earned over 300,000 XP as police officer, which is known as one of the best teams in the game.<br><br>Later, I started creating content on social Media beginning with Youtube and then expanding to TikTok. if you haven't subscribed yet, please do it really helps me out."
+                },
+                emergencyHamburg: {
+                    title: "Emergency Hamburg",
+                    stats: {
+                        gamepass: "+9",
+                        policeXp: "+340,610XP Total",
+                        fireMedicalXp: "+21,270XP Total",
+                        truckXp: "+1,721XP Total",
+                        adacXp: "+2,341XP Total",
+                        busDriverXp: "+1,454XP Total"
+                    }
+                }
+            };
+
+            await updateDoc(doc(db, 'website', 'content'), correctAboutContent);
+            console.log('About content force updated in Firebase');
+            
+            // Reload content
+            await this.loadContent();
+            
+        } catch (error) {
+            console.error('Error force updating about content:', error);
+            if (typeof playErrorSound === 'function') {
+                playErrorSound();
+            }
+        }
+    }
+
     // Set up real-time listeners for content updates
     setupRealtimeListeners() {
         try {
@@ -443,17 +477,6 @@ class FirebaseContentManager {
                 }
             });
 
-            // Listen for meta tag changes
-            onSnapshot(doc(db, 'website', 'content'), (doc) => {
-                if (doc.exists()) {
-                    const data = doc.data();
-                    if (data.meta) {
-                        this.content.meta = data.meta;
-                        this.updateMetaTags();
-                        console.log('Meta tags updated in real-time:', this.content.meta);
-                    }
-                }
-            });
         } catch (error) {
             console.error('Error setting up real-time listeners:', error);
         }
@@ -464,6 +487,16 @@ class FirebaseContentManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.firebaseContentManager = new FirebaseContentManager();
 });
+
+// Global function to force update about content
+window.forceUpdateAboutContent = async () => {
+    if (window.firebaseContentManager) {
+        await window.firebaseContentManager.forceUpdateAboutContent();
+        console.log('About content force updated!');
+    } else {
+        console.error('Firebase content manager not found!');
+    }
+};
 
 // Manual refresh function for testing
 window.refreshFirebaseContent = async () => {

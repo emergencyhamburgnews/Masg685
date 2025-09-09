@@ -198,6 +198,7 @@ function resetAllSettings() {
     setGlowColor('blue');
     
     // Show confirmation
+    playSuccessSound();
     alert('All settings have been reset to their default values!');
 }
 
