@@ -260,9 +260,15 @@ class FirebaseContentManager {
     }
 
     applyContent() {
+        console.log('🎯 applyContent() called!');
+        console.log('📊 Content structure:', this.content);
+        
         // Apply home content
         if (this.content.home) {
+            console.log('✅ Home content found, calling updateHomeContent()');
             this.updateHomeContent();
+        } else {
+            console.log('❌ No home content found in this.content.home');
         }
 
         // DISABLED: Don't override about content - keep original HTML
@@ -284,7 +290,9 @@ class FirebaseContentManager {
     updateHomeContent() {
         const home = this.content.home;
         
-        console.log('Updating home content:', home);
+        console.log('🏠 updateHomeContent() called!');
+        console.log('📋 Home content data:', home);
+        console.log('🔍 Full content object:', this.content);
         
         // Update hero section - use correct IDs
         const heroDescription = document.getElementById('hero-description');
@@ -461,10 +469,16 @@ class FirebaseContentManager {
             
             // Listen for content changes
             onSnapshot(doc(db, 'website', 'content'), (doc) => {
+                console.log('🔥 Real-time content update detected!', doc.exists() ? 'Document exists' : 'Document does not exist');
                 if (doc.exists()) {
-                    this.content = { ...this.content, ...doc.data() };
+                    const newData = doc.data();
+                    console.log('📄 New content data:', newData);
+                    this.content = { ...this.content, ...newData };
+                    console.log('🔄 Applying content updates...');
                     this.applyContent();
-                    console.log('Content updated in real-time');
+                    console.log('✅ Content updated in real-time successfully');
+                } else {
+                    console.log('❌ Content document does not exist in Firebase');
                 }
             });
 
@@ -487,6 +501,30 @@ class FirebaseContentManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.firebaseContentManager = new FirebaseContentManager();
 });
+
+// Global function to test real-time updates
+window.testContentUpdate = () => {
+    console.log('🧪 Testing content update...');
+    if (window.firebaseContentManager) {
+        console.log('📋 Current content:', window.firebaseContentManager.content);
+        console.log('🔄 Calling applyContent()...');
+        window.firebaseContentManager.applyContent();
+        console.log('✅ Test complete!');
+    } else {
+        console.log('❌ Firebase content manager not found!');
+    }
+};
+
+// Global function to force reload content from Firebase
+window.forceReloadContent = async () => {
+    console.log('🔄 Force reloading content from Firebase...');
+    if (window.firebaseContentManager) {
+        await window.firebaseContentManager.loadContent();
+        console.log('✅ Content reloaded!');
+    } else {
+        console.log('❌ Firebase content manager not found!');
+    }
+};
 
 // Global function to force update about content
 window.forceUpdateAboutContent = async () => {

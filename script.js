@@ -122,33 +122,14 @@ function updateThemeColor() {
     
     let themeColor;
     
-    // Set theme color based on navbar color and theme
-    if (theme === 'dark') {
-        // Dark theme - use navbar color
-        switch (navbarColor) {
-            case 'red': themeColor = '#dc3545'; break;
-            case 'blue': themeColor = '#4a90e2'; break;  // Match navbar blue exactly
-            case 'green': themeColor = '#28a745'; break;
-            case 'purple': themeColor = '#6f42c1'; break;
-            case 'orange': themeColor = '#fd7e14'; break;
-            case 'pink': themeColor = '#e83e8c'; break;
-            case 'cyan': themeColor = '#17a2b8'; break;
-            case 'yellow': themeColor = '#ffc107'; break;
-            default: themeColor = '#000000'; // black
-        }
-    } else {
-        // Light theme - use navbar color
-        switch (navbarColor) {
-            case 'red': themeColor = '#dc3545'; break;
-            case 'blue': themeColor = '#4a90e2'; break;  // Match navbar blue exactly
-            case 'green': themeColor = '#28a745'; break;
-            case 'purple': themeColor = '#6f42c1'; break;
-            case 'orange': themeColor = '#fd7e14'; break;
-            case 'pink': themeColor = '#e83e8c'; break;
-            case 'cyan': themeColor = '#17a2b8'; break;
-            case 'yellow': themeColor = '#ffc107'; break;
-            default: themeColor = '#000000'; // black
-        }
+    // Set theme color to match navbar colors exactly (copy from CSS)
+    switch (navbarColor) {
+        case 'black': themeColor = '#000000'; break;  // Exact match from CSS
+        case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
+        case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
+        case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
+        case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
+        default: themeColor = '#000000'; // Default to black
     }
     
     // Update the theme-color meta tag
