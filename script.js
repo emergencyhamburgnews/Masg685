@@ -127,7 +127,7 @@ function updateThemeColor() {
         // Dark theme - use navbar color
         switch (navbarColor) {
             case 'red': themeColor = '#dc3545'; break;
-            case 'blue': themeColor = '#007bff'; break;
+            case 'blue': themeColor = '#4a90e2'; break;  // Match navbar blue exactly
             case 'green': themeColor = '#28a745'; break;
             case 'purple': themeColor = '#6f42c1'; break;
             case 'orange': themeColor = '#fd7e14'; break;
@@ -140,7 +140,7 @@ function updateThemeColor() {
         // Light theme - use navbar color
         switch (navbarColor) {
             case 'red': themeColor = '#dc3545'; break;
-            case 'blue': themeColor = '#007bff'; break;
+            case 'blue': themeColor = '#4a90e2'; break;  // Match navbar blue exactly
             case 'green': themeColor = '#28a745'; break;
             case 'purple': themeColor = '#6f42c1'; break;
             case 'orange': themeColor = '#fd7e14'; break;
