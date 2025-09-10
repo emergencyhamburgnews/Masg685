@@ -115,6 +115,51 @@ function playSuccessSound() {
     successSoundSystem.playSuccessSound();
 }
 
+// Dynamic Theme Color System
+function updateThemeColor() {
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const theme = localStorage.getItem('theme') || 'light';
+    
+    let themeColor;
+    
+    // Set theme color based on navbar color and theme
+    if (theme === 'dark') {
+        // Dark theme - use navbar color
+        switch (navbarColor) {
+            case 'red': themeColor = '#dc3545'; break;
+            case 'blue': themeColor = '#007bff'; break;
+            case 'green': themeColor = '#28a745'; break;
+            case 'purple': themeColor = '#6f42c1'; break;
+            case 'orange': themeColor = '#fd7e14'; break;
+            case 'pink': themeColor = '#e83e8c'; break;
+            case 'cyan': themeColor = '#17a2b8'; break;
+            case 'yellow': themeColor = '#ffc107'; break;
+            default: themeColor = '#000000'; // black
+        }
+    } else {
+        // Light theme - use navbar color
+        switch (navbarColor) {
+            case 'red': themeColor = '#dc3545'; break;
+            case 'blue': themeColor = '#007bff'; break;
+            case 'green': themeColor = '#28a745'; break;
+            case 'purple': themeColor = '#6f42c1'; break;
+            case 'orange': themeColor = '#fd7e14'; break;
+            case 'pink': themeColor = '#e83e8c'; break;
+            case 'cyan': themeColor = '#17a2b8'; break;
+            case 'yellow': themeColor = '#ffc107'; break;
+            default: themeColor = '#000000'; // black
+        }
+    }
+    
+    // Update the theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', themeColor);
+    }
+    
+    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme);
+}
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
@@ -126,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyNoticeSetting();
     applyGlowColorSetting();
     initializeSearch();
+    updateThemeColor(); // Update theme color on page load
 });
 
 // Load data from Firebase
@@ -611,6 +657,9 @@ function setTheme(theme) {
     
     // Save theme preference
     localStorage.setItem('theme', theme);
+    
+    // Update theme color
+    updateThemeColor();
 }
 
 // Load update page content
@@ -803,7 +852,7 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
             description: "Latest website updates and version history. Track new features and improvements.",
             page: "update.html",
             elementId: "update-title",
-            keywords: ["updates", "version", "changelog", "news", "features", "improvements", "v3.0.9"]
+            keywords: ["updates", "version", "changelog", "news", "features", "improvements", "v3.1.0"]
         },
         {
             title: "Emergency Hamburg",
@@ -823,7 +872,7 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
             title: "Rating System",
             description: "Rate the website and leave comments. Share your feedback with the community.",
             page: "index.html",
-            elementId: "rating-section",
+            elementId: "rating-comments-section",
             keywords: ["rating", "stars", "comments", "feedback", "review", "rate"]
         },
         {
@@ -858,7 +907,7 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
             title: "Comments Section",
             description: "Read and leave comments about the website.",
             page: "index.html",
-            elementId: "comments-section",
+            elementId: "rating-comments-section",
             keywords: ["comments", "comment", "feedback", "reviews", "discussion"]
         }
     ];

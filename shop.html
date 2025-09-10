@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
     <title>Masg685</title>
     
     <!-- Favicon -->
@@ -34,19 +35,39 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
-        // Apply settings immediately to prevent glitch
+        // Apply settings immediately to prevent white flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+            document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+            const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+            document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+            
+            let themeColor;
+            switch (savedNavbarColor) {
+                case 'red': themeColor = '#dc3545'; break;
+                case 'blue': themeColor = '#007bff'; break;
+                case 'green': themeColor = '#28a745'; break;
+                case 'purple': themeColor = '#6f42c1'; break;
+                case 'orange': themeColor = '#fd7e14'; break;
+                case 'pink': themeColor = '#e83e8c'; break;
+                case 'cyan': themeColor = '#17a2b8'; break;
+                case 'yellow': themeColor = '#ffc107'; break;
+                default: themeColor = '#000000';
+            }
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta) {
+                themeColorMeta.setAttribute('content', themeColor);
+            }
+        })();
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Apply notice setting - but don't hide it, let Firebase control it
             const noticeEnabled = localStorage.getItem('noticeEnabled');
             const noticeBanner = document.getElementById('website-notice');
-            // Don't hide the notice banner - let Firebase content system control it
             // if (noticeBanner && noticeEnabled === 'false') {
             //     noticeBanner.classList.add('hidden');
             // }
-            
-            // Apply navbar color setting
-            const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
-            document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
         });
     </script>
 </head>
@@ -63,7 +84,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.0.9</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.1.0</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>

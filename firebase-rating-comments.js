@@ -217,6 +217,7 @@ class RatingCommentSystem {
             console.log('Already submitting, ignoring duplicate call');
             return;
         }
+        
         this.isSubmitting = true;
         
         if (!commentText || !commentText.trim()) {
@@ -280,10 +281,7 @@ class RatingCommentSystem {
             avatarColor: randomColor
         };
         
-        this.comments.unshift(newComment);
-        this.displayComments();
-        
-        // Clear the input field
+        // Clear the input field first
         const commentInput = document.getElementById('comment-input');
         if (commentInput) {
             commentInput.value = '';
@@ -292,10 +290,7 @@ class RatingCommentSystem {
         // Mark user as having commented
         localStorage.setItem('userHasCommented', 'true');
         
-        this.showMessage('Comment added successfully!', 'success');
-        console.log('Comment added locally successfully!');
-        
-        // Try to save to Firebase (optional)
+        // Try to save to Firebase first
         try {
             const { db, collection, addDoc } = window.firebaseApp;
             await addDoc(collection(db, 'comments'), {
@@ -305,13 +300,20 @@ class RatingCommentSystem {
                 avatarColor: randomColor
             });
             console.log('Comment saved to Firebase successfully!');
+            this.showMessage('Comment added successfully!', 'success');
         } catch (error) {
-            console.error('Firebase save failed, but comment still works locally:', error);
-            // Comment still works locally even if Firebase fails
+            console.error('Firebase save failed, falling back to local storage:', error);
+            // Fallback: add to local array and display if Firebase fails
+            this.comments.unshift(newComment);
+            this.displayComments();
+            this.showMessage('Comment added successfully! (Local only)', 'success');
         }
         
-        // Reset the submitting flag
-        this.isSubmitting = false;
+        // Reset the submitting flag with a small delay to prevent rapid successive calls
+        setTimeout(() => {
+            this.isSubmitting = false;
+            console.log('Comment submission completed, isSubmitting reset to false');
+        }, 100);
     }
 
     displayComments() {
@@ -630,8 +632,12 @@ class RatingCommentSystem {
         const now = new Date();
         const twoWeeks = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks in milliseconds
 
-        if (!lastReset || (now - new Date(lastReset)) > twoWeeks) {
+        // Only reset if there's a lastReset date AND it's been more than 2 weeks
+        if (lastReset && (now - new Date(lastReset)) > twoWeeks) {
             this.autoResetComments();
+            localStorage.setItem('lastCommentReset', now.toISOString());
+        } else if (!lastReset) {
+            // Set initial reset date if none exists (don't reset comments on first visit)
             localStorage.setItem('lastCommentReset', now.toISOString());
         }
     }
@@ -681,6 +687,12 @@ class RatingCommentSystem {
 
 // Initialize the system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Prevent multiple initializations
+    if (window.ratingCommentSystem) {
+        console.log('Rating comment system already initialized, skipping...');
+        return;
+    }
+    
     window.ratingCommentSystem = new RatingCommentSystem();
     
     // Set up event listeners
@@ -694,18 +706,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Comment submit button event listener
     const submitButton = document.getElementById('submit-comment');
     if (submitButton) {
-        // Remove any existing event listeners to prevent duplicates
-        submitButton.removeEventListener('click', window.ratingCommentSystem.handleSubmitClick);
+        // Clear any existing event listeners by cloning the element
+        const newSubmitButton = submitButton.cloneNode(true);
+        submitButton.parentNode.replaceChild(newSubmitButton, submitButton);
         
-        // Create a bound function to avoid duplicate listeners
-        window.ratingCommentSystem.handleSubmitClick = () => {
+        // Add single event listener to the new button
+        newSubmitButton.addEventListener('click', (e) => {
+            e.preventDefault();
             console.log('Submit button clicked!');
             const commentText = document.getElementById('comment-input').value;
             console.log('Comment text:', commentText);
             window.ratingCommentSystem.submitComment(commentText);
-        };
-        
-        submitButton.addEventListener('click', window.ratingCommentSystem.handleSubmitClick);
+        });
         console.log('Submit button event listener attached');
     } else {
         console.error('Submit button not found!');
@@ -723,20 +735,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Allow Enter key to submit comments
     const commentInput = document.getElementById('comment-input');
     if (commentInput) {
-        // Remove any existing event listeners to prevent duplicates
-        commentInput.removeEventListener('keypress', window.ratingCommentSystem.handleEnterKey);
+        // Clear any existing event listeners by cloning the element
+        const newCommentInput = commentInput.cloneNode(true);
+        commentInput.parentNode.replaceChild(newCommentInput, commentInput);
         
-        // Create a bound function to avoid duplicate listeners
-        window.ratingCommentSystem.handleEnterKey = (e) => {
+        // Add single event listener to the new input
+        newCommentInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 console.log('Enter key pressed!');
                 const commentText = document.getElementById('comment-input').value;
                 console.log('Comment text:', commentText);
                 window.ratingCommentSystem.submitComment(commentText);
             }
-        };
-        
-        commentInput.addEventListener('keypress', window.ratingCommentSystem.handleEnterKey);
+        });
         console.log('Comment input event listener attached');
     } else {
         console.error('Comment input not found!');
@@ -790,6 +802,167 @@ window.clearAllStorage = () => {
     console.log('All localStorage cleared!');
     playSuccessSound();
     alert('All localStorage cleared! Users can now rate and comment again.');
+};
+
+// Reset comment ability for all users (clears localStorage flags)
+window.resetCommentAbility = () => {
+    const confirmReset = confirm('⚠️ This will allow ALL users to comment again!\n\nThis clears the "already commented" flags for all users.\n\nAre you sure you want to continue?');
+    
+    if (!confirmReset) {
+        console.log('Comment ability reset cancelled by user');
+        return;
+    }
+
+    // Clear all comment-related flags
+    localStorage.removeItem('userHasCommented');
+    localStorage.removeItem('hasCommented');
+    localStorage.removeItem('commentSubmitted');
+    localStorage.removeItem('lastCommentReset');
+    
+    console.log('Comment ability reset for all users!');
+    if (typeof playSuccessSound === 'function') { playSuccessSound(); }
+    alert('✅ All users can now comment again!\n\nNote: This only affects users who visit the site after this reset.');
+};
+
+// Reset all comments from Firebase (for all users)
+window.resetAllComments = async () => {
+    if (!window.firebaseApp) {
+        console.error('Firebase not available');
+        if (typeof playErrorSound === 'function') { playErrorSound(); }
+        alert('Firebase not available. Please refresh the page and try again.');
+        return;
+    }
+
+    const confirmReset = confirm('⚠️ WARNING: This will delete ALL comments from the database for ALL users!\n\nThis action cannot be undone. Are you sure you want to continue?');
+    
+    if (!confirmReset) {
+        console.log('Comment reset cancelled by user');
+        return;
+    }
+
+    try {
+        const { db, collection, getDocs, doc, deleteDoc } = window.firebaseApp;
+        
+        // Get all comments
+        const commentsSnapshot = await getDocs(collection(db, 'comments'));
+        console.log(`Found ${commentsSnapshot.size} comments to delete`);
+        
+        if (commentsSnapshot.size === 0) {
+            console.log('No comments found to delete');
+            if (typeof playSuccessSound === 'function') { playSuccessSound(); }
+            alert('No comments found to delete.');
+            return;
+        }
+
+        // Delete all comments
+        const deletePromises = [];
+        commentsSnapshot.forEach((docSnapshot) => {
+            deletePromises.push(deleteDoc(doc(db, 'comments', docSnapshot.id)));
+        });
+
+        await Promise.all(deletePromises);
+        
+        console.log(`Successfully deleted ${commentsSnapshot.size} comments from Firebase`);
+        
+        // Clear user comment flags so they can comment again
+        localStorage.removeItem('userHasCommented');
+        localStorage.removeItem('hasCommented');
+        localStorage.removeItem('commentSubmitted');
+        
+        // Reload comments to update the display
+        if (window.ratingCommentSystem) {
+            await window.ratingCommentSystem.loadComments();
+        }
+        
+        if (typeof playSuccessSound === 'function') { playSuccessSound(); }
+        alert(`✅ Successfully deleted ${commentsSnapshot.size} comments from the database!\n\nAll users can now comment again!`);
+        
+    } catch (error) {
+        console.error('Error resetting all comments:', error);
+        if (typeof playErrorSound === 'function') { playErrorSound(); }
+        alert('❌ Error deleting comments. Please try again or check the console for details.');
+    }
+};
+
+// Complete comment system reset (deletes comments + resets ability)
+window.resetCommentSystem = async () => {
+    if (!window.firebaseApp) {
+        console.error('Firebase not available');
+        if (typeof playErrorSound === 'function') { playErrorSound(); }
+        alert('Firebase not available. Please refresh the page and try again.');
+        return;
+    }
+
+    const confirmReset = confirm('⚠️ COMPLETE COMMENT SYSTEM RESET\n\nThis will:\n• Delete ALL comments from the database\n• Allow ALL users to comment again\n• Reset the 2-week auto-reset timer\n\nThis action cannot be undone. Are you sure?');
+    
+    if (!confirmReset) {
+        console.log('Complete comment system reset cancelled by user');
+        return;
+    }
+
+    try {
+        const { db, collection, getDocs, doc, deleteDoc } = window.firebaseApp;
+        
+        // Get all comments
+        const commentsSnapshot = await getDocs(collection(db, 'comments'));
+        console.log(`Found ${commentsSnapshot.size} comments to delete`);
+        
+        // Delete all comments
+        if (commentsSnapshot.size > 0) {
+            const deletePromises = [];
+            commentsSnapshot.forEach((docSnapshot) => {
+                deletePromises.push(deleteDoc(doc(db, 'comments', docSnapshot.id)));
+            });
+            await Promise.all(deletePromises);
+            console.log(`Successfully deleted ${commentsSnapshot.size} comments from Firebase`);
+        }
+        
+        // Clear ALL comment-related flags and localStorage
+        localStorage.removeItem('userHasCommented');
+        localStorage.removeItem('hasCommented');
+        localStorage.removeItem('commentSubmitted');
+        localStorage.removeItem('lastCommentReset');
+        localStorage.removeItem('userHasRated');
+        localStorage.removeItem('userRating');
+        localStorage.removeItem('userRatingValue');
+        localStorage.removeItem('hasRated');
+        localStorage.removeItem('ratingSubmitted');
+        
+        // Clear local comments array and update display immediately
+        if (window.ratingCommentSystem) {
+            window.ratingCommentSystem.comments = [];
+            window.ratingCommentSystem.displayComments();
+            console.log('Local comments cleared and display updated');
+        }
+        
+        // Force clear the comment input field
+        const commentInput = document.getElementById('comment-input');
+        if (commentInput) {
+            commentInput.value = '';
+        }
+        
+        if (typeof playSuccessSound === 'function') { playSuccessSound(); }
+        alert(`✅ COMPLETE COMMENT SYSTEM RESET SUCCESSFUL!\n\n• Deleted ${commentsSnapshot.size} comments from database\n• All users can now comment again\n• 2-week auto-reset timer reset\n\nYour comment system is now fresh and ready!`);
+        
+    } catch (error) {
+        console.error('Error in complete comment system reset:', error);
+        if (typeof playErrorSound === 'function') { playErrorSound(); }
+        alert('❌ Error during complete reset. Please try again or check the console for details.');
+    }
+};
+
+// Test function to check if reset worked
+window.testCommentReset = () => {
+    const hasCommented = localStorage.getItem('userHasCommented');
+    const commentCount = window.ratingCommentSystem ? window.ratingCommentSystem.comments.length : 'N/A';
+    
+    console.log('=== COMMENT RESET TEST ===');
+    console.log('userHasCommented flag:', hasCommented);
+    console.log('Local comments count:', commentCount);
+    console.log('Can user comment?', !hasCommented ? 'YES' : 'NO');
+    
+    if (typeof playSuccessSound === 'function') { playSuccessSound(); }
+    alert(`Comment Reset Test Results:\n\n• userHasCommented: ${hasCommented || 'CLEARED'}\n• Local comments: ${commentCount}\n• Can comment: ${!hasCommented ? 'YES' : 'NO'}`);
 };
 
 window.testBadWords = (text) => {

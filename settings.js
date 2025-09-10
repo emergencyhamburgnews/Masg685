@@ -85,6 +85,11 @@ function setupEventListeners() {
         const selectedColor = this.value;
         setNavbarColor(selectedColor);
         localStorage.setItem('navbarColor', selectedColor);
+        
+        // Update theme color
+        if (typeof updateThemeColor === 'function') {
+            updateThemeColor();
+        }
     });
     
     // Glow color selector
