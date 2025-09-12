@@ -70,12 +70,28 @@
                 themeColorMeta.setAttribute('content', themeColor);
             }
         })();
+        
+        // Apply settings on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply notice setting
+            const noticeEnabled = localStorage.getItem('noticeEnabled');
+            const noticeBanner = document.getElementById('website-notice');
+            if (noticeBanner && noticeEnabled === 'false') {
+                noticeBanner.classList.add('hidden');
+            }
+            
+            // Set notice text immediately to prevent long loading
+            const noticeText = document.querySelector('.notice-text');
+            if (noticeText) {
+                noticeText.textContent = 'Welcome to My Roblox Profile!';
+            }
+        });
     </script>
 </head>
 <body>
     <nav class="navbar">
         <!-- Website Notice Banner -->
-        <div class="notice-banner" id="website-notice" style="display: none;">
+        <div class="notice-banner" id="website-notice">
             <div class="notice-content">
                 <span class="notice-icon">⚠️</span>
                 <span class="notice-text">Loading...</span>
@@ -85,7 +101,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.1.0</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.1.1</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -247,7 +263,41 @@
         </div>
     </main>
 
+    <!-- Firebase CDN -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2MJ6qW7kKkXXR4xHkAb2uyWv-j5BIsAk",
+            authDomain: "masgwebsite-4631e.firebaseapp.com",
+            projectId: "masgwebsite-4631e",
+            storageBucket: "masgwebsite-4631e.firebasestorage.app",
+            messagingSenderId: "1093684867477",
+            appId: "1:1093684867477:web:53f018205d2bb8b260469c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Make Firebase available globally
+        window.firebaseApp = { db, auth, provider, collection, addDoc, getDocs, query, orderBy, limit, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, deleteDoc, signInWithPopup, signOut, onAuthStateChanged };
+        
+        // Test Firebase connection
+        console.log('Firebase initialized:', app);
+        console.log('Auth instance:', auth);
+        console.log('Firestore instance:', db);
+        console.log('Current domain:', window.location.hostname);
+        console.log('Current origin:', window.location.origin);
+    </script>
+    
     <script src="script.js"></script>
+    <script src="firebase-simple.js"></script>
     <script src="roblox-profile.js"></script>
 </body>
 </html>

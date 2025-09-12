@@ -234,6 +234,13 @@ class RatingCommentSystem {
             return;
         }
 
+        // Check if comment limit is reached (max 5 comments)
+        if (this.comments.length >= 5) {
+            this.showMessage('Comments are full! Maximum 5 comments allowed.', 'error');
+            this.isSubmitting = false;
+            return;
+        }
+
         // Check for bad words with improved filtering
         const badWords = [
             // Basic bad words
