@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>My Roblox Profile - Masg685 (Simple Version)</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="myfavicon.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="myfavicon.jpg">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply settings immediately to prevent white flash
+        (function() {
+            // Apply theme immediately
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Apply navbar color immediately
+            const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+            document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+            
+            // Apply glow color immediately
+            const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+            document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+            
+            // Update theme color immediately
+            let themeColor;
+            switch (savedNavbarColor) {
+                case 'red': themeColor = '#dc3545'; break;
+                case 'blue': themeColor = '#007bff'; break;
+                case 'green': themeColor = '#28a745'; break;
+                case 'purple': themeColor = '#6f42c1'; break;
+                case 'orange': themeColor = '#fd7e14'; break;
+                case 'pink': themeColor = '#e83e8c'; break;
+                case 'cyan': themeColor = '#17a2b8'; break;
+                case 'yellow': themeColor = '#ffc107'; break;
+                default: themeColor = '#000000';
+            }
+            
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta) {
+                themeColorMeta.setAttribute('content', themeColor);
+            }
+        })();
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-name">Masq685</span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.1.0</a></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="MyRoblox.html" class="nav-link">My Roblox</a>
+                <a href="MyRoblox-Simple.html" class="nav-link active">My Roblox (Simple)</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+            <div class="nav-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search website..." autocomplete="off">
+                    <button id="search-btn" class="search-btn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <img id="theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                </button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="MyRoblox.html" class="nav-link">My Roblox</a>
+                <a href="MyRoblox-Simple.html" class="nav-link active">My Roblox (Simple)</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+                <div class="mobile-social-links">
+                    <a href="https://www.roblox.com/users/5255024681/profile" target="_blank" class="mobile-social-link">
+                        <img src="robloxlogo.png" alt="Roblox" class="mobile-social-icon">
+                        <span>Roblox</span>
+                    </a>
+                    <a href="https://www.tiktok.com/@masg685" target="_blank" class="mobile-social-link" rel="noopener noreferrer">
+                        <img src="tiktok-logo.png" alt="TikTok" class="mobile-social-icon">
+                        <span>TikTok</span>
+                    </a>
+                </div>
+                <div class="mobile-theme-toggle">
+                    <span>Theme</span>
+                    <button id="mobile-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                        <img id="mobile-theme-icon" src="Dark Toggle icon.png" alt="Toggle theme">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Roblox Profile Section -->
+            <section class="roblox-profile-section">
+                <div class="profile-header">
+                    <h1 class="profile-title">My Roblox Profile (Simple Version)</h1>
+                    <p class="profile-subtitle">This version should work without CORS issues</p>
+                </div>
+
+                <div class="profile-container">
+                    <!-- Avatar Section -->
+                    <div class="avatar-section">
+                        <div class="avatar-container">
+                            <img id="roblox-avatar" src="" alt="Roblox Avatar" class="avatar-image">
+                            <div class="avatar-loading" id="avatar-loading">
+                                <div class="loading-spinner"></div>
+                                <p>Loading avatar...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Info Section -->
+                    <div class="profile-info-section">
+                        <div class="profile-card">
+                            <h2 class="card-title">Profile Information</h2>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Username:</span>
+                                    <span id="username" class="info-value">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Display Name:</span>
+                                    <span id="display-name" class="info-value">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Description:</span>
+                                    <span id="description" class="info-value">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-card">
+                            <h2 class="card-title">Statistics</h2>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="stat-content">
+                                        <span class="stat-label">Friends</span>
+                                        <span id="friend-count" class="stat-value">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <div class="stat-content">
+                                        <span class="stat-label">Followers</span>
+                                        <span id="follower-count" class="stat-value">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Last Updated Info -->
+                <div class="update-info">
+                    <p id="last-updated">Last updated: Never</p>
+                    <button id="refresh-btn" class="refresh-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Status Info -->
+                <div class="status-info">
+                    <h3>Status Information</h3>
+                    <p><strong>This is the simple version</strong> that should work without CORS issues.</p>
+                    <p>If you see sample data, it means the API calls failed but the page is working.</p>
+                    <p>Check the browser console (F12) for detailed error messages.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="roblox-profile-simple.js"></script>
+</body>
+</html>

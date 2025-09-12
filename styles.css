@@ -811,7 +811,7 @@ body {
 .hero-image img[src$=".gif"],
 .hero-image img[src$=".webp"],
 .hero-image img[src$=".svg"] {
-    /* All formats supported */
+    display: block;
 }
 
 /* Fallback for broken images */
@@ -2784,3 +2784,613 @@ input:checked + .toggle-slider:before {
         margin: 0.2rem 0;
     }
 }
+
+/* Mobile Responsive for Roblox Profile - Clean Mobile Design */
+@media (max-width: 768px) {
+    .roblox-profile-section {
+        padding: 0;
+        max-width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        gap: 1rem;
+    }
+    
+    .avatar-section {
+        width: 100%;
+        order: 1;
+    }
+    
+    .avatar-container {
+        width: 100%;
+        padding: 1rem;
+        min-height: auto;
+        border-radius: 0;
+        margin: 0;
+        border: none;
+        border-bottom: 1px solid var(--card-border);
+        background: transparent;
+    }
+    
+    .avatar-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 4px;
+    }
+    
+    .profile-info-section {
+        width: 100%;
+        margin: 0;
+        gap: 0;
+        order: 2;
+    }
+    
+    .profile-header {
+        text-align: left;
+        margin-bottom: 1rem;
+        width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .profile-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .profile-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.7;
+    }
+    
+    .profile-card {
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid var(--card-border);
+        background: transparent;
+    }
+    
+    .stats-card {
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        text-align: left;
+        font-weight: 500;
+    }
+    
+    .stats-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+    
+    .stat-item {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--card-border);
+        border-radius: 6px;
+        background: var(--card-bg);
+        text-align: center;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .stat-icon {
+        width: 20px;
+        height: 20px;
+        margin: 0 auto;
+    }
+    
+    .stat-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .stat-content {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.25rem;
+    }
+    
+    .stat-label {
+        display: block;
+        font-size: 0.8rem;
+        margin: 0;
+        font-weight: 500;
+        opacity: 0.8;
+    }
+    
+    .stat-value {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .update-info {
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--card-border);
+        background: transparent;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .refresh-button {
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        align-self: flex-start;
+    }
+    
+    .info-grid {
+        gap: 0.75rem;
+    }
+    
+    .info-item {
+        gap: 0.15rem;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+    }
+    
+    .info-value {
+        font-size: 0.9rem;
+    }
+    
+    /* Mobile touch targets optimization */
+    .refresh-button {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+    
+    .debug-toggle-btn,
+    .debug-toggle {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+    
+    /* Better mobile spacing */
+    .roblox-profile-section {
+        padding-bottom: 2rem;
+    }
+    
+    .profile-container {
+        padding-bottom: 1rem;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .roblox-profile-section {
+        margin-top: 0.5rem;
+    }
+    
+    .profile-header {
+        padding: 0 0.75rem;
+    }
+    
+    .profile-title {
+        font-size: 1.3rem;
+    }
+    
+    .profile-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .avatar-container {
+        padding: 0.75rem;
+    }
+    
+    .avatar-image {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .profile-card,
+    .stats-card {
+        padding: 0.75rem;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        gap: 0.5rem;
+    }
+    
+    .stat-item {
+        padding: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+    }
+    
+    .update-info {
+        padding: 0.75rem;
+    }
+    
+    .refresh-button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Roblox Profile Page Styles - Original Desktop Design */
+.roblox-profile-section {
+    margin-top: 2rem;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.profile-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.profile-subtitle {
+    font-size: 1.2rem;
+    color: #4a90e2;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.avatar-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.avatar-container {
+    position: relative;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.avatar-link:hover {
+    transform: scale(1.05);
+}
+
+.avatar-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--card-border);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    display: none;
+}
+
+.avatar-link:hover .avatar-image {
+    border-color: #4a90e2;
+}
+
+.avatar-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-color);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--card-border);
+    border-top: 4px solid #4a90e2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.profile-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profile-card,
+.stats-card {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e0e0e0;
+    background: none;
+    border-radius: 0;
+    border: none;
+    transition: none;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-item:hover {
+    background: none;
+    border-color: none;
+    transform: none;
+}
+
+.stat-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border-radius: 0;
+    color: var(--text-color);
+}
+
+.stat-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+}
+
+.stat-label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    opacity: 1;
+    transition: color 0.3s ease;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.update-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.update-info p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.refresh-button {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 2px solid var(--card-border);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.refresh-button:hover {
+    background: var(--card-bg);
+    border-color: var(--card-border);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+.refresh-button:active {
+    transform: translateY(0);
+}
+
+.refresh-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Debug Panel Styles */
+.debug-panel {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.debug-panel h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.debug-panel p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.debug-toggle-container {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.debug-toggle-btn,
+.debug-toggle {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.debug-toggle-btn:hover,
+.debug-toggle:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Status Info Styles */
+.status-info {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.status-info h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.status-info p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+
