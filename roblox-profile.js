@@ -19,6 +19,8 @@ class RobloxProfile {
             
             // Set up manual refresh button
             this.setupRefreshButton();
+            this.setupGameRefreshButton();
+            this.loadCurrentGame();
             
             console.log('Roblox profile initialized successfully');
         } catch (error) {
@@ -274,13 +276,13 @@ class RobloxProfile {
     showError(message) {
         console.error(message);
         
-        // Show error in the UI
+        // Show error in the UI - keep text white, only show error text
         const errorElements = ['username', 'display-name', 'description', 'friend-count', 'follower-count'];
         errorElements.forEach(id => {
             const element = document.getElementById(id);
             if (element) {
                 element.textContent = 'Error loading';
-                element.style.color = '#e74c3c';
+                element.style.color = 'var(--text-color)'; // Keep original text color
             }
         });
 
@@ -302,11 +304,10 @@ class RobloxProfile {
             avatarLoading.style.display = 'flex';
         }
 
-        // Show error message in the update info section
+        // Show error message in the update info section - only error message is red
         const lastUpdatedElement = document.getElementById('last-updated');
         if (lastUpdatedElement) {
-            lastUpdatedElement.textContent = `Error: ${message}`;
-            lastUpdatedElement.style.color = '#e74c3c';
+            lastUpdatedElement.innerHTML = `<span style="color: #e74c3c;">Error: ${message}</span>`;
         }
     }
 
@@ -319,11 +320,342 @@ class RobloxProfile {
         return num.toString();
     }
 
+    async loadCurrentGame() {
+        try {
+            console.log('Loading current game data...');
+            
+            // Fetch current game data from Roblox API
+            const gameData = await this.fetchCurrentGameData();
+            
+            if (gameData) {
+                this.displayCurrentGame(gameData);
+            } else {
+                this.showCurrentGameError('No game data available');
+            }
+            
+        } catch (error) {
+            console.error('Error loading current game:', error);
+            this.showCurrentGameError('Failed to load game data');
+        }
+    }
+
+    async fetchCurrentGameData() {
+        try {
+            console.log('Fetching current game data using presence API...');
+            
+            // Try multiple CORS proxies
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
+
+            // Use the presence API to get current user activity
+            const presenceUrl = `https://presence.roblox.com/v1/presence/users`;
+            
+            for (const proxy of proxies) {
+                try {
+                    console.log(`Trying presence API proxy: ${proxy}`);
+                    
+                    // The presence API requires a POST request with user IDs
+                    const requestBody = {
+                        userIds: [5255024681]
+                    };
+                    
+                    const response = await fetch(proxy + encodeURIComponent(presenceUrl), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Presence data received:', data);
+                        console.log('Full presence API response:', JSON.stringify(data, null, 2));
+                        
+                        if (data.userPresences && data.userPresences.length > 0) {
+                            const userPresence = data.userPresences[0];
+                            console.log('Found user presence:', userPresence);
+                            
+                            // Check if user is currently in a game
+                            if (userPresence.userPresenceType === 2 && userPresence.gameId) {
+                                console.log('User is currently in game:', userPresence.gameId);
+                                
+                                // Get game details using the game ID
+                                const gameDetails = await this.fetchGameDetails(userPresence.gameId);
+                                if (gameDetails) {
+                                    return {
+                                        name: gameDetails.name,
+                                        description: gameDetails.description || '',
+                                        thumbnail: gameDetails.thumbnail,
+                                        players: gameDetails.players || 0,
+                                        visits: gameDetails.visits || 0,
+                                        created: gameDetails.created,
+                                        updated: gameDetails.updated,
+                                        source: 'Currently Playing'
+                                    };
+                                }
+                            } else {
+                                console.log('User is not currently in a game. Presence type:', userPresence.userPresenceType);
+                                
+                                // If not in a game, try to get recent games as fallback
+                                return await this.fetchRecentGamesFallback();
+                            }
+                        }
+                    }
+                } catch (proxyError) {
+                    console.log(`Presence API proxy ${proxy} failed:`, proxyError);
+                    continue;
+                }
+            }
+            
+            // If presence API fails, try recent games as fallback
+            console.log('Presence API failed, trying recent games fallback...');
+            return await this.fetchRecentGamesFallback();
+            
+        } catch (error) {
+            console.error('Error fetching current game data:', error);
+            return {
+                name: 'Error Loading',
+                description: 'Failed to load game data',
+                thumbnail: null,
+                players: 0,
+                visits: 0,
+                created: null,
+                updated: null,
+                source: 'Error'
+            };
+        }
+    }
+
+    async fetchGameDetails(gameId) {
+        try {
+            console.log(`Fetching game details for game ID: ${gameId}`);
+            
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
+
+            const gameUrl = `https://games.roblox.com/v1/games?universeIds=${gameId}`;
+            
+            for (const proxy of proxies) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(gameUrl));
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Game details received:', data);
+                        
+                        if (data.data && data.data.length > 0) {
+                            const game = data.data[0];
+                            console.log('Found game details:', game);
+                            
+                            let thumbnailUrl = null;
+                            if (game.thumbnail && game.thumbnail.mediaType === 'Image') {
+                                thumbnailUrl = game.thumbnail.url;
+                            }
+                            
+                            return {
+                                name: game.name,
+                                description: game.description || '',
+                                thumbnail: thumbnailUrl,
+                                players: game.playing || 0,
+                                visits: game.visits || 0,
+                                created: game.created,
+                                updated: game.updated
+                            };
+                        }
+                    }
+                } catch (proxyError) {
+                    console.log(`Game details proxy ${proxy} failed:`, proxyError);
+                    continue;
+                }
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error fetching game details:', error);
+            return null;
+        }
+    }
+
+    async fetchRecentGamesFallback() {
+        try {
+            console.log('Fetching recent games as fallback...');
+            
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
+
+            const gameUrl = `https://games.roblox.com/v1/users/5255024681/games?accessFilter=2&limit=1&sortOrder=Desc`;
+            
+            for (const proxy of proxies) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(gameUrl));
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Recent games data received:', data);
+                        
+                        if (data.data && data.data.length > 0) {
+                            const game = data.data[0];
+                            console.log('Found recent game:', game);
+                            
+                            let thumbnailUrl = null;
+                            if (game.thumbnail && game.thumbnail.mediaType === 'Image') {
+                                thumbnailUrl = game.thumbnail.url;
+                            }
+                            
+                            return {
+                                name: game.name,
+                                description: game.description || '',
+                                thumbnail: thumbnailUrl,
+                                players: game.playing || 0,
+                                visits: game.visits || 0,
+                                created: game.created,
+                                updated: game.updated,
+                                source: 'Recently Played'
+                            };
+                        }
+                    }
+                } catch (proxyError) {
+                    console.log(`Recent games proxy ${proxy} failed:`, proxyError);
+                    continue;
+                }
+            }
+            
+            return {
+                name: 'No Games Found',
+                description: 'No recent game activity found',
+                thumbnail: null,
+                players: 0,
+                visits: 0,
+                created: null,
+                updated: null,
+                source: 'No Data'
+            };
+            
+        } catch (error) {
+            console.error('Error fetching recent games fallback:', error);
+            return {
+                name: 'Error Loading',
+                description: 'Failed to load game data',
+                thumbnail: null,
+                players: 0,
+                visits: 0,
+                created: null,
+                updated: null,
+                source: 'Error'
+            };
+        }
+    }
+
+    displayCurrentGame(gameData) {
+        console.log('Displaying current game:', gameData);
+        
+        // Update game name
+        const gameNameElement = document.getElementById('game-name');
+        if (gameNameElement) {
+            gameNameElement.textContent = gameData.name || 'Unknown Game';
+        }
+
+        // Update game players
+        const gamePlayersElement = document.getElementById('game-players');
+        if (gamePlayersElement) {
+            if (gameData.players > 0) {
+                const playerCount = this.formatNumber(gameData.players);
+                gamePlayersElement.textContent = `${playerCount} players online`;
+            } else if (gameData.visits > 0) {
+                const visitCount = this.formatNumber(gameData.visits);
+                gamePlayersElement.textContent = `${visitCount} total visits`;
+            } else {
+                gamePlayersElement.textContent = 'Game information';
+            }
+        }
+
+        // Update game status based on data source
+        const gameStatusElement = document.getElementById('game-status');
+        if (gameStatusElement) {
+            switch (gameData.source) {
+                case 'Currently Playing':
+                    gameStatusElement.textContent = 'Currently Playing';
+                    break;
+                case 'Recently Played':
+                    gameStatusElement.textContent = 'Recently Played';
+                    break;
+                case 'Favorite Games':
+                    gameStatusElement.textContent = 'Favorite Game';
+                    break;
+                case 'No Data':
+                    gameStatusElement.textContent = 'No Recent Activity';
+                    break;
+                case 'Error':
+                    gameStatusElement.textContent = 'Error Loading';
+                    break;
+                default:
+                    gameStatusElement.textContent = 'Game Activity';
+            }
+        }
+
+        // Update game thumbnail
+        const gameThumbnailElement = document.getElementById('game-thumbnail');
+        if (gameThumbnailElement) {
+            if (gameData.thumbnail) {
+                gameThumbnailElement.innerHTML = `
+                    <img src="${gameData.thumbnail}" alt="${gameData.name}" 
+                         onerror="this.parentElement.innerHTML='<div class=\\"game-loading\\">No Image</div>'">
+                `;
+            } else {
+                gameThumbnailElement.innerHTML = '<div class="game-loading">No Image</div>';
+            }
+        }
+    }
+
+    showCurrentGameError(message) {
+        console.error('Current game error:', message);
+        
+        const gameNameElement = document.getElementById('game-name');
+        if (gameNameElement) {
+            gameNameElement.textContent = 'Error loading game';
+        }
+
+        const gamePlayersElement = document.getElementById('game-players');
+        if (gamePlayersElement) {
+            gamePlayersElement.textContent = 'Error loading players';
+        }
+
+        const gameStatusElement = document.getElementById('game-status');
+        if (gameStatusElement) {
+            gameStatusElement.textContent = 'Error loading status';
+        }
+
+        const gameThumbnailElement = document.getElementById('game-thumbnail');
+        if (gameThumbnailElement) {
+            gameThumbnailElement.innerHTML = '<div class="game-loading">Error loading</div>';
+        }
+    }
+
     setupRefreshButton() {
         const refreshBtn = document.getElementById('refresh-btn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => {
                 this.loadProfileData();
+            });
+        }
+    }
+
+    setupGameRefreshButton() {
+        const gameRefreshBtn = document.getElementById('refresh-game-btn');
+        if (gameRefreshBtn) {
+            gameRefreshBtn.addEventListener('click', () => {
+                console.log('Game refresh triggered');
+                this.loadCurrentGame();
             });
         }
     }
@@ -337,6 +669,7 @@ class RobloxProfile {
         // Set up new timer
         this.autoUpdateTimer = setInterval(() => {
             this.loadProfileData();
+            this.loadCurrentGame(); // Also refresh game data
         }, this.updateInterval);
 
         console.log(`Auto-update started (every ${this.updateInterval / 1000} seconds)`);

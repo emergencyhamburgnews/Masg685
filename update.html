@@ -67,12 +67,13 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.1.1</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.1.2</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="shop.html" class="nav-link">Shop</a>
+                <a href="MyRoblox.html" class="nav-link">My Roblox</a>
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-controls">
@@ -99,6 +100,7 @@
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="shop.html" class="nav-link">Shop</a>
+                <a href="MyRoblox.html" class="nav-link">My Roblox</a>
                 <a href="settings.html" class="nav-link">Settings</a>
                 <div class="mobile-social-links">
                     <a href="https://www.roblox.com/users/5255024681/profile" target="_blank" class="mobile-social-link">
@@ -135,12 +137,14 @@
 
                 <!-- Update Content -->
                 <div class="update-content">
-                    <h2 class="update-title" id="update-title">Website Update V3.1.1</h2>
+                    <h2 class="update-title" id="update-title">Website Update V3.1.2</h2>
                     <div class="update-description" id="update-description">
-                        <p>🎮 NEW: My Roblox Profile page - live stats and avatar updates with Roblox API integration</p>
-                        <p>🎨 NEW: Emergency Hamburg container design - now matches My Favourite Games design with border separators</p>
-                        <p>🔧 FIXED: Comment system limits - max 5 comments, 1 per person, auto-reset every 2 weeks</p>
-                        <p>🔧 FIXED: Notice banner loading issues - now loads fast like other pages</p>
+                        <p>🎮 NEW: Live Chat system - real-time messaging with user profiles and word filtering</p>
+                        <p>🎨 NEW: Chat Sign-up page - create your chat profile with avatar and color selection</p>
+                        <p>🔧 FIXED: Comment send button - now gray color instead of pink, restored original functionality</p>
+                        <p>🔧 FIXED: MyRoblox error handling - text stays white, only error messages are red</p>
+                        <p>🔧 FIXED: All pink colors removed - replaced with gray throughout the website</p>
+                        <p>🚀 COMING SOON: Game Activity feature - will show your current Roblox game activity</p>
                         <p>🔧 FIXED: Mobile container designs - proper spacing and positioning</p>
                         <p>🔧 FIXED: Theme toggle icon visibility - icons now show properly in both light and dark themes</p>
                         <p>⚡ IMPROVED: Mobile responsive design - containers stack vertically with proper spacing</p>
@@ -227,7 +231,23 @@
         console.log('Firebase initialized on update page');
     </script>
     
+    <!-- Floating Chat Button -->
+    <button class="floating-chat-btn" onclick="openLiveChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M13 8H7"/>
+            <path d="M17 12H7"/>
+        </svg>
+    </button>
+
     <script src="firebase-simple.js"></script>
     <script src="script.js"></script>
+    <script>
+        function openLiveChat() {
+            // Store current page for go back functionality
+            localStorage.setItem('previousPage', window.location.href);
+            window.location.href = 'live-chat.html';
+        }
+    </script>
 </body>
 </html>

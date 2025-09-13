@@ -53,7 +53,7 @@
                 case 'green': themeColor = '#28a745'; break;
                 case 'purple': themeColor = '#6f42c1'; break;
                 case 'orange': themeColor = '#fd7e14'; break;
-                case 'pink': themeColor = '#e83e8c'; break;
+                case 'pink': themeColor = '#6c757d'; break;
                 case 'cyan': themeColor = '#17a2b8'; break;
                 case 'yellow': themeColor = '#ffc107'; break;
                 default: themeColor = '#000000';
@@ -86,7 +86,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.1.1</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link">V3.1.2</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
@@ -241,7 +241,23 @@
         console.log('Firebase initialized on shop page');
     </script>
     
+    <!-- Floating Chat Button -->
+    <button class="floating-chat-btn" onclick="openLiveChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M13 8H7"/>
+            <path d="M17 12H7"/>
+        </svg>
+    </button>
+
     <script src="firebase-simple.js"></script>
     <script src="script.js"></script>
+    <script>
+        function openLiveChat() {
+            // Store current page for go back functionality
+            localStorage.setItem('previousPage', window.location.href);
+            window.location.href = 'live-chat.html';
+        }
+    </script>
 </body>
 </html>
