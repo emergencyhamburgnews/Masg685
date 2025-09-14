@@ -106,29 +106,28 @@
     <main class="chat-page-main">
         <!-- Live Chat Section -->
         <section class="live-chat-section">
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be loaded here -->
+            </div>
 
-                <!-- Chat Messages -->
-                <div class="chat-messages" id="chat-messages">
-                    <!-- Messages will be loaded here -->
-                </div>
-
-                <!-- Message Input -->
-                <div class="message-input-container">
-                    <input type="text" id="message-input" class="message-input" placeholder="Message......" maxlength="500">
-                    <button id="send-btn" class="send-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
-                        </svg>
-                    </button>
-                </div>
-
-            <!-- Notice Banner -->
-            <div class="chat-notice-banner" id="chat-notice-banner">
-                <span>Loading...</span>
+            <!-- Message Input -->
+            <div class="message-input-container">
+                <input type="text" id="message-input" class="message-input" placeholder="Message......" maxlength="500">
+                <button id="send-btn" class="send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                    </svg>
+                </button>
             </div>
         </section>
     </main>
+
+    <!-- Notice Banner at bottom -->
+    <div class="chat-notice-banner" id="chat-notice-banner">
+        <span>Loading...</span>
+    </div>
 
     <!-- Firebase CDN -->
     <script type="module">

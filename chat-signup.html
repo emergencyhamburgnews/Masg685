@@ -113,6 +113,24 @@
                 </div>
             </div>
 
+            <!-- Code Redemption Section -->
+            <div class="code-redemption-section">
+                <h3 class="code-title">Code Redemption</h3>
+                <div class="code-input-group">
+                    <input type="text" id="redemption-code" class="code-input" placeholder="Enter code..." maxlength="10">
+                    <button class="redeem-btn" onclick="redeemCode()">Redeem</button>
+                </div>
+                <div class="admin-notice">
+                    <span class="admin-warning">⚠️ This feature is only for admin users</span>
+                </div>
+                <div class="verification-status" id="verification-status" style="display: none;">
+                    <div class="verified-badge">
+                        <img src="verify.png" alt="Verified" class="verify-icon">
+                        <span>Verified Owner</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Error Message -->
             <div class="error-message" id="error-message" style="display: none;"></div>
 

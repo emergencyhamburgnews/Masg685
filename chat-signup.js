@@ -4,6 +4,7 @@
 class ChatSignUp {
     constructor() {
         this.selectedColor = '#6c757d';
+        this.isVerified = false;
         this.init();
     }
 
@@ -42,6 +43,22 @@ class ChatSignUp {
 
         // Set default color as selected
         colorOptions[0].classList.add('selected');
+        
+        // Code redemption input
+        const codeInput = document.getElementById('redemption-code');
+        if (codeInput) {
+            codeInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.redeemCode();
+                }
+            });
+        }
+        
+        // Check if user is already verified
+        this.checkVerificationStatus();
+        
+        // Load existing profile data if user is editing
+        this.loadExistingProfile();
     }
 
     updateProfile() {
@@ -127,13 +144,24 @@ class ChatSignUp {
         }
     }
 
-    showError(message) {
+    showError(message, type = 'error') {
         const errorElement = document.getElementById('error-message');
         errorElement.textContent = message;
         errorElement.style.display = 'block';
         
-        // Play error sound
-        this.playErrorSound();
+        // Set background color based on message type
+        if (type === 'success') {
+            errorElement.style.backgroundColor = '#28a745';
+        } else {
+            errorElement.style.backgroundColor = '#dc3545';
+        }
+        
+        // Play appropriate sound
+        if (type === 'success') {
+            this.playSuccessSound();
+        } else {
+            this.playErrorSound();
+        }
         
         // Hide error after 5 seconds
         setTimeout(() => {
@@ -142,50 +170,62 @@ class ChatSignUp {
     }
 
     playErrorSound() {
-        // Create and play error sound
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(100, audioContext.currentTime + 0.2);
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
+        try {
+            const audio = new Audio('error message sound.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(error => {
+                console.log('Could not play error sound:', error);
+            });
+        } catch (error) {
+            console.log('Could not play error sound:', error);
+        }
+    }
+
+    playSuccessSound() {
+        try {
+            const audio = new Audio('correct message sound.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(error => {
+                console.log('Could not play success sound:', error);
+            });
+        } catch (error) {
+            console.log('Could not play success sound:', error);
+        }
     }
 
     async saveProfile() {
         const firstName = document.getElementById('first-name').value.trim();
         const lastName = document.getElementById('last-name').value.trim();
         
-        // Validate input
-        if (!firstName || !lastName) {
-            this.showError('Please enter both first and last name!');
+        // Validate input - for verified users, only first name is required
+        if (!firstName) {
+            this.showError('Please enter at least your first name!');
+            return;
+        }
+        
+        if (!this.isVerified && !lastName) {
+            this.showError('Please enter both first and last name! Redeem admin code to use only first name.');
             return;
         }
 
-        const fullName = `${firstName} ${lastName}`;
+        const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+        const displayName = firstName; // Only show first name in chat
         const username = fullName.toLowerCase();
 
         // Validate username
-        const validation = this.validateUsername(firstName, lastName);
-        if (!validation.valid) {
-            this.showError(validation.error);
+        const validationError = this.validateUsername(firstName, lastName);
+        if (validationError) {
+            this.showError(validationError);
             return;
         }
 
-        // Check if username already exists
-        const usernameExists = await this.checkUsernameExists(username);
-        if (usernameExists) {
-            this.showError('This name is already taken! Please choose a different name.');
-            return;
+        // Check if username already exists (only for non-verified users)
+        if (!this.isVerified) {
+            const usernameExists = await this.checkUsernameExists(username);
+            if (usernameExists) {
+                this.showError('This name is already taken! Please choose a different name.');
+                return;
+            }
         }
 
         // Save user profile
@@ -196,8 +236,9 @@ class ChatSignUp {
                 lastName: lastName,
                 username: username,
                 fullName: fullName,
+                displayName: displayName, // Add display name for chat
                 avatarColor: this.selectedColor,
-                initials: `${firstName[0]}${lastName[0]}`.toUpperCase(),
+                initials: lastName ? `${firstName[0]}${lastName[0]}`.toUpperCase() : firstName[0].toUpperCase(),
                 createdAt: new Date(),
                 isActive: true
             };
@@ -211,18 +252,140 @@ class ChatSignUp {
                 ...userData
             }));
 
-            // Always go back to live chat after saving profile
-            // DON'T overwrite the previous page - keep the original page
-            window.location.href = 'live-chat.html';
+            // Show success message
+            this.showError('✅ Profile saved successfully! Redirecting to chat...', 'success');
+            
+            // Redirect after showing success message
+            setTimeout(() => {
+                window.location.href = 'live-chat.html';
+            }, 1500);
 
         } catch (error) {
             console.error('Error saving profile:', error);
             this.showError('Error saving profile. Please try again.');
         }
     }
+
+    redeemCode() {
+        const codeInput = document.getElementById('redemption-code');
+        const code = codeInput.value.trim();
+        
+        if (code === '2309') {
+            // Correct code - grant verification
+            this.isVerified = true;
+            localStorage.setItem('isVerified', 'true');
+            
+            // Show verification status
+            const verificationStatus = document.getElementById('verification-status');
+            verificationStatus.style.display = 'block';
+            
+            // Clear the input
+            codeInput.value = '';
+            
+            // Show success message
+            this.showError('✅ Verification successful! You now have admin privileges.', 'success');
+            
+            console.log('User verified with admin code');
+        } else {
+            // Wrong code
+            this.showError('❌ Invalid code! This feature is only for admin users. Contact admin for the correct code.', 'error');
+            codeInput.value = '';
+        }
+    }
+
+    checkVerificationStatus() {
+        const isVerified = localStorage.getItem('isVerified') === 'true';
+        if (isVerified) {
+            this.isVerified = true;
+            const verificationStatus = document.getElementById('verification-status');
+            verificationStatus.style.display = 'block';
+        }
+    }
+
+    loadExistingProfile() {
+        // Load existing user data from localStorage
+        const userData = localStorage.getItem('chatUser');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                
+                // Fill in the form fields
+                const firstNameInput = document.getElementById('first-name');
+                const lastNameInput = document.getElementById('last-name');
+                
+                if (firstNameInput && user.firstName) {
+                    firstNameInput.value = user.firstName;
+                }
+                if (lastNameInput && user.lastName) {
+                    lastNameInput.value = user.lastName;
+                } else if (lastNameInput) {
+                    lastNameInput.value = ''; // Clear if no last name
+                }
+                
+                // Set the selected color
+                if (user.avatarColor) {
+                    this.selectedColor = user.avatarColor;
+                    // Update the color selection UI
+                    const colorOptions = document.querySelectorAll('.color-option');
+                    colorOptions.forEach(option => {
+                        option.classList.remove('selected');
+                        if (option.dataset.color === user.avatarColor) {
+                            option.classList.add('selected');
+                        }
+                    });
+                }
+                
+                // Update the avatar display
+                this.updateProfile();
+                
+                console.log('Loaded existing profile:', user);
+            } catch (error) {
+                console.error('Error loading existing profile:', error);
+            }
+        }
+    }
+
+    // Override the validateUsername method to allow special characters for verified users
+    validateUsername(firstName, lastName) {
+        const fullName = (firstName + lastName).toLowerCase();
+        
+        // For verified users, allow ANYTHING
+        if (this.isVerified) {
+            if (fullName.length < 1) {
+                return 'Name must be at least 1 character long';
+            }
+            
+            // Verified users can use ANY name, including reserved names
+            return null; // Always valid for verified users
+        }
+        
+        // Original validation for non-verified users
+        if (fullName.length < 3) {
+            return 'Name must be at least 3 letters long. Redeem admin code to use shorter names!';
+        }
+        
+        // Check for numbers and symbols (only for non-verified users)
+        if (/\d/.test(fullName) || /[^a-zA-Z]/.test(fullName)) {
+            return 'Name can only contain letters (no numbers or symbols). Redeem admin code to use special characters!';
+        }
+        
+        // Check for forbidden names (only for non-verified users)
+        const forbiddenNames = ['masg685', 'masg', 'masaga'];
+        if (forbiddenNames.includes(fullName)) {
+            return 'This name is reserved and cannot be used. Redeem admin code to use reserved names!';
+        }
+        
+        return null;
+    }
 }
 
 // Global functions
+function redeemCode() {
+    if (window.chatSignUp) {
+        window.chatSignUp.redeemCode();
+    }
+}
+
 function goBack() {
     const previousPage = localStorage.getItem('previousPage');
     console.log('Signup go back - Previous page:', previousPage);

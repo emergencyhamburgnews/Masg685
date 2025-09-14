@@ -19,6 +19,11 @@ class LiveChat {
         }
 
         this.currentUser = JSON.parse(userData);
+        
+        // Check if user is verified
+        const isVerified = localStorage.getItem('isVerified') === 'true';
+        this.currentUser.isVerified = isVerified;
+        
         console.log('Current user:', this.currentUser);
 
         // Wait for Firebase to be available
@@ -116,7 +121,11 @@ class LiveChat {
 
     createMessageElement(message) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${message.userId === this.currentUser.id ? 'own-message' : ''}`;
+        // Check if this message is from the current user by comparing usernames
+        const isOwnMessage = message.username === this.currentUser.displayName || 
+                           message.username === this.currentUser.fullName ||
+                           message.userId === this.currentUser.id;
+        messageDiv.className = `message ${isOwnMessage ? 'own-message' : ''}`;
 
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
@@ -126,13 +135,38 @@ class LiveChat {
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
 
+        // Create username with verify badge if user is verified
+        const usernameDiv = document.createElement('div');
+        usernameDiv.className = 'message-username';
+        
+        const usernameSpan = document.createElement('span');
+        // Get the proper username from the message
+        const displayName = message.username || message.userName || message.fullName || 'User';
+        usernameSpan.textContent = displayName;
+        usernameDiv.appendChild(usernameSpan);
+        
+        // Add verify badge if user is verified
+        if (message.isVerified) {
+            const verifyBadge = document.createElement('img');
+            verifyBadge.src = 'verify.png';
+            verifyBadge.alt = 'Verified';
+            verifyBadge.className = 'verify-badge';
+            verifyBadge.style.width = '16px';
+            verifyBadge.style.height = '16px';
+            verifyBadge.style.marginLeft = '4px';
+            verifyBadge.style.verticalAlign = 'middle';
+            usernameDiv.appendChild(verifyBadge);
+        }
+
         const text = document.createElement('div');
+        text.className = 'message-text';
         text.textContent = message.text;
 
         const time = document.createElement('div');
         time.className = 'message-time';
         time.textContent = this.formatTime(message.timestamp);
 
+        bubble.appendChild(usernameDiv);
         bubble.appendChild(text);
         bubble.appendChild(time);
         messageDiv.appendChild(avatar);
@@ -148,6 +182,7 @@ class LiveChat {
 
     filterInappropriateWords(text) {
         const badWords = [
+            // Original words
             'fuck', 'shit', 'damn', 'bitch', 'asshole', 'stupid', 'idiot', 'hate', 'kill', 'die', 'crap', 'hell', 'wtf', 'omg',
             'fucking', 'shitty', 'damned', 'bitchy', 'ass', 'dumb', 'moron', 'retard', 'gay', 'lesbian', 'nigger', 'nigga',
             'faggot', 'whore', 'slut', 'porn', 'sex', 'pornography', 'xxx', 'adult', 'nude', 'naked', 'bastard', 'cunt',
@@ -155,7 +190,14 @@ class LiveChat {
             'piss', 'urine', 'feces', 'bullshit', 'horseshit', 'cowshit', 'dogshit', 'ratshit', 'pissed', 'fuck off',
             'fuck you', 'fuck this', 'fuck that', 'fuck up', 'fucked up', 'fucking hell', 'holy shit', 'what the fuck',
             'oh my god', 'jesus christ', 'goddamn', 'bloody hell', 'son of a bitch', 'piece of shit', 'you suck',
-            'you are stupid', 'you are dumb', 'you are an idiot', 'kill yourself', 'go die', 'screw you', 'damn it'
+            'you are stupid', 'you are dumb', 'you are an idiot', 'kill yourself', 'go die', 'screw you', 'damn it',
+            
+            // New comprehensive list
+            'kefe', 'b i t c h', 'f u c k', '4q', '4 q', 'fucker', 'fk', 'fak', 'bigass', 'arsehole', 'anus', 'stfu', 's t f u', 
+            's y b a u', 'sybay', 'tf', 'fy', 'ahhh', 'asss', 'ufa', 'ahh', 'ah', 'cock', 'assfuck', 'asshole', 'nigger', 'nig', 
+            'n i g', 'n i g g e r', 'n1gger', 'f4cker', 'f4ck', 'f@cker', 'f@cker', 'blackmen', 'wigger', 'skibidi', 
+            's k i b i d i', 's k 1 b 1 d 1', 'diddy', 'igbt', '685', '6 8 5', 'damn', 'dam', 'dayum', 'd@mm', 'd@m', 
+            'd@yum', 'd4mm', 'd4m', 'd4yum', 'f u', 'fu', '*'
         ];
 
         let filteredText = text;
@@ -186,10 +228,13 @@ class LiveChat {
                 text: filteredText,
                 userId: this.currentUser.id,
                 userName: this.currentUser.fullName,
+                username: this.currentUser.displayName || this.currentUser.fullName, // Use displayName for chat
+                fullName: this.currentUser.fullName,
                 initials: this.currentUser.initials,
                 avatarColor: this.currentUser.avatarColor,
                 timestamp: new Date(),
-                isActive: true
+                isActive: true,
+                isVerified: this.currentUser.isVerified || false
             };
 
             await addDoc(collection(db, 'chatMessages'), messageData);
