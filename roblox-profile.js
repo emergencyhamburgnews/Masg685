@@ -323,13 +323,16 @@ class RobloxProfile {
     async loadCurrentGame() {
         try {
             console.log('Loading current game data...');
+            console.log('User ID:', this.userId);
             
             // Fetch current game data from Roblox API
             const gameData = await this.fetchCurrentGameData();
             
             if (gameData) {
+                console.log('Game data received:', gameData);
                 this.displayCurrentGame(gameData);
             } else {
+                console.log('No game data received');
                 this.showCurrentGameError('No game data available');
             }
             
@@ -341,7 +344,7 @@ class RobloxProfile {
 
     async fetchCurrentGameData() {
         try {
-            console.log('Fetching current game data using presence API...');
+            console.log('Fetching current game data using multiple APIs...');
             
             // Try multiple CORS proxies
             const proxies = [
@@ -350,7 +353,7 @@ class RobloxProfile {
                 'https://thingproxy.freeboard.io/fetch/'
             ];
 
-            // Use the presence API to get current user activity
+            // First, try the presence API
             const presenceUrl = `https://presence.roblox.com/v1/presence/users`;
             
             for (const proxy of proxies) {
@@ -359,7 +362,7 @@ class RobloxProfile {
                     
                     // The presence API requires a POST request with user IDs
                     const requestBody = {
-                        userIds: [5255024681]
+                        userIds: [parseInt(this.userId)]
                     };
                     
                     const response = await fetch(proxy + encodeURIComponent(presenceUrl), {
@@ -373,13 +376,12 @@ class RobloxProfile {
                     if (response.ok) {
                         const data = await response.json();
                         console.log('Presence data received:', data);
-                        console.log('Full presence API response:', JSON.stringify(data, null, 2));
                         
                         if (data.userPresences && data.userPresences.length > 0) {
                             const userPresence = data.userPresences[0];
                             console.log('Found user presence:', userPresence);
                             
-                            // Check if user is currently in a game
+                            // Check if user is currently in a game (userPresenceType 2 = InGame)
                             if (userPresence.userPresenceType === 2 && userPresence.gameId) {
                                 console.log('User is currently in game:', userPresence.gameId);
                                 
@@ -399,9 +401,7 @@ class RobloxProfile {
                                 }
                             } else {
                                 console.log('User is not currently in a game. Presence type:', userPresence.userPresenceType);
-                                
-                                // If not in a game, try to get recent games as fallback
-                                return await this.fetchRecentGamesFallback();
+                                console.log('Presence types: 0=Offline, 1=Online, 2=InGame, 3=InStudio');
                             }
                         }
                     }
@@ -411,8 +411,22 @@ class RobloxProfile {
                 }
             }
             
-            // If presence API fails, try recent games as fallback
-            console.log('Presence API failed, trying recent games fallback...');
+            // If presence API fails, try the user activity API
+            console.log('Presence API failed, trying user activity API...');
+            const activityData = await this.fetchUserActivity();
+            if (activityData) {
+                return activityData;
+            }
+            
+            // Try the user's recent activity to see if they're currently in a game
+            console.log('Trying user recent activity...');
+            const recentActivity = await this.fetchUserRecentActivity();
+            if (recentActivity) {
+                return recentActivity;
+            }
+            
+            // If all else fails, try recent games as fallback
+            console.log('All APIs failed, trying recent games fallback...');
             return await this.fetchRecentGamesFallback();
             
         } catch (error) {
@@ -440,45 +454,174 @@ class RobloxProfile {
                 'https://thingproxy.freeboard.io/fetch/'
             ];
 
-            const gameUrl = `https://games.roblox.com/v1/games?universeIds=${gameId}`;
+            // Try multiple game detail endpoints
+            const gameUrls = [
+                `https://games.roblox.com/v1/games?universeIds=${gameId}`,
+                `https://games.roblox.com/v1/games/${gameId}`,
+                `https://games.roblox.com/v1/games?gameIds=${gameId}`
+            ];
             
+            for (const gameUrl of gameUrls) {
             for (const proxy of proxies) {
                 try {
+                        console.log(`Trying game details: ${gameUrl} with proxy: ${proxy}`);
                     const response = await fetch(proxy + encodeURIComponent(gameUrl));
                     
                     if (response.ok) {
                         const data = await response.json();
                         console.log('Game details received:', data);
                         
+                            let game = null;
                         if (data.data && data.data.length > 0) {
-                            const game = data.data[0];
-                            console.log('Found game details:', game);
+                                game = data.data[0];
+                            } else if (data.id) {
+                                game = data;
+                            }
+                            
+                            if (game) {
+                                console.log('Found game details:', game);
                             
                             let thumbnailUrl = null;
                             if (game.thumbnail && game.thumbnail.mediaType === 'Image') {
                                 thumbnailUrl = game.thumbnail.url;
+                                } else if (game.thumbnailUrl) {
+                                    thumbnailUrl = game.thumbnailUrl;
                             }
                             
                             return {
                                 name: game.name,
                                 description: game.description || '',
                                 thumbnail: thumbnailUrl,
-                                players: game.playing || 0,
-                                visits: game.visits || 0,
+                                    players: game.playing || game.playerCount || 0,
+                                    visits: game.visits || game.totalVisits || 0,
                                 created: game.created,
                                 updated: game.updated
                             };
                         }
                     }
                 } catch (proxyError) {
-                    console.log(`Game details proxy ${proxy} failed:`, proxyError);
+                        console.log(`Game details proxy ${proxy} failed for ${gameUrl}:`, proxyError);
                     continue;
+                    }
                 }
             }
             
             return null;
         } catch (error) {
             console.error('Error fetching game details:', error);
+            return null;
+        }
+    }
+
+    async fetchUserRecentActivity() {
+        try {
+            console.log('Fetching user recent activity...');
+            
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
+
+            // Try to get user's recent activity
+            const activityUrl = `https://users.roblox.com/v1/users/${this.userId}/recent-activity`;
+            
+            for (const proxy of proxies) {
+                try {
+                    console.log(`Trying recent activity proxy: ${proxy}`);
+                    
+                    const response = await fetch(proxy + encodeURIComponent(activityUrl));
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Recent activity data received:', data);
+                        
+                        // Look for recent game activity
+                        if (data.data && data.data.length > 0) {
+                            const recentActivity = data.data[0];
+                            console.log('Found recent activity:', recentActivity);
+                            
+                            // Check if it's a game join activity
+                            if (recentActivity.type === 'GameJoin' && recentActivity.gameId) {
+                                const gameDetails = await this.fetchGameDetails(recentActivity.gameId);
+                                if (gameDetails) {
+                                    return {
+                                        name: gameDetails.name,
+                                        description: gameDetails.description || '',
+                                        thumbnail: gameDetails.thumbnail,
+                                        players: gameDetails.players || 0,
+                                        visits: gameDetails.visits || 0,
+                                        created: gameDetails.created,
+                                        updated: gameDetails.updated,
+                                        source: 'Recently Joined'
+                                    };
+                                }
+                            }
+                        }
+                    }
+                } catch (proxyError) {
+                    console.log(`Recent activity proxy ${proxy} failed:`, proxyError);
+                    continue;
+                }
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error fetching user recent activity:', error);
+            return null;
+        }
+    }
+
+    async fetchUserActivity() {
+        try {
+            console.log('Fetching user activity using alternative API...');
+            
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
+
+            // Try the user activity endpoint
+            const activityUrl = `https://users.roblox.com/v1/users/${this.userId}/status`;
+            
+            for (const proxy of proxies) {
+                try {
+                    console.log(`Trying user activity proxy: ${proxy}`);
+                    
+                    const response = await fetch(proxy + encodeURIComponent(activityUrl));
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('User activity data received:', data);
+                        
+                        // Check if user has a status that indicates they're in a game
+                        if (data.status && data.status.includes('Playing')) {
+                            // Try to extract game name from status
+                            const gameName = data.status.replace('Playing ', '').replace('...', '');
+                            if (gameName && gameName !== '...') {
+                                return {
+                                    name: gameName,
+                                    description: 'Currently playing this game',
+                                    thumbnail: null,
+                                    players: 0,
+                                    visits: 0,
+                                    created: null,
+                                    updated: null,
+                                    source: 'Currently Playing'
+                                };
+                            }
+                        }
+                    }
+                } catch (proxyError) {
+                    console.log(`User activity proxy ${proxy} failed:`, proxyError);
+                    continue;
+                }
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error fetching user activity:', error);
             return null;
         }
     }
@@ -582,24 +725,33 @@ class RobloxProfile {
         // Update game status based on data source
         const gameStatusElement = document.getElementById('game-status');
         if (gameStatusElement) {
+            // Remove all existing status classes
+            gameStatusElement.className = 'game-status';
+            
             switch (gameData.source) {
                 case 'Currently Playing':
                     gameStatusElement.textContent = 'Currently Playing';
+                    gameStatusElement.classList.add('currently-playing');
                     break;
                 case 'Recently Played':
                     gameStatusElement.textContent = 'Recently Played';
+                    gameStatusElement.classList.add('recently-played');
                     break;
                 case 'Favorite Games':
                     gameStatusElement.textContent = 'Favorite Game';
+                    gameStatusElement.classList.add('recently-played');
                     break;
                 case 'No Data':
                     gameStatusElement.textContent = 'No Recent Activity';
+                    gameStatusElement.classList.add('no-activity');
                     break;
                 case 'Error':
                     gameStatusElement.textContent = 'Error Loading';
+                    gameStatusElement.classList.add('error');
                     break;
                 default:
                     gameStatusElement.textContent = 'Game Activity';
+                    gameStatusElement.classList.add('no-activity');
             }
         }
 
@@ -632,6 +784,7 @@ class RobloxProfile {
 
         const gameStatusElement = document.getElementById('game-status');
         if (gameStatusElement) {
+            gameStatusElement.className = 'game-status error';
             gameStatusElement.textContent = 'Error loading status';
         }
 
@@ -727,7 +880,27 @@ function updateDebugInfo() {
         html += `<p><strong>${key}:</strong> ${value}</p>`;
     }
     
+    // Add test button for game activity
+    html += `<button onclick="testGameActivity()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Game Activity</button>`;
+    
     debugContent.innerHTML = html;
+}
+
+// Test function for game activity
+async function testGameActivity() {
+    console.log('Testing game activity...');
+    if (window.robloxProfile) {
+        try {
+            const gameData = await window.robloxProfile.fetchCurrentGameData();
+            console.log('Test result:', gameData);
+            alert(`Game Activity Test Result:\n${JSON.stringify(gameData, null, 2)}`);
+        } catch (error) {
+            console.error('Test error:', error);
+            alert(`Test Error: ${error.message}`);
+        }
+    } else {
+        alert('Roblox profile not loaded');
+    }
 }
 
 // Initialize the Roblox profile when the page loads

@@ -199,16 +199,26 @@
                             </div>
                         </div>
 
-                        <!-- Current Game Section - Coming Soon -->
+                        <!-- Game Activity Section -->
                         <div class="current-game-card">
                             <div class="card-header">
                                 <h2 class="card-title">Game Activity</h2>
+                                <button id="refresh-game-btn" class="refresh-game-btn" title="Refresh Game Data">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <div class="coming-soon-info">
-                                <div class="coming-soon-icon">🚀</div>
-                                <div class="coming-soon-text">
-                                    <h3>Coming Soon</h3>
-                                    <p>Game Activity feature will show your current Roblox game activity and recent games.</p>
+                            <div class="game-activity-content">
+                                <div class="game-thumbnail" id="game-thumbnail">
+                                    <div class="game-loading">Loading...</div>
+                                </div>
+                                <div class="game-info">
+                                    <h3 id="game-name" class="game-name">Loading...</h3>
+                                    <p id="game-players" class="game-players">Loading...</p>
+                                    <div class="game-status" id="game-status">Loading...</div>
                                 </div>
                             </div>
                         </div>

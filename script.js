@@ -145,6 +145,7 @@ function updateThemeColor() {
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
     initializeTheme();
+    initializeThemeOnAllPages(); // Ensure theme is applied on all pages
     initializeNavbarColor();
     initializeGlowColor();
     loadUpdateContent();
@@ -601,6 +602,13 @@ function initializeTheme() {
     }
 }
 
+// Initialize theme on all pages
+function initializeThemeOnAllPages() {
+    // Get saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+}
+
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -636,11 +644,13 @@ function setTheme(theme) {
         }
     }
     
+    // Update theme color meta tag
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
+    
     // Save theme preference
     localStorage.setItem('theme', theme);
-    
-    // Update theme color
-    updateThemeColor();
 }
 
 // Load update page content

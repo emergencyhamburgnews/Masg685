@@ -24,6 +24,12 @@ class LiveChat {
         const isVerified = localStorage.getItem('isVerified') === 'true';
         this.currentUser.isVerified = isVerified;
         
+        // Check if user is owner (you can customize this logic)
+        const isOwner = this.currentUser.fullName === 'Masg685' || 
+                       this.currentUser.displayName === 'Masg685' ||
+                       this.currentUser.username === 'Masg685';
+        this.currentUser.isOwner = isOwner;
+        
         console.log('Current user:', this.currentUser);
 
         // Wait for Firebase to be available
@@ -46,6 +52,19 @@ class LiveChat {
         const sendBtn = document.getElementById('send-btn');
         if (sendBtn) {
             sendBtn.addEventListener('click', () => this.sendMessage());
+        }
+
+        // Image button
+        const imageBtn = document.getElementById('image-btn');
+        const imageInput = document.getElementById('image-upload');
+        if (imageBtn && imageInput) {
+            imageBtn.addEventListener('click', () => {
+                imageInput.click();
+            });
+            
+            imageInput.addEventListener('change', () => {
+                this.sendImage();
+            });
         }
 
         // Message input
@@ -145,8 +164,109 @@ class LiveChat {
         usernameSpan.textContent = displayName;
         usernameDiv.appendChild(usernameSpan);
         
-        // Add verify badge if user is verified
-        if (message.isVerified) {
+        // Add owner badge if user is owner
+        if (message.isOwner) {
+            const ownerBadge = document.createElement('img');
+            ownerBadge.src = 'verify.png';
+            ownerBadge.alt = 'Owner';
+            ownerBadge.className = 'owner-badge';
+            ownerBadge.title = 'Owner';
+            ownerBadge.style.width = '16px';
+            ownerBadge.style.height = '16px';
+            ownerBadge.style.marginLeft = '4px';
+            ownerBadge.style.verticalAlign = 'middle';
+            ownerBadge.style.cursor = 'help';
+            ownerBadge.style.display = 'inline-block';
+            
+            // Add custom tooltip functionality
+            let tooltip = null;
+            let isTooltipVisible = false;
+            
+            // Function to show tooltip
+            function showTooltip() {
+                if (isTooltipVisible) return;
+                
+                tooltip = document.createElement('div');
+                tooltip.className = 'owner-tooltip';
+                tooltip.textContent = 'Owner';
+                tooltip.style.cssText = `
+                    position: fixed;
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 6px 10px;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    z-index: 10000;
+                    pointer-events: none;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    white-space: nowrap;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                
+                document.body.appendChild(tooltip);
+                
+                // Position tooltip
+                const rect = ownerBadge.getBoundingClientRect();
+                tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+                tooltip.style.transform = 'translateX(-50%)';
+                
+                // Show tooltip
+                setTimeout(() => {
+                    tooltip.style.opacity = '1';
+                    isTooltipVisible = true;
+                }, 10);
+            }
+            
+            // Function to hide tooltip
+            function hideTooltip() {
+                if (!isTooltipVisible || !tooltip) return;
+                
+                tooltip.style.opacity = '0';
+                setTimeout(() => {
+                    if (tooltip && tooltip.parentNode) {
+                        tooltip.parentNode.removeChild(tooltip);
+                    }
+                    tooltip = null;
+                    isTooltipVisible = false;
+                }, 300);
+            }
+            
+            // Function to hide tooltip when clicking anywhere
+            function hideTooltipOnClick(event) {
+                if (isTooltipVisible && !ownerBadge.contains(event.target) && !tooltip.contains(event.target)) {
+                    hideTooltip();
+                }
+            }
+            
+            // Desktop: hover events
+            ownerBadge.addEventListener('mouseenter', showTooltip);
+            ownerBadge.addEventListener('mouseleave', hideTooltip);
+            
+            // Mobile: click events
+            ownerBadge.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                if (isTooltipVisible) {
+                    hideTooltip();
+                } else {
+                    showTooltip();
+                    // Add click listener to document to hide tooltip when clicking elsewhere
+                    document.addEventListener('click', hideTooltipOnClick, { once: true });
+                }
+            });
+            
+            // Store cleanup function
+            ownerBadge._hideTooltip = hideTooltip;
+            
+            usernameDiv.appendChild(ownerBadge);
+        }
+        // Add verify badge if user is verified (but not owner)
+        else if (message.isVerified) {
             const verifyBadge = document.createElement('img');
             verifyBadge.src = 'verify.png';
             verifyBadge.alt = 'Verified';
@@ -160,7 +280,55 @@ class LiveChat {
 
         const text = document.createElement('div');
         text.className = 'message-text';
-        text.textContent = message.text;
+        
+        // Handle image messages
+        if (message.isImage && message.imageUrl) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'message-image-container';
+            
+            const image = document.createElement('img');
+            image.src = message.imageUrl;
+            image.alt = message.imageName || 'Image';
+            image.className = 'message-image';
+            image.style.maxWidth = '200px';
+            image.style.maxHeight = '200px';
+            image.style.borderRadius = '8px';
+            image.style.cursor = 'pointer';
+            
+            // Add click to view full size
+            image.addEventListener('click', () => {
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '10000';
+                modal.style.cursor = 'pointer';
+                
+                const fullImage = document.createElement('img');
+                fullImage.src = message.imageUrl;
+                fullImage.style.maxWidth = '90%';
+                fullImage.style.maxHeight = '90%';
+                fullImage.style.borderRadius = '8px';
+                
+                modal.appendChild(fullImage);
+                document.body.appendChild(modal);
+                
+                modal.addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+            });
+            
+            imageContainer.appendChild(image);
+            text.appendChild(imageContainer);
+        } else {
+            text.textContent = message.text;
+        }
 
         const time = document.createElement('div');
         time.className = 'message-time';
@@ -192,21 +360,53 @@ class LiveChat {
             'oh my god', 'jesus christ', 'goddamn', 'bloody hell', 'son of a bitch', 'piece of shit', 'you suck',
             'you are stupid', 'you are dumb', 'you are an idiot', 'kill yourself', 'go die', 'screw you', 'damn it',
             
-            // New comprehensive list
+            // New comprehensive list (removed duplicate f@cker)
             'kefe', 'b i t c h', 'f u c k', '4q', '4 q', 'fucker', 'fk', 'fak', 'bigass', 'arsehole', 'anus', 'stfu', 's t f u', 
             's y b a u', 'sybay', 'tf', 'fy', 'ahhh', 'asss', 'ufa', 'ahh', 'ah', 'cock', 'assfuck', 'asshole', 'nigger', 'nig', 
-            'n i g', 'n i g g e r', 'n1gger', 'f4cker', 'f4ck', 'f@cker', 'f@cker', 'blackmen', 'wigger', 'skibidi', 
+            'n i g', 'n i g g e r', 'n1gger', 'f4cker', 'f4ck', 'f@cker', 'F@ck', 'blackmen', 'wigger', 'skibidi', 
             's k i b i d i', 's k 1 b 1 d 1', 'diddy', 'igbt', '685', '6 8 5', 'damn', 'dam', 'dayum', 'd@mm', 'd@m', 
             'd@yum', 'd4mm', 'd4m', 'd4yum', 'f u', 'fu', '*'
         ];
 
         let filteredText = text;
         badWords.forEach(badWord => {
-            const regex = new RegExp('\\b' + badWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
-            filteredText = filteredText.replace(regex, '####');
+            // Create replacement with correct number of # symbols based on word length
+            const replacement = '#'.repeat(badWord.length);
+            
+            // Handle special characters and spaces in the word
+            let regexPattern;
+            if (badWord.includes(' ')) {
+                // For words with spaces, use word boundaries around the whole phrase
+                regexPattern = '\\b' + badWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b';
+            } else {
+                // For single words, use word boundaries
+                regexPattern = '\\b' + badWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b';
+            }
+            
+            const regex = new RegExp(regexPattern, 'gi');
+            filteredText = filteredText.replace(regex, replacement);
         });
 
         return filteredText;
+    }
+
+    // Test function to verify filtering works correctly (can be removed in production)
+    testWordFiltering() {
+        const testCases = [
+            { input: 'f@cker', expected: '######' },
+            { input: 'F@ck', expected: '####' },
+            { input: 'fuck', expected: '####' },
+            { input: 'fucking hell', expected: '####### ####' },
+            { input: 'damn', expected: '####' },
+            { input: 'skibidi', expected: '#######' },
+            { input: 'f u c k', expected: '#######' }
+        ];
+
+        console.log('Testing word filtering:');
+        testCases.forEach(test => {
+            const result = this.filterInappropriateWords(test.input);
+            console.log(`Input: "${test.input}" -> Output: "${result}" (Expected: "${test.expected}")`);
+        });
     }
 
     async sendMessage() {
@@ -234,7 +434,8 @@ class LiveChat {
                 avatarColor: this.currentUser.avatarColor,
                 timestamp: new Date(),
                 isActive: true,
-                isVerified: this.currentUser.isVerified || false
+                isVerified: this.currentUser.isVerified || false,
+                isOwner: this.currentUser.isOwner || false
             };
 
             await addDoc(collection(db, 'chatMessages'), messageData);
@@ -248,6 +449,73 @@ class LiveChat {
         } finally {
             this.isSubmitting = false;
         }
+    }
+
+    async sendImage() {
+        if (this.isSubmitting) return;
+
+        const imageInput = document.getElementById('image-upload');
+        const file = imageInput.files[0];
+
+        if (!file) return;
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size must be less than 5MB');
+            return;
+        }
+
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            return;
+        }
+
+        this.isSubmitting = true;
+
+        try {
+            // Convert image to base64
+            const base64 = await this.convertToBase64(file);
+            
+            const { db, collection, addDoc } = window.firebaseApp;
+            const messageData = {
+                text: '[Image]',
+                imageUrl: base64,
+                imageName: file.name,
+                userId: this.currentUser.id,
+                userName: this.currentUser.fullName,
+                username: this.currentUser.displayName || this.currentUser.fullName,
+                fullName: this.currentUser.fullName,
+                initials: this.currentUser.initials,
+                avatarColor: this.currentUser.avatarColor,
+                timestamp: new Date(),
+                isActive: true,
+                isVerified: this.currentUser.isVerified || false,
+                isOwner: this.currentUser.isOwner || false,
+                isImage: true
+            };
+
+            await addDoc(collection(db, 'chatMessages'), messageData);
+            console.log('Image sent successfully');
+
+            // Clear file input
+            imageInput.value = '';
+
+        } catch (error) {
+            console.error('Error sending image:', error);
+            alert('Error sending image. Please try again.');
+        } finally {
+            this.isSubmitting = false;
+        }
+    }
+
+    convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     }
 
     scrollToBottom() {

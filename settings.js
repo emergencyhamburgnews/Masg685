@@ -1,6 +1,10 @@
 // Settings functionality
 document.addEventListener('DOMContentLoaded', function() {
     initializeSettings();
+    // Ensure theme is properly initialized on settings page
+    if (typeof initializeThemeOnAllPages === 'function') {
+        initializeThemeOnAllPages();
+    }
 });
 
 // Initialize settings page
