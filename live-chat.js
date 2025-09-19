@@ -45,6 +45,7 @@ class LiveChat {
         this.setupRealtimeListener();
         this.loadNoticeBanner();
         this.setupNoticeListener();
+        this.setupAutoScroll();
     }
 
     setupEventListeners() {
@@ -64,6 +65,28 @@ class LiveChat {
             
             imageInput.addEventListener('change', () => {
                 this.sendImage();
+            });
+        }
+
+        // Video button
+        const videoBtn = document.getElementById('video-btn');
+        const videoInput = document.getElementById('video-upload');
+        if (videoBtn && videoInput) {
+            videoBtn.addEventListener('click', () => {
+                videoInput.click();
+            });
+            
+            videoInput.addEventListener('change', () => {
+                this.sendVideo();
+            });
+        }
+
+        // Scroll to bottom button
+        const scrollBtn = document.getElementById('scroll-to-bottom-btn');
+        if (scrollBtn) {
+            scrollBtn.addEventListener('click', () => {
+                this.forceScrollToBottom();
+                scrollBtn.style.display = 'none';
             });
         }
 
@@ -326,7 +349,36 @@ class LiveChat {
             
             imageContainer.appendChild(image);
             text.appendChild(imageContainer);
-        } else {
+        } 
+        // Handle video messages
+        else if (message.videoUrl) {
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'message-video-container';
+            
+            const video = document.createElement('video');
+            video.src = message.videoUrl;
+            video.controls = true;
+            video.className = 'message-video';
+            video.style.maxWidth = '300px';
+            video.style.maxHeight = '200px';
+            video.style.borderRadius = '8px';
+            video.style.cursor = 'pointer';
+            
+            // Add video duration display
+            if (message.videoDuration) {
+                const durationSpan = document.createElement('span');
+                durationSpan.textContent = `Duration: ${Math.round(message.videoDuration)}s`;
+                durationSpan.style.display = 'block';
+                durationSpan.style.fontSize = '12px';
+                durationSpan.style.color = '#666';
+                durationSpan.style.marginTop = '4px';
+                videoContainer.appendChild(durationSpan);
+            }
+            
+            videoContainer.appendChild(video);
+            text.appendChild(videoContainer);
+        } 
+        else {
             text.textContent = message.text;
         }
 
@@ -465,9 +517,10 @@ class LiveChat {
             return;
         }
 
-        // Check file type
-        if (!file.type.startsWith('image/')) {
-            alert('Please select a valid image file');
+        // Check file type - support all image formats
+        const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml'];
+        if (!allowedImageTypes.includes(file.type)) {
+            alert('Please select a valid image file (JPG, PNG, GIF, WebP, BMP, SVG)');
             return;
         }
 
@@ -509,6 +562,94 @@ class LiveChat {
         }
     }
 
+    async sendVideo() {
+        if (this.isSubmitting) return;
+
+        const videoInput = document.getElementById('video-upload');
+        const file = videoInput.files[0];
+
+        if (!file) return;
+
+        // Check file size (max 50MB for videos)
+        if (file.size > 50 * 1024 * 1024) {
+            alert('Video size must be less than 50MB');
+            return;
+        }
+
+        // Check file type
+        if (!file.type.startsWith('video/')) {
+            alert('Please select a valid video file');
+            return;
+        }
+
+        // Check video duration (1 min 50s = 110 seconds)
+        try {
+            const duration = await this.getVideoDuration(file);
+            if (duration > 110) {
+                alert('Video must be 1 minute 50 seconds or less');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking video duration:', error);
+            alert('Error checking video duration. Please try again.');
+            return;
+        }
+
+        this.isSubmitting = true;
+
+        try {
+            // Convert video to base64
+            const base64 = await this.convertToBase64(file);
+            
+            const { db, collection, addDoc } = window.firebaseApp;
+            const messageData = {
+                text: '[Video]',
+                videoUrl: base64,
+                videoDuration: await this.getVideoDuration(file),
+                timestamp: new Date(),
+                user: {
+                    name: this.currentUser.displayName || this.currentUser.fullName,
+                    username: this.currentUser.username,
+                    isVerified: this.currentUser.isVerified,
+                    isOwner: this.currentUser.isOwner
+                }
+            };
+
+            await addDoc(collection(db, 'chatMessages'), messageData);
+            
+            // Clear the input
+            videoInput.value = '';
+            
+            // Scroll to bottom
+            this.scrollToBottom();
+            
+        } catch (error) {
+            console.error('Error sending video:', error);
+            alert('Error sending video. Please try again.');
+        } finally {
+            this.isSubmitting = false;
+        }
+    }
+
+    getVideoDuration(file) {
+        return new Promise((resolve, reject) => {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            
+            video.onloadedmetadata = () => {
+                window.URL.revokeObjectURL(video.src);
+                resolve(video.duration);
+            };
+            
+            video.onerror = () => {
+                window.URL.revokeObjectURL(video.src);
+                reject(new Error('Error loading video metadata'));
+            };
+            
+            video.src = URL.createObjectURL(file);
+        });
+    }
+
     convertToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -519,6 +660,13 @@ class LiveChat {
     }
 
     scrollToBottom() {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }
+
+    forceScrollToBottom() {
         const messagesContainer = document.getElementById('chat-messages');
         if (messagesContainer) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -595,6 +743,36 @@ class LiveChat {
         } else {
             noticeBanner.innerHTML = '<span>Notice: Banner</span>';
         }
+    }
+
+    setupAutoScroll() {
+        const messagesContainer = document.getElementById('chat-messages');
+        const scrollBtn = document.getElementById('scroll-to-bottom-btn');
+        
+        if (!messagesContainer || !scrollBtn) return;
+
+        // Show/hide scroll button based on scroll position
+        messagesContainer.addEventListener('scroll', () => {
+            const isAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 100;
+            
+            if (isAtBottom) {
+                scrollBtn.style.display = 'none';
+            } else {
+                scrollBtn.style.display = 'flex';
+            }
+        });
+
+        // Store original scrollToBottom for auto-scroll behavior
+        this.originalScrollToBottom = this.scrollToBottom.bind(this);
+        
+        // Override scrollToBottom for auto-scroll behavior (only when new messages arrive)
+        this.scrollToBottom = () => {
+            const isNearBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 200;
+            
+            if (isNearBottom) {
+                this.originalScrollToBottom();
+            }
+        };
     }
 }
 

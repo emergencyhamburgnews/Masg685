@@ -79,6 +79,9 @@
             const noticeBanner = document.getElementById('website-notice');
             if (noticeBanner && noticeEnabled === 'false') {
                 noticeBanner.classList.add('hidden');
+            } else {
+                // Show the banner by default
+                noticeBanner.style.display = 'block';
             }
         });
     </script>
@@ -86,17 +89,17 @@
 <body>
     <nav class="navbar">
         <!-- Website Notice Banner -->
-        <div class="notice-banner" id="website-notice" style="display: none;">
+        <div class="notice-banner" id="website-notice">
             <div class="notice-content">
-                <span class="notice-icon">⚠️</span>
-                <span class="notice-text">Loading...</span>
+                <span class="notice-icon">🔧</span>
+                <span class="notice-text">Big Update: Live Chat/Bug fix/ Image</span>
             </div>
         </div>
         
         <div class="nav-container">
             <div class="nav-brand">
                 <span class="brand-name">Masq685</span>
-                <span class="brand-version"><a href="update.html" class="version-link">V3.1.2</a></span>
+                <span class="brand-version"><a href="update.html" class="version-link" target="_self">V3.1.3</a></span>
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link active">Home</a>
@@ -133,12 +136,16 @@
                 <a href="settings.html" class="nav-link">Settings</a>
                 <div class="mobile-social-links">
                     <a href="https://www.roblox.com/users/5255024681/profile" target="_blank" class="mobile-social-link">
-                        <img src="robloxlogo.png" alt="Roblox" class="mobile-social-icon">
+                        <img src="roblox.jpg" alt="Roblox" class="mobile-social-icon">
                         <span>Roblox</span>
                     </a>
                     <a href="https://www.tiktok.com/@masg685" target="_blank" class="mobile-social-link" rel="noopener noreferrer">
-                        <img src="tiktok-logo.png" alt="TikTok" class="mobile-social-icon">
+                        <img src="tiktok.jpg" alt="TikTok" class="mobile-social-icon">
                         <span>TikTok</span>
+                    </a>
+                    <a href="#" target="_blank" class="mobile-social-link" rel="noopener noreferrer">
+                        <img src="xcom.jpg" alt="X (Twitter)" class="mobile-social-icon">
+                        <span>X</span>
                     </a>
                 </div>
                 <div class="mobile-theme-toggle">
@@ -155,10 +162,12 @@
         <div class="container">
             <section class="hero-section" id="hero-section">
                 <div class="hero-image">
-                    <img id="hero-image" src="" alt="Hero Image">
+                    <img id="hero-image" src="" alt="Hero Image" style="display: none;">
+                    <span class="image-placeholder" id="image-placeholder">Image Container</span>
                 </div>
                 <div class="hero-description">
-                    <p id="hero-description"></p>
+                    <p class="announcement-from">From <a href="#" class="announcement-link">@Masg685</a></p>
+                    <p class="announcement-text" id="hero-description">Discription:</p>
                 </div>
             </section>
 
@@ -180,10 +189,13 @@
                     <h3>Social Media</h3>
                     <div class="social-logos">
                         <a href="https://www.roblox.com/users/5255024681/profile" id="roblox-link" class="social-logo-link" target="_blank">
-                            <img id="roblox-logo" src="robloxlogo.png" alt="Roblox Logo">
+                            <img id="roblox-logo" src="roblox.jpg" alt="Roblox Logo">
                         </a>
                         <a href="https://www.tiktok.com/@masg685" id="tiktok-link" class="social-logo-link" target="_blank" rel="noopener noreferrer">
-                            <img id="tiktok-logo" src="tiktok-logo.png" alt="TikTok Logo">
+                            <img id="tiktok-logo" src="tiktok.jpg" alt="TikTok Logo">
+                        </a>
+                        <a href="#" id="x-link" class="social-logo-link" target="_blank" rel="noopener noreferrer">
+                            <img id="x-logo" src="xcom.jpg" alt="X (Twitter) Logo">
                         </a>
                     </div>
                 </div>
