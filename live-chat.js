@@ -511,11 +511,8 @@ class LiveChat {
 
         if (!file) return;
 
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Image size must be less than 5MB');
-            return;
-        }
+        // No file size limit for images - allow any size
+        console.log('Image file size:', (file.size / (1024 * 1024)).toFixed(2), 'MB');
 
         // Check file type - support all image formats (case insensitive)
         const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml'];
@@ -573,11 +570,8 @@ class LiveChat {
 
         if (!file) return;
 
-        // Check file size (max 50MB for videos)
-        if (file.size > 50 * 1024 * 1024) {
-            alert('Video size must be less than 50MB');
-            return;
-        }
+        // No file size limit for videos - allow any size
+        console.log('Video file size:', (file.size / (1024 * 1024)).toFixed(2), 'MB');
 
         // Check file type (case insensitive)
         const fileType = file.type.toLowerCase();
@@ -586,9 +580,16 @@ class LiveChat {
             return;
         }
 
-        // Check video duration (1 min 50s = 110 seconds)
+        // Check video duration (1 second minimum, 1 min 50s maximum = 110 seconds)
         try {
             const duration = await this.getVideoDuration(file);
+            console.log('Video duration:', duration, 'seconds');
+            
+            if (duration < 1) {
+                alert('Video must be at least 1 second long');
+                return;
+            }
+            
             if (duration > 110) {
                 alert('Video must be 1 minute 50 seconds or less');
                 return;
@@ -602,14 +603,24 @@ class LiveChat {
         this.isSubmitting = true;
 
         try {
+            console.log('Starting video upload process...');
+            console.log('File size:', file.size, 'bytes');
+            console.log('File type:', file.type);
+            
             // Convert video to base64
+            console.log('Converting video to base64...');
             const base64 = await this.convertToBase64(file);
+            console.log('Base64 conversion completed, length:', base64.length);
+            
+            // Get video duration
+            const duration = await this.getVideoDuration(file);
+            console.log('Video duration:', duration, 'seconds');
             
             const { db, collection, addDoc } = window.firebaseApp;
             const messageData = {
                 text: '[Video]',
                 videoUrl: base64,
-                videoDuration: await this.getVideoDuration(file),
+                videoDuration: duration,
                 userId: this.currentUser.id,
                 userName: this.currentUser.fullName,
                 username: this.currentUser.displayName || this.currentUser.fullName,
@@ -622,7 +633,9 @@ class LiveChat {
                 isOwner: this.currentUser.isOwner || false
             };
 
+            console.log('Sending video to Firebase...');
             await addDoc(collection(db, 'chatMessages'), messageData);
+            console.log('Video sent successfully!');
             
             // Clear the input
             videoInput.value = '';
@@ -632,7 +645,21 @@ class LiveChat {
             
         } catch (error) {
             console.error('Error sending video:', error);
-            alert('Error sending video. Please try again.');
+            console.error('Error details:', error.message);
+            console.error('Error stack:', error.stack);
+            
+            // More specific error messages
+            if (error.message.includes('quota') || error.message.includes('size')) {
+                alert('Video file is too large for Firebase. Please try a smaller video or check your Firebase quota.');
+            } else if (error.message.includes('permission')) {
+                alert('Permission denied. Please check your account permissions.');
+            } else if (error.message.includes('network')) {
+                alert('Network error. Please check your internet connection and try again.');
+            } else if (error.message.includes('timeout')) {
+                alert('Upload timeout. The video file might be too large. Please try a smaller video.');
+            } else {
+                alert('Error sending video. Please try again. Error: ' + error.message);
+            }
         } finally {
             this.isSubmitting = false;
         }
@@ -660,9 +687,28 @@ class LiveChat {
     convertToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            
+            reader.onload = () => {
+                console.log('Base64 conversion successful');
+                resolve(reader.result);
+            };
+            
+            reader.onerror = (error) => {
+                console.error('Base64 conversion failed:', error);
+                reject(new Error('Failed to convert video to base64: ' + error.message));
+            };
+            
+            reader.onabort = () => {
+                console.error('Base64 conversion aborted');
+                reject(new Error('Video conversion was aborted'));
+            };
+            
+            try {
+                reader.readAsDataURL(file);
+            } catch (error) {
+                console.error('Error starting base64 conversion:', error);
+                reject(new Error('Failed to start video conversion: ' + error.message));
+            }
         });
     }
 
