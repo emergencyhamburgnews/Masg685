@@ -283,12 +283,12 @@ class ChatSignUp {
             codeInput.value = '';
             
             // Show success message
-            this.showError('✅ Verification successful! You now have admin privileges.', 'success');
+            this.showError('✅ Verified badge activated successfully!', 'success');
             
             console.log('User verified with admin code');
         } else {
             // Wrong code
-            this.showError('❌ Invalid code! This feature is only for admin users. Contact admin for the correct code.', 'error');
+            this.showError('❌ Invalid code! Please contact the administrator for a valid badge code.', 'error');
             codeInput.value = '';
         }
     }

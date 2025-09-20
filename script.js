@@ -148,10 +148,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeThemeOnAllPages(); // Ensure theme is applied on all pages
     initializeNavbarColor();
     initializeGlowColor();
+    initializeNavbarGradient(); // Initialize navbar gradient on all pages
     loadUpdateContent();
     initializeAnimatedGreeting();
     applyNoticeSetting();
     applyGlowColorSetting();
+    applyNavbarGradientSetting(); // Apply navbar gradient setting on all pages
     initializeSearch();
     updateThemeColor(); // Update theme color on page load
 });
@@ -756,6 +758,20 @@ function applyGlowColorSetting() {
     const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
     document.documentElement.setAttribute('data-glow-color', savedGlowColor);
     console.log('Glow color applied:', savedGlowColor);
+}
+
+// Initialize navbar gradient on page load
+function initializeNavbarGradient() {
+    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
+    document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
+    console.log('Navbar gradient initialized:', savedGradient);
+}
+
+// Apply navbar gradient setting on page load
+function applyNavbarGradientSetting() {
+    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
+    document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
+    console.log('Navbar gradient applied:', savedGradient);
 }
 
 

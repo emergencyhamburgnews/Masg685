@@ -141,6 +141,43 @@
     --brand-name-color: #ff0000;
 }
 
+/* Navbar Gradient Colors */
+[data-navbar-gradient="sunset"] {
+    --navbar-bg: linear-gradient(135deg, #ff6b6b 0%, #ffa726 50%, #ffeb3b 100%) !important;
+    --navbar-color: #000000 !important;
+    --navbar-color-rgba: rgba(0, 0, 0, 0.1) !important;
+    --navbar-color-border: rgba(0, 0, 0, 0.3) !important;
+    --navbar-color-shadow: rgba(0, 0, 0, 0.2) !important;
+    --navbar-color-active-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%) !important;
+    --navbar-color-active-border: rgba(0, 0, 0, 0.4) !important;
+    --navbar-color-active-shadow: rgba(0, 0, 0, 0.3) !important;
+    --brand-name-color: #000000 !important;
+}
+
+[data-navbar-gradient="ocean"] {
+    --navbar-bg: linear-gradient(135deg, #2196f3 0%, #00bcd4 50%, #4fc3f7 100%) !important;
+    --navbar-color: #ffffff !important;
+    --navbar-color-rgba: rgba(255, 255, 255, 0.1) !important;
+    --navbar-color-border: rgba(255, 255, 255, 0.3) !important;
+    --navbar-color-shadow: rgba(255, 255, 255, 0.2) !important;
+    --navbar-color-active-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+    --navbar-color-active-border: rgba(255, 255, 255, 0.4) !important;
+    --navbar-color-active-shadow: rgba(255, 255, 255, 0.3) !important;
+    --brand-name-color: #ff0000 !important;
+}
+
+[data-navbar-gradient="forest"] {
+    --navbar-bg: linear-gradient(135deg, #4caf50 0%, #8bc34a 50%, #cddc39 100%) !important;
+    --navbar-color: #000000 !important;
+    --navbar-color-rgba: rgba(0, 0, 0, 0.1) !important;
+    --navbar-color-border: rgba(0, 0, 0, 0.3) !important;
+    --navbar-color-shadow: rgba(0, 0, 0, 0.2) !important;
+    --navbar-color-active-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%) !important;
+    --navbar-color-active-border: rgba(0, 0, 0, 0.4) !important;
+    --navbar-color-active-shadow: rgba(0, 0, 0, 0.3) !important;
+    --brand-name-color: #000000 !important;
+}
+
 /* Glow Color Variations */
 [data-glow-color="red"] {
     --glow-color: #ff0000 !important;
@@ -316,7 +353,7 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
 
 /* Navbar styles - matching wireframe */
 .navbar {
-    background-color: var(--navbar-bg);
+    background: var(--navbar-bg);
     padding: 0;
     position: fixed;
     top: 0;
@@ -324,7 +361,7 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     right: 0;
     z-index: 1000;
     border-bottom: 2px solid #c0c0c0;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s ease;
 }
 
 /* Make notice banner part of navbar */
@@ -1437,6 +1474,73 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+}
+
+/* Gradient Options */
+.gradient-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.gradient-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--card-bg);
+}
+
+.gradient-option:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-option.selected {
+    border-color: var(--primary-color);
+    background: rgba(74, 144, 226, 0.1);
+}
+
+.gradient-preview {
+    width: 60px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.gradient-option:hover .gradient-preview {
+    transform: scale(1.05);
+}
+
+.gradient-preview.solid {
+    background: var(--navbar-bg);
+}
+
+.gradient-preview.sunset {
+    background: linear-gradient(135deg, #ff6b6b, #ffa726, #ffeb3b);
+}
+
+.gradient-preview.ocean {
+    background: linear-gradient(135deg, #2196f3, #00bcd4, #4fc3f7);
+}
+
+.gradient-preview.forest {
+    background: linear-gradient(135deg, #4caf50, #8bc34a, #cddc39);
+}
+
+.gradient-option span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: center;
 }
 
 /* Toggle Switch */
@@ -3246,6 +3350,37 @@ input:checked + .toggle-slider:before {
     background: var(--bg-color);
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     position: relative; /* Allow tooltips to appear above */
+}
+
+/* Chat Loading Indicator */
+.chat-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--card-border);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.chat-loading p {
+    margin: 0;
+    font-size: 0.9rem;
 }
 
 .message {
