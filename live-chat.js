@@ -86,7 +86,7 @@ class LiveChat {
         if (scrollBtn) {
             scrollBtn.addEventListener('click', () => {
                 this.forceScrollToBottom();
-                scrollBtn.style.display = 'none';
+                // Don't hide the button - let the scroll event handler manage visibility
             });
         }
 
@@ -517,9 +517,12 @@ class LiveChat {
             return;
         }
 
-        // Check file type - support all image formats
+        // Check file type - support all image formats (case insensitive)
         const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml'];
-        if (!allowedImageTypes.includes(file.type)) {
+        const fileType = file.type.toLowerCase();
+        const isImageType = allowedImageTypes.includes(fileType) || fileType.startsWith('image/');
+        
+        if (!isImageType) {
             alert('Please select a valid image file (JPG, PNG, GIF, WebP, BMP, SVG)');
             return;
         }
@@ -576,8 +579,9 @@ class LiveChat {
             return;
         }
 
-        // Check file type
-        if (!file.type.startsWith('video/')) {
+        // Check file type (case insensitive)
+        const fileType = file.type.toLowerCase();
+        if (!fileType.startsWith('video/')) {
             alert('Please select a valid video file');
             return;
         }
@@ -606,13 +610,16 @@ class LiveChat {
                 text: '[Video]',
                 videoUrl: base64,
                 videoDuration: await this.getVideoDuration(file),
+                userId: this.currentUser.id,
+                userName: this.currentUser.fullName,
+                username: this.currentUser.displayName || this.currentUser.fullName,
+                fullName: this.currentUser.fullName,
+                initials: this.currentUser.initials,
+                avatarColor: this.currentUser.avatarColor,
                 timestamp: new Date(),
-                user: {
-                    name: this.currentUser.displayName || this.currentUser.fullName,
-                    username: this.currentUser.username,
-                    isVerified: this.currentUser.isVerified,
-                    isOwner: this.currentUser.isOwner
-                }
+                isActive: true,
+                isVerified: this.currentUser.isVerified || false,
+                isOwner: this.currentUser.isOwner || false
             };
 
             await addDoc(collection(db, 'chatMessages'), messageData);
@@ -687,21 +694,21 @@ class LiveChat {
                         if (data.enabled) {
                             noticeBanner.innerHTML = `
                                 <span class="notice-icon">${data.icon || '⚠️'}</span>
-                                <span class="notice-text">${data.text || 'Notice: Banner'}</span>
+                                <span class="notice-text">${data.text || 'Loading...'}</span>
                             `;
                         } else {
-                            noticeBanner.innerHTML = '<span>Notice: Banner</span>';
+                            noticeBanner.innerHTML = '<span>Loading...</span>';
                         }
                     });
                 } else {
-                    noticeBanner.innerHTML = '<span>Notice: Banner</span>';
+                    noticeBanner.innerHTML = '<span>Loading...</span>';
                 }
             }
         } catch (error) {
             console.error('Error loading notice banner:', error);
             const noticeBanner = document.getElementById('chat-notice-banner');
             if (noticeBanner) {
-                noticeBanner.innerHTML = '<span>Notice: Banner</span>';
+                noticeBanner.innerHTML = '<span>Loading...</span>';
             }
         }
     }
@@ -737,11 +744,11 @@ class LiveChat {
         if (data.enabled) {
             noticeBanner.innerHTML = `
                 <span class="notice-icon">${data.icon || '⚠️'}</span>
-                <span class="notice-text">${data.text || 'Notice: Banner'}</span>
+                <span class="notice-text">${data.text || 'Loading...'}</span>
             `;
             console.log('Updated chat notice text to:', data.text);
         } else {
-            noticeBanner.innerHTML = '<span>Notice: Banner</span>';
+            noticeBanner.innerHTML = '<span>Loading...</span>';
         }
     }
 

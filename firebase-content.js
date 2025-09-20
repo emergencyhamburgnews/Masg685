@@ -158,7 +158,7 @@ class FirebaseContentManager {
             
             const defaultNotice = {
                 enabled: true,
-                text: "Notice: My website is not fully finished yet.",
+                text: "Loading...",
                 icon: "⚠️"
             };
 
@@ -183,7 +183,7 @@ class FirebaseContentManager {
             },
             notice: {
                 enabled: true,
-                text: "Notice: My website is not fully finished yet.",
+                text: "Loading...",
                 icon: "⚠️"
             }
         };
@@ -406,7 +406,7 @@ class FirebaseContentManager {
                 if (noticeData.enabled) {
                     noticeBanner.style.display = 'block';
                     if (noticeIcon) noticeIcon.textContent = noticeData.icon || '⚠️';
-                    if (noticeText) noticeText.textContent = noticeData.text || 'Notice: My website is not fully finished yet.';
+                    if (noticeText) noticeText.textContent = noticeData.text || 'Loading...';
                     console.log('Force updated notice with:', noticeData.text);
                 } else {
                     noticeBanner.style.display = 'none';
