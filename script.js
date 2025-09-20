@@ -118,18 +118,30 @@ function playSuccessSound() {
 // Dynamic Theme Color System
 function updateThemeColor() {
     const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
     const theme = localStorage.getItem('theme') || 'light';
     
     let themeColor;
     
-    // Set theme color to match navbar colors exactly (copy from CSS)
-    switch (navbarColor) {
-        case 'black': themeColor = '#000000'; break;  // Exact match from CSS
-        case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
-        case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
-        case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
-        case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
-        default: themeColor = '#000000'; // Default to black
+    // Check if gradient is active first
+    if (navbarGradient !== 'none') {
+        // Use gradient colors for mobile status bar
+        switch (navbarGradient) {
+            case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient
+            case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient
+            case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient
+            default: themeColor = '#000000'; break;
+        }
+    } else {
+        // Set theme color to match navbar colors exactly (copy from CSS)
+        switch (navbarColor) {
+            case 'black': themeColor = '#000000'; break;  // Exact match from CSS
+            case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
+            case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
+            case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
+            case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
+            default: themeColor = '#000000'; // Default to black
+        }
     }
     
     // Update the theme-color meta tag
@@ -138,7 +150,7 @@ function updateThemeColor() {
         themeColorMeta.setAttribute('content', themeColor);
     }
     
-    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme);
+    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'gradient:', navbarGradient, 'theme:', theme);
 }
 
 // Initialize the website when DOM is loaded
@@ -772,6 +784,9 @@ function applyNavbarGradientSetting() {
     const savedGradient = localStorage.getItem('navbarGradient') || 'none';
     document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
     console.log('Navbar gradient applied:', savedGradient);
+    
+    // Update mobile status bar color to match gradient
+    updateThemeColor();
 }
 
 

@@ -271,6 +271,11 @@ function setNavbarGradient(gradient) {
             document.documentElement.setAttribute('data-navbar-gradient', gradient);
         }, 10);
     }
+    
+    // Update mobile status bar color to match gradient
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
 }
 
 // Update gradient selection visual state
