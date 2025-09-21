@@ -28,31 +28,17 @@
             document.documentElement.setAttribute('data-glow-color', savedGlowColor);
             
             // Update theme color immediately
-            const savedNavbarGradient = localStorage.getItem('navbarGradient') || 'none';
             let themeColor;
-            
-            // Check if gradient is active first
-            if (savedNavbarGradient !== 'none') {
-                // Use representative colors from gradients for mobile status bar
-                switch (savedNavbarGradient) {
-                    case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
-                    case 'ocean': themeColor = '#00bcd4'; break;   // Middle color of ocean gradient (cyan)
-                    case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
-                    default: themeColor = '#000000'; break;
-                }
-            } else {
-                // Use solid navbar colors
-                switch (savedNavbarColor) {
-                    case 'red': themeColor = '#dc3545'; break;
-                    case 'blue': themeColor = '#007bff'; break;
-                    case 'green': themeColor = '#28a745'; break;
-                    case 'purple': themeColor = '#6f42c1'; break;
-                    case 'orange': themeColor = '#fd7e14'; break;
-                    case 'pink': themeColor = '#6c757d'; break;
-                    case 'cyan': themeColor = '#17a2b8'; break;
-                    case 'yellow': themeColor = '#ffc107'; break;
-                    default: themeColor = '#000000';
-                }
+            switch (savedNavbarColor) {
+                case 'red': themeColor = '#dc3545'; break;
+                case 'blue': themeColor = '#007bff'; break;
+                case 'green': themeColor = '#28a745'; break;
+                case 'purple': themeColor = '#6f42c1'; break;
+                case 'orange': themeColor = '#fd7e14'; break;
+                case 'pink': themeColor = '#6c757d'; break;
+                case 'cyan': themeColor = '#17a2b8'; break;
+                case 'yellow': themeColor = '#ffc107'; break;
+                default: themeColor = '#000000';
             }
             
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');
@@ -184,11 +170,11 @@
             <div class="code-redemption-section">
                 <h3 class="code-title">Code Redemption</h3>
                 <div class="code-input-group">
-                    <input type="text" id="redemption-code" class="code-input" placeholder="Enter your badge code..." maxlength="10">
+                    <input type="text" id="redemption-code" class="code-input" placeholder="Enter code..." maxlength="10">
                     <button class="redeem-btn" onclick="redeemCode()">Redeem</button>
                 </div>
                 <div class="admin-notice">
-                    <span class="admin-warning">⚠️ Badge codes are only available to authorized users</span>
+                    <span class="admin-warning">⚠️ This feature is only for admin users</span>
                 </div>
                 <div class="verification-status" id="verification-status" style="display: none;">
                     <div class="verified-badge">

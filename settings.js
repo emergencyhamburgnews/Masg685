@@ -15,11 +15,6 @@ function initializeSettings() {
     updateNavbarColorSelector();
     updateGlowColorSelector();
     updateGradientSelector();
-    
-    // Force mobile status bar to update on page load
-    setTimeout(() => {
-        forceMobileStatusBarUpdate();
-    }, 1000);
 }
 
 // Load saved settings from localStorage
@@ -100,13 +95,10 @@ function setupEventListeners() {
         setNavbarColor(selectedColor);
         localStorage.setItem('navbarColor', selectedColor);
         
-        // Update theme color immediately and force mobile status bar update
+        // Update theme color
         if (typeof updateThemeColor === 'function') {
             updateThemeColor();
         }
-        
-        // Force mobile status bar to update by refreshing meta tags
-        forceMobileStatusBarUpdate();
     });
     
     // Glow color selector
@@ -125,9 +117,6 @@ function setupEventListeners() {
             setNavbarGradient(selectedGradient);
             localStorage.setItem('navbarGradient', selectedGradient);
             updateGradientSelection(selectedGradient);
-            
-            // Force mobile status bar to update
-            forceMobileStatusBarUpdate();
         });
     });
     
@@ -155,11 +144,6 @@ function showNoticeBanner() {
     if (noticeBanner) {
         noticeBanner.classList.remove('hidden');
     }
-    
-    // Ensure mobile status bar still uses navbar color, not notice banner color
-    setTimeout(() => {
-        forceMobileStatusBarUpdate();
-    }, 100);
 }
 
 // Hide notice banner
@@ -168,11 +152,6 @@ function hideNoticeBanner() {
     if (noticeBanner) {
         noticeBanner.classList.add('hidden');
     }
-    
-    // Ensure mobile status bar still uses navbar color, not notice banner color
-    setTimeout(() => {
-        forceMobileStatusBarUpdate();
-    }, 100);
 }
 
 // Update theme selector to reflect current theme
@@ -187,6 +166,8 @@ function updateThemeSelector() {
 
 // Set navbar color
 function setNavbarColor(color) {
+    // Remove gradient attribute when solid color is applied
+    document.documentElement.removeAttribute('data-navbar-gradient');
     document.documentElement.setAttribute('data-navbar-color', color);
 }
 
@@ -282,6 +263,11 @@ applyGlowColorSetting();
 
 // Set navbar gradient
 function setNavbarGradient(gradient) {
+    // Remove solid color attribute when gradient is applied
+    if (gradient !== 'none') {
+        document.documentElement.removeAttribute('data-navbar-color');
+    }
+    
     document.documentElement.setAttribute('data-navbar-gradient', gradient);
     console.log('Gradient set to:', gradient);
     
@@ -297,15 +283,6 @@ function setNavbarGradient(gradient) {
     if (typeof updateThemeColor === 'function') {
         updateThemeColor();
     }
-    
-    // Force mobile status bar update with multiple attempts
-    setTimeout(() => {
-        forceMobileStatusBarUpdate();
-    }, 100);
-    
-    setTimeout(() => {
-        forceMobileStatusBarUpdate();
-    }, 500);
 }
 
 // Update gradient selection visual state
@@ -334,50 +311,3 @@ function applyGradientSetting() {
 
 // Call this function on all pages to apply gradient setting
 applyGradientSetting();
-
-// Force mobile status bar to update by refreshing meta tags
-function forceMobileStatusBarUpdate() {
-    const navbarColor = localStorage.getItem('navbarColor') || 'black';
-    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
-    
-    let themeColor;
-    
-    // ALWAYS check gradient first - gradient takes priority over solid colors
-    if (navbarGradient && navbarGradient !== 'none') {
-        // Use actual gradient colors for mobile status bar
-        switch (navbarGradient) {
-            case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient (red-pink)
-            case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient (blue)
-            case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient (green)
-            default: themeColor = '#000000'; break;
-        }
-        console.log('Using gradient color:', themeColor, 'for gradient:', navbarGradient);
-    } else {
-        // Use solid navbar colors only when no gradient is active
-        switch (navbarColor) {
-            case 'red': themeColor = '#dc3545'; break;
-            case 'blue': themeColor = '#007bff'; break;
-            case 'green': themeColor = '#28a745'; break;
-            case 'purple': themeColor = '#6f42c1'; break;
-            case 'orange': themeColor = '#fd7e14'; break;
-            case 'pink': themeColor = '#6c757d'; break;
-            case 'cyan': themeColor = '#17a2b8'; break;
-            case 'yellow': themeColor = '#ffc107'; break;
-            default: themeColor = '#000000';
-        }
-        console.log('Using solid color:', themeColor, 'for navbar:', navbarColor);
-    }
-    
-    // Use the aggressive force update function from script.js
-    if (typeof forceMobileStatusBarUpdate === 'function') {
-        forceMobileStatusBarUpdate(themeColor);
-    } else {
-        // Fallback to basic update
-        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeColorMeta) {
-            themeColorMeta.setAttribute('content', themeColor);
-        }
-    }
-    
-    console.log('Mobile status bar forced to update to:', themeColor);
-}

@@ -24,64 +24,28 @@ class LiveChat {
         const isVerified = localStorage.getItem('isVerified') === 'true';
         this.currentUser.isVerified = isVerified;
         
-        // Check if user is owner (device-specific)
-        // Owner status is determined by username AND device-specific verification
-        const hasOwnerBadge = localStorage.getItem('isVerified') === 'true';
-        const isActualOwner = this.currentUser.fullName === 'Masg685' || 
-                             this.currentUser.displayName === 'Masg685' ||
-                             this.currentUser.username === 'Masg685';
-        
-        // Only show as owner if they have the badge on THIS device AND are the actual owner
-        const isOwner = isActualOwner && hasOwnerBadge;
+        // Check if user is owner (you can customize this logic)
+        const isOwner = this.currentUser.fullName === 'Masg685' || 
+                       this.currentUser.displayName === 'Masg685' ||
+                       this.currentUser.username === 'Masg685';
         this.currentUser.isOwner = isOwner;
-        
-        // Check if user has admin privileges (device-specific)
-        // Admin status requires BOTH username 'Masg685' AND admin badge on THIS device
-        const hasAdminBadge = localStorage.getItem('adminCode') === '6776';
-        
-        // Only show as admin if they have the badge on THIS device AND are the actual owner
-        const isAdmin = isActualOwner && hasAdminBadge;
-        this.currentUser.isAdmin = isAdmin;
         
         console.log('Current user:', this.currentUser);
 
-        // Wait for Firebase to be available (with timeout)
+        // Wait for Firebase to be available
         if (!window.firebaseApp) {
             console.log('Waiting for Firebase to load...');
-            // Add retry counter to prevent infinite loops
-            if (!this.firebaseRetryCount) {
-                this.firebaseRetryCount = 0;
-            }
-            this.firebaseRetryCount++;
-            
-            // Stop retrying after 50 attempts (5 seconds)
-            if (this.firebaseRetryCount > 50) {
-                console.error('Firebase failed to load after 5 seconds');
-                alert('Error: Unable to connect to chat server. Please refresh the page.');
-                return;
-            }
-            
             setTimeout(() => this.init(), 100);
             return;
         }
 
         console.log('Firebase loaded successfully');
-        
-        // Setup event listeners first (fastest)
         this.setupEventListeners();
-        
-        // Load messages and setup listeners in parallel
-        Promise.all([
-            this.loadMessages(),
-            this.loadNoticeBanner()
-        ]).then(() => {
-            // Setup real-time listeners after initial load
-            this.setupRealtimeListener();
-            this.setupNoticeListener();
-            this.setupAutoScroll();
-        }).catch(error => {
-            console.error('Error during initialization:', error);
-        });
+        this.loadMessages();
+        this.setupRealtimeListener();
+        this.loadNoticeBanner();
+        this.setupNoticeListener();
+        this.setupAutoScroll();
     }
 
     setupEventListeners() {
@@ -186,12 +150,6 @@ class LiveChat {
     displayMessages() {
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
-
-        // Hide loading indicator
-        const loadingIndicator = document.getElementById('chat-loading');
-        if (loadingIndicator) {
-            loadingIndicator.style.display = 'none';
-        }
 
         messagesContainer.innerHTML = '';
 
@@ -484,41 +442,6 @@ class LiveChat {
         return filteredText;
     }
 
-    replaceLinksWithTags(text) {
-        // Common link patterns to replace with ####### tags
-        const linkPatterns = [
-            // HTTP/HTTPS URLs
-            { pattern: /https?:\/\/[^\s]+/gi, replacement: '#######' },
-            // www. links
-            { pattern: /www\.[^\s]+/gi, replacement: '#######' },
-            // Social media platforms
-            { pattern: /(?:tiktok\.com|youtube\.com|youtu\.be|instagram\.com|facebook\.com|twitter\.com|x\.com|discord\.gg|discord\.com|twitch\.tv|reddit\.com|snapchat\.com|linkedin\.com|pinterest\.com|telegram\.me|whatsapp\.com|messenger\.com|skype\.com|zoom\.us|teams\.microsoft\.com)/gi, replacement: '#######' },
-            // Gaming platforms
-            { pattern: /(?:steamcommunity\.com|steam\.com|roblox\.com|minecraft\.net|epicgames\.com|origin\.com|battle\.net|playstation\.com|xbox\.com|nintendo\.com|ea\.com|ubisoft\.com|activision\.com|blizzard\.com)/gi, replacement: '#######' },
-            // File sharing and cloud
-            { pattern: /(?:drive\.google\.com|dropbox\.com|onedrive\.com|mega\.nz|mediafire\.com|wetransfer\.com|sendspace\.com)/gi, replacement: '#######' },
-            // Other common domains
-            { pattern: /(?:amazon\.com|ebay\.com|paypal\.com|stripe\.com|github\.com|stackoverflow\.com|wikipedia\.org|google\.com|bing\.com|yahoo\.com)/gi, replacement: '#######' },
-            // Shortened URLs
-            { pattern: /(?:bit\.ly|tinyurl\.com|short\.link|t\.co|goo\.gl|ow\.ly|is\.gd|v\.gd|buff\.ly|rebrand\.ly)/gi, replacement: '#######' },
-            // Email addresses
-            { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi, replacement: '#######' },
-            // IP addresses
-            { pattern: /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/gi, replacement: '#######' },
-            // Domain patterns without protocol
-            { pattern: /[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}/gi, replacement: '#######' }
-        ];
-        
-        let filteredText = text;
-        
-        // Replace each pattern with ####### tags
-        linkPatterns.forEach(({ pattern, replacement }) => {
-            filteredText = filteredText.replace(pattern, replacement);
-        });
-        
-        return filteredText;
-    }
-
     // Test function to verify filtering works correctly (can be removed in production)
     testWordFiltering() {
         const testCases = [
@@ -549,11 +472,8 @@ class LiveChat {
         this.isSubmitting = true;
 
         try {
-            // Filter inappropriate words first
-            let filteredText = this.filterInappropriateWords(messageText);
-            
-            // Replace external links with ####### tags
-            filteredText = this.replaceLinksWithTags(filteredText);
+            // Filter inappropriate words
+            const filteredText = this.filterInappropriateWords(messageText);
 
             const { db, collection, addDoc } = window.firebaseApp;
             const messageData = {

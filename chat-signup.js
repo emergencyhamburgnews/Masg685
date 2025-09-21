@@ -271,7 +271,7 @@ class ChatSignUp {
         const code = codeInput.value.trim();
         
         if (code === '2309') {
-            // Correct verification code - grant verification
+            // Correct code - grant verification
             this.isVerified = true;
             localStorage.setItem('isVerified', 'true');
             
@@ -283,30 +283,12 @@ class ChatSignUp {
             codeInput.value = '';
             
             // Show success message
-            this.showError('✅ Verified badge activated successfully!', 'success');
+            this.showError('✅ Verification successful! You now have admin privileges.', 'success');
             
-            console.log('User verified with verification code');
-        } else if (code === '6776') {
-            // Correct admin code - grant admin status
-            this.isAdmin = true;
-            localStorage.setItem('adminCode', '6776');
-            
-            // Show admin status
-            const adminStatus = document.getElementById('admin-status');
-            if (adminStatus) {
-                adminStatus.style.display = 'block';
-            }
-            
-            // Clear the input
-            codeInput.value = '';
-            
-            // Show success message
-            this.showError('✅ Admin badge activated successfully!', 'success');
-            
-            console.log('User granted admin status');
+            console.log('User verified with admin code');
         } else {
             // Wrong code
-            this.showError('❌ Invalid code! Please contact the administrator for a valid badge code.', 'error');
+            this.showError('❌ Invalid code! This feature is only for admin users. Contact admin for the correct code.', 'error');
             codeInput.value = '';
         }
     }
@@ -317,15 +299,6 @@ class ChatSignUp {
             this.isVerified = true;
             const verificationStatus = document.getElementById('verification-status');
             verificationStatus.style.display = 'block';
-        }
-        
-        const isAdmin = localStorage.getItem('adminCode') === '6776';
-        if (isAdmin) {
-            this.isAdmin = true;
-            const adminStatus = document.getElementById('admin-status');
-            if (adminStatus) {
-                adminStatus.style.display = 'block';
-            }
         }
     }
 
