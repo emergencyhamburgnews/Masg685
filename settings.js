@@ -15,6 +15,11 @@ function initializeSettings() {
     updateNavbarColorSelector();
     updateGlowColorSelector();
     updateGradientSelector();
+    
+    // Force mobile status bar to update on page load
+    setTimeout(() => {
+        forceMobileStatusBarUpdate();
+    }, 1000);
 }
 
 // Load saved settings from localStorage
@@ -95,10 +100,13 @@ function setupEventListeners() {
         setNavbarColor(selectedColor);
         localStorage.setItem('navbarColor', selectedColor);
         
-        // Update theme color
+        // Update theme color immediately and force mobile status bar update
         if (typeof updateThemeColor === 'function') {
             updateThemeColor();
         }
+        
+        // Force mobile status bar to update by refreshing meta tags
+        forceMobileStatusBarUpdate();
     });
     
     // Glow color selector
@@ -117,6 +125,9 @@ function setupEventListeners() {
             setNavbarGradient(selectedGradient);
             localStorage.setItem('navbarGradient', selectedGradient);
             updateGradientSelection(selectedGradient);
+            
+            // Force mobile status bar to update
+            forceMobileStatusBarUpdate();
         });
     });
     
@@ -276,6 +287,15 @@ function setNavbarGradient(gradient) {
     if (typeof updateThemeColor === 'function') {
         updateThemeColor();
     }
+    
+    // Force mobile status bar update with multiple attempts
+    setTimeout(() => {
+        forceMobileStatusBarUpdate();
+    }, 100);
+    
+    setTimeout(() => {
+        forceMobileStatusBarUpdate();
+    }, 500);
 }
 
 // Update gradient selection visual state
@@ -304,3 +324,61 @@ function applyGradientSetting() {
 
 // Call this function on all pages to apply gradient setting
 applyGradientSetting();
+
+// Force mobile status bar to update by refreshing meta tags
+function forceMobileStatusBarUpdate() {
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
+    
+    let themeColor;
+    
+    // Check if gradient is active first
+    if (navbarGradient !== 'none') {
+        // Use representative colors from gradients for mobile status bar
+        switch (navbarGradient) {
+            case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
+            case 'ocean': themeColor = '#00bcd4'; break;   // Middle color of ocean gradient (cyan)
+            case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
+            default: themeColor = '#000000'; break;
+        }
+    } else {
+        // Use solid navbar colors
+        switch (navbarColor) {
+            case 'red': themeColor = '#dc3545'; break;
+            case 'blue': themeColor = '#007bff'; break;
+            case 'green': themeColor = '#28a745'; break;
+            case 'purple': themeColor = '#6f42c1'; break;
+            case 'orange': themeColor = '#fd7e14'; break;
+            case 'pink': themeColor = '#6c757d'; break;
+            case 'cyan': themeColor = '#17a2b8'; break;
+            case 'yellow': themeColor = '#ffc107'; break;
+            default: themeColor = '#000000';
+        }
+    }
+    
+    // Force update all mobile status bar meta tags
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', themeColor);
+    }
+    
+    const msNavButtonMeta = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    if (msNavButtonMeta) {
+        msNavButtonMeta.setAttribute('content', themeColor);
+    }
+    
+    const appleStatusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleStatusBarMeta) {
+        const isLightColor = themeColor === '#ffa726' || themeColor === '#8bc34a' || themeColor === '#00bcd4' || themeColor === '#f39c12' || themeColor === '#ffc107';
+        appleStatusBarMeta.setAttribute('content', isLightColor ? 'black-translucent' : 'white-translucent');
+    }
+    
+    // Force mobile browsers to recognize the change
+    if (window.navigator && window.navigator.standalone !== undefined) {
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.display = '';
+    }
+    
+    console.log('Mobile status bar forced to update to:', themeColor);
+}
