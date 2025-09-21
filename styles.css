@@ -299,8 +299,8 @@ body:has(.chat-page-main) {
 
 /* Notice Banner - New Design */
 .notice-banner {
-    background: var(--navbar-bg);
-    color: var(--navbar-color);
+    background: #dc3545;
+    color: white;
     padding: 0.5rem 0;
     text-align: center;
     font-size: 0.9rem;
@@ -370,8 +370,8 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     margin: 0;
     border-bottom: none;
     border-radius: 0;
-    background: var(--navbar-bg);
-    color: var(--navbar-color);
+    background: #dc3545;
+    color: white;
     padding: 0.5rem 0;
     text-align: center;
     font-size: 0.9rem;
@@ -3621,8 +3621,8 @@ input:checked + .toggle-slider:before {
 }
 
 .chat-notice-banner {
-    background: var(--navbar-bg);
-    color: var(--navbar-color);
+    background: #dc3545;
+    color: white;
     text-align: center;
     padding: 0.5rem;
     font-size: 0.9rem;

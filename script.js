@@ -125,11 +125,11 @@ function updateThemeColor() {
     
     // Check if gradient is active first
     if (navbarGradient !== 'none') {
-        // Use gradient colors for mobile status bar
+        // Use representative colors from gradients for mobile status bar
         switch (navbarGradient) {
-            case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient
-            case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient
-            case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient
+            case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
+            case 'ocean': themeColor = '#00bcd4'; break;   // Middle color of ocean gradient (cyan)
+            case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
             default: themeColor = '#000000'; break;
         }
     } else {
