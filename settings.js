@@ -155,6 +155,11 @@ function showNoticeBanner() {
     if (noticeBanner) {
         noticeBanner.classList.remove('hidden');
     }
+    
+    // Ensure mobile status bar still uses navbar color, not notice banner color
+    setTimeout(() => {
+        forceMobileStatusBarUpdate();
+    }, 100);
 }
 
 // Hide notice banner
@@ -163,6 +168,11 @@ function hideNoticeBanner() {
     if (noticeBanner) {
         noticeBanner.classList.add('hidden');
     }
+    
+    // Ensure mobile status bar still uses navbar color, not notice banner color
+    setTimeout(() => {
+        forceMobileStatusBarUpdate();
+    }, 100);
 }
 
 // Update theme selector to reflect current theme
@@ -334,11 +344,11 @@ function forceMobileStatusBarUpdate() {
     
     // ALWAYS check gradient first - gradient takes priority over solid colors
     if (navbarGradient && navbarGradient !== 'none') {
-        // Use representative colors from gradients for mobile status bar
+        // Use actual gradient colors for mobile status bar
         switch (navbarGradient) {
-            case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
-            case 'ocean': themeColor = '#00bcd4'; break;   // Middle color of ocean gradient (cyan)
-            case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
+            case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient (red-pink)
+            case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient (blue)
+            case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient (green)
             default: themeColor = '#000000'; break;
         }
         console.log('Using gradient color:', themeColor, 'for gradient:', navbarGradient);

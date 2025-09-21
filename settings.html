@@ -59,15 +59,15 @@
             
             // Check if gradient is active first
             if (savedNavbarGradient !== 'none') {
-                // Use representative colors from gradients for mobile status bar
+                // Use actual gradient colors for mobile status bar
                 switch (savedNavbarGradient) {
-                    case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
-                    case 'ocean': themeColor = '#00bcd4'; break;   // Middle color of ocean gradient (cyan)
-                    case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
+                    case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient (red-pink)
+                    case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient (blue)
+                    case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient (green)
                     default: themeColor = '#000000'; break;
                 }
             } else {
-                // Use solid navbar colors
+                // Use solid navbar colors (but never use notice banner red)
                 switch (savedNavbarColor) {
                     case 'red': themeColor = '#dc3545'; break;
                     case 'blue': themeColor = '#007bff'; break;
