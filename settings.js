@@ -14,7 +14,6 @@ function initializeSettings() {
     updateThemeSelector();
     updateNavbarColorSelector();
     updateGlowColorSelector();
-    updateGradientSelector();
 }
 
 // Load saved settings from localStorage
@@ -48,10 +47,6 @@ function loadSettings() {
     const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
     const glowColorSelector = document.getElementById('glow-color-selector');
     glowColorSelector.value = savedGlowColor;
-    
-    // Load gradient setting
-    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
-    updateGradientSelection(savedGradient);
 }
 
 // Setup event listeners for settings controls
@@ -109,17 +104,6 @@ function setupEventListeners() {
         localStorage.setItem('glowColor', selectedColor);
     });
     
-    // Gradient options
-    const gradientOptions = document.querySelectorAll('.gradient-option');
-    gradientOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const selectedGradient = this.getAttribute('data-gradient');
-            setNavbarGradient(selectedGradient);
-            localStorage.setItem('navbarGradient', selectedGradient);
-            updateGradientSelection(selectedGradient);
-        });
-    });
-    
     // Reset settings button
     const resetButton = document.getElementById('reset-settings');
     resetButton.addEventListener('click', function() {
@@ -166,8 +150,6 @@ function updateThemeSelector() {
 
 // Set navbar color
 function setNavbarColor(color) {
-    // Remove gradient attribute when solid color is applied
-    document.documentElement.removeAttribute('data-navbar-gradient');
     document.documentElement.setAttribute('data-navbar-color', color);
 }
 
@@ -224,11 +206,6 @@ function resetAllSettings() {
     glowColorSelector.value = 'blue';
     setGlowColor('blue');
     
-    // Reset gradient
-    localStorage.setItem('navbarGradient', 'none');
-    setNavbarGradient('none');
-    updateGradientSelection('none');
-    
     // Show confirmation
     playSuccessSound();
     alert('All settings have been reset to their default values!');
@@ -260,54 +237,3 @@ function applyGlowColorSetting() {
 
 // Call this function on all pages to apply glow color setting
 applyGlowColorSetting();
-
-// Set navbar gradient
-function setNavbarGradient(gradient) {
-    // Remove solid color attribute when gradient is applied
-    if (gradient !== 'none') {
-        document.documentElement.removeAttribute('data-navbar-color');
-    }
-    
-    document.documentElement.setAttribute('data-navbar-gradient', gradient);
-    console.log('Gradient set to:', gradient);
-    
-    // Force a re-render by temporarily removing and re-adding the attribute
-    if (gradient !== 'none') {
-        document.documentElement.removeAttribute('data-navbar-gradient');
-        setTimeout(() => {
-            document.documentElement.setAttribute('data-navbar-gradient', gradient);
-        }, 10);
-    }
-    
-    // Update mobile status bar color to match gradient
-    if (typeof updateThemeColor === 'function') {
-        updateThemeColor();
-    }
-}
-
-// Update gradient selection visual state
-function updateGradientSelection(selectedGradient) {
-    const gradientOptions = document.querySelectorAll('.gradient-option');
-    gradientOptions.forEach(option => {
-        option.classList.remove('selected');
-        if (option.getAttribute('data-gradient') === selectedGradient) {
-            option.classList.add('selected');
-        }
-    });
-}
-
-// Update gradient selector to reflect current gradient
-function updateGradientSelector() {
-    const currentGradient = localStorage.getItem('navbarGradient') || 'none';
-    updateGradientSelection(currentGradient);
-}
-
-// Apply gradient setting on all pages
-function applyGradientSetting() {
-    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
-    document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
-    console.log('Gradient applied:', savedGradient);
-}
-
-// Call this function on all pages to apply gradient setting
-applyGradientSetting();

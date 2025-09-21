@@ -47,53 +47,27 @@
             const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
             document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
             
-            // Apply navbar gradient immediately
-            const savedNavbarGradient = localStorage.getItem('navbarGradient') || 'none';
-            if (savedNavbarGradient !== 'none') {
-                document.documentElement.removeAttribute('data-navbar-color');
-                document.documentElement.setAttribute('data-navbar-gradient', savedNavbarGradient);
-            }
-            
             // Apply glow color immediately
             const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
             document.documentElement.setAttribute('data-glow-color', savedGlowColor);
             
-            // Update theme color for mobile status bar
+            // Update theme color immediately
             let themeColor;
-            if (savedNavbarGradient !== 'none') {
-                // Use gradient colors for mobile status bar
-                switch (savedNavbarGradient) {
-                    case 'sunset': themeColor = '#ff6b6b'; break;
-                    case 'ocean': themeColor = '#2196f3'; break;
-                    case 'forest': themeColor = '#4caf50'; break;
-                    default: themeColor = '#000000'; break;
-                }
-            } else {
-                // Use solid colors for mobile status bar
-                switch (savedNavbarColor) {
-                    case 'black': themeColor = '#000000'; break;
-                    case 'red': themeColor = '#dc3545'; break;
-                    case 'blue': themeColor = '#4a90e2'; break;
-                    case 'green': themeColor = '#27ae60'; break;
-                    case 'yellow': themeColor = '#f39c12'; break;
-                    default: themeColor = '#000000'; break;
-                }
+            switch (savedNavbarColor) {
+                case 'red': themeColor = '#dc3545'; break;
+                case 'blue': themeColor = '#007bff'; break;
+                case 'green': themeColor = '#28a745'; break;
+                case 'purple': themeColor = '#6f42c1'; break;
+                case 'orange': themeColor = '#fd7e14'; break;
+                case 'pink': themeColor = '#6c757d'; break;
+                case 'cyan': themeColor = '#17a2b8'; break;
+                case 'yellow': themeColor = '#ffc107'; break;
+                default: themeColor = '#000000';
             }
             
-            // Update meta tags for mobile status bar
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             if (themeColorMeta) {
                 themeColorMeta.setAttribute('content', themeColor);
-            }
-            
-            const msNavButtonMeta = document.querySelector('meta[name="msapplication-navbutton-color"]');
-            if (msNavButtonMeta) {
-                msNavButtonMeta.setAttribute('content', themeColor);
-            }
-            
-            const appleStatusMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-            if (appleStatusMeta) {
-                appleStatusMeta.setAttribute('content', themeColor === '#000000' ? 'black-translucent' : 'default');
             }
             
             // Update theme toggle icons immediately to prevent glitch
@@ -254,33 +228,6 @@
                                 <option value="green">Green</option>
                                 <option value="yellow">Yellow</option>
                             </select>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-card">
-                        <div class="setting-header">
-                            <h3>Navbar Gradient Color</h3>
-                            <p>Choose a beautiful gradient background for the navbar</p>
-                        </div>
-                        <div class="setting-control">
-                            <div class="gradient-options">
-                                <div class="gradient-option" data-gradient="none">
-                                    <div class="gradient-preview solid"></div>
-                                    <span>Solid Color</span>
-                                </div>
-                                <div class="gradient-option" data-gradient="sunset">
-                                    <div class="gradient-preview sunset"></div>
-                                    <span>Sunset</span>
-                                </div>
-                                <div class="gradient-option" data-gradient="ocean">
-                                    <div class="gradient-preview ocean"></div>
-                                    <span>Ocean</span>
-                                </div>
-                                <div class="gradient-option" data-gradient="forest">
-                                    <div class="gradient-preview forest"></div>
-                                    <span>Forest</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     

@@ -52,35 +52,18 @@
             const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
             document.documentElement.setAttribute('data-glow-color', savedGlowColor);
             
-            // Apply navbar gradient immediately
-            const savedNavbarGradient = localStorage.getItem('navbarGradient') || 'none';
-            document.documentElement.setAttribute('data-navbar-gradient', savedNavbarGradient);
-            
             // Update theme color immediately
             let themeColor;
-            
-            // Check if gradient is active first
-            if (savedNavbarGradient !== 'none') {
-                // Use actual gradient colors for mobile status bar
-                switch (savedNavbarGradient) {
-                    case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient (red-pink)
-                    case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient (blue)
-                    case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient (green)
-                    default: themeColor = '#000000'; break;
-                }
-            } else {
-                // Use solid navbar colors
-                switch (savedNavbarColor) {
-                    case 'red': themeColor = '#dc3545'; break;
-                    case 'blue': themeColor = '#007bff'; break;
-                    case 'green': themeColor = '#28a745'; break;
-                    case 'purple': themeColor = '#6f42c1'; break;
-                    case 'orange': themeColor = '#fd7e14'; break;
-                    case 'pink': themeColor = '#6c757d'; break;
-                    case 'cyan': themeColor = '#17a2b8'; break;
-                    case 'yellow': themeColor = '#ffc107'; break;
-                    default: themeColor = '#000000';
-                }
+            switch (savedNavbarColor) {
+                case 'red': themeColor = '#dc3545'; break;
+                case 'blue': themeColor = '#007bff'; break;
+                case 'green': themeColor = '#28a745'; break;
+                case 'purple': themeColor = '#6f42c1'; break;
+                case 'orange': themeColor = '#fd7e14'; break;
+                case 'pink': themeColor = '#6c757d'; break;
+                case 'cyan': themeColor = '#17a2b8'; break;
+                case 'yellow': themeColor = '#ffc107'; break;
+                default: themeColor = '#000000';
             }
             
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');

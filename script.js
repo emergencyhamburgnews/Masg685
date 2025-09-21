@@ -118,32 +118,18 @@ function playSuccessSound() {
 // Dynamic Theme Color System
 function updateThemeColor() {
     const navbarColor = localStorage.getItem('navbarColor') || 'black';
-    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
     const theme = localStorage.getItem('theme') || 'light';
     
     let themeColor;
     
-    // Check if gradient is active first - gradient takes priority over solid colors
-    if (navbarGradient && navbarGradient !== 'none') {
-        // Use actual gradient colors for mobile status bar
-        switch (navbarGradient) {
-            case 'sunset': themeColor = '#ff6b6b'; break;  // First color of sunset gradient (red-pink)
-            case 'ocean': themeColor = '#2196f3'; break;   // First color of ocean gradient (blue)
-            case 'forest': themeColor = '#4caf50'; break;  // First color of forest gradient (green)
-            default: themeColor = '#000000'; break;
-        }
-        console.log('updateThemeColor: Using gradient color:', themeColor, 'for gradient:', navbarGradient);
-    } else {
-        // Set theme color to match navbar colors exactly (copy from CSS)
-        switch (navbarColor) {
-            case 'black': themeColor = '#000000'; break;  // Exact match from CSS
-            case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
-            case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
-            case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
-            case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
-            default: themeColor = '#000000'; // Default to black
-        }
-        console.log('updateThemeColor: Using solid color:', themeColor, 'for navbar:', navbarColor);
+    // Set theme color to match navbar colors exactly (copy from CSS)
+    switch (navbarColor) {
+        case 'black': themeColor = '#000000'; break;  // Exact match from CSS
+        case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
+        case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
+        case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
+        case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
+        default: themeColor = '#000000'; // Default to black
     }
     
     // Update the theme-color meta tag
@@ -152,7 +138,7 @@ function updateThemeColor() {
         themeColorMeta.setAttribute('content', themeColor);
     }
     
-    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'gradient:', navbarGradient, 'theme:', theme);
+    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme);
 }
 
 // Initialize the website when DOM is loaded
@@ -162,12 +148,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeThemeOnAllPages(); // Ensure theme is applied on all pages
     initializeNavbarColor();
     initializeGlowColor();
-    initializeNavbarGradient(); // Initialize navbar gradient on all pages
     loadUpdateContent();
     initializeAnimatedGreeting();
     applyNoticeSetting();
     applyGlowColorSetting();
-    applyNavbarGradientSetting(); // Apply navbar gradient setting on all pages
     initializeSearch();
     updateThemeColor(); // Update theme color on page load
 });
@@ -772,23 +756,6 @@ function applyGlowColorSetting() {
     const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
     document.documentElement.setAttribute('data-glow-color', savedGlowColor);
     console.log('Glow color applied:', savedGlowColor);
-}
-
-// Initialize navbar gradient on page load
-function initializeNavbarGradient() {
-    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
-    document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
-    console.log('Navbar gradient initialized:', savedGradient);
-}
-
-// Apply navbar gradient setting on page load
-function applyNavbarGradientSetting() {
-    const savedGradient = localStorage.getItem('navbarGradient') || 'none';
-    document.documentElement.setAttribute('data-navbar-gradient', savedGradient);
-    console.log('Navbar gradient applied:', savedGradient);
-    
-    // Update mobile status bar color to match gradient
-    updateThemeColor();
 }
 
 
