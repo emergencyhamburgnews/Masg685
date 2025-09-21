@@ -166,6 +166,12 @@ function updateThemeSelector() {
 // Set navbar color
 function setNavbarColor(color) {
     document.documentElement.setAttribute('data-navbar-color', color);
+    console.log('Navbar color set to:', color);
+    
+    // Force update theme color after navbar color change
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
 }
 
 // Set glow color

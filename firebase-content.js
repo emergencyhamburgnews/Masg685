@@ -238,11 +238,18 @@ class FirebaseContentManager {
                     const mediaUrl = mediaType === 'video' ? contentData.home.video : contentData.home.image;
                     
                     if (mediaUrl) {
-                        if (mediaType === 'video') {
+                        // Check if it's a social media link and convert it
+                        const processedMedia = this.processSocialMediaUrl(mediaUrl, mediaType);
+                        
+                        if (processedMedia.type === 'embed') {
+                            // Handle social media embeds
+                            this.createSocialMediaEmbed(heroImageContainer, processedMedia, contentData.home.title);
+                            console.log('DIRECT UPDATE: Social media embed created for:', processedMedia.platform);
+                        } else if (processedMedia.type === 'video') {
                             // Create video element
                             const video = document.createElement('video');
                             video.id = 'hero-video';
-                            video.src = mediaUrl;
+                            video.src = processedMedia.url;
                             video.controls = true;
                             video.autoplay = false;
                             video.loop = true;
@@ -260,18 +267,18 @@ class FirebaseContentManager {
                             const placeholder = document.getElementById('image-placeholder');
                             if (placeholder) placeholder.style.display = 'none';
                             
-                            console.log('DIRECT UPDATE: Video set to:', mediaUrl);
+                            console.log('DIRECT UPDATE: Video set to:', processedMedia.url);
                         } else {
                             // Handle image
-                            if (heroImage) {
-                                heroImage.src = mediaUrl;
+                if (heroImage) {
+                                heroImage.src = processedMedia.url;
                                 heroImage.style.display = 'block';
                                 
                                 // Hide placeholder
                                 const placeholder = document.getElementById('image-placeholder');
                                 if (placeholder) placeholder.style.display = 'none';
                                 
-                                console.log('DIRECT UPDATE: Image set to:', mediaUrl);
+                                console.log('DIRECT UPDATE: Image set to:', processedMedia.url);
                             }
                         }
                     }
@@ -368,11 +375,17 @@ class FirebaseContentManager {
             if (mediaUrl) {
                 console.log(`Updating hero ${mediaType} to:`, mediaUrl);
                 
-                if (mediaType === 'video') {
+                // Check if it's a social media link and convert it
+                const processedMedia = this.processSocialMediaUrl(mediaUrl, mediaType);
+                
+                if (processedMedia.type === 'embed') {
+                    // Handle social media embeds
+                    this.createSocialMediaEmbed(heroImageContainer, processedMedia, home.title);
+                } else if (processedMedia.type === 'video') {
                     // Create video element
                     const video = document.createElement('video');
                     video.id = 'hero-video';
-                    video.src = mediaUrl;
+                    video.src = processedMedia.url;
                     video.controls = true;
                     video.autoplay = false;
                     video.loop = true;
@@ -391,19 +404,19 @@ class FirebaseContentManager {
                     const placeholder = document.getElementById('image-placeholder');
                     if (placeholder) placeholder.style.display = 'none';
                     
-                    console.log('Updated hero video to:', mediaUrl);
+                    console.log('Updated hero video to:', processedMedia.url);
                 } else {
                     // Handle image (existing functionality)
                     if (heroImage) {
-                        heroImage.src = mediaUrl;
-                        heroImage.alt = home.title || 'Hero Image';
+                        heroImage.src = processedMedia.url;
+            heroImage.alt = home.title || 'Hero Image';
                         heroImage.style.display = 'block';
                         
                         // Hide placeholder
                         const placeholder = document.getElementById('image-placeholder');
                         if (placeholder) placeholder.style.display = 'none';
                         
-                        console.log('Updated hero image to:', mediaUrl);
+                        console.log('Updated hero image to:', processedMedia.url);
                     }
                 }
             }
@@ -429,6 +442,200 @@ class FirebaseContentManager {
             const ogImage = document.querySelector('meta[property="og:image"]');
             if (ogImage) ogImage.content = mediaUrl;
         }
+    }
+
+    // Process social media URLs and convert them to proper formats
+    processSocialMediaUrl(url, mediaType) {
+        console.log('Processing social media URL:', url, 'Type:', mediaType);
+        
+        // Facebook post detection
+        if (url.includes('facebook.com') || url.includes('fb.com')) {
+            return {
+                type: 'embed',
+                platform: 'facebook',
+                url: url,
+                embedUrl: this.convertFacebookToEmbed(url)
+            };
+        }
+        
+        // TikTok video detection
+        if (url.includes('tiktok.com')) {
+            return {
+                type: 'embed',
+                platform: 'tiktok',
+                url: url,
+                embedUrl: this.convertTikTokToEmbed(url)
+            };
+        }
+        
+        // YouTube video detection
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            return {
+                type: 'embed',
+                platform: 'youtube',
+                url: url,
+                embedUrl: this.convertYouTubeToEmbed(url)
+            };
+        }
+        
+        // Instagram post detection
+        if (url.includes('instagram.com')) {
+            return {
+                type: 'embed',
+                platform: 'instagram',
+                url: url,
+                embedUrl: this.convertInstagramToEmbed(url)
+            };
+        }
+        
+        // Twitter/X post detection
+        if (url.includes('twitter.com') || url.includes('x.com')) {
+            return {
+                type: 'embed',
+                platform: 'twitter',
+                url: url,
+                embedUrl: this.convertTwitterToEmbed(url)
+            };
+        }
+        
+        // Direct image/video URL (not social media)
+        return {
+            type: mediaType,
+            platform: 'direct',
+            url: url
+        };
+    }
+
+    // Convert Facebook post URL to embed format
+    convertFacebookToEmbed(url) {
+        // Facebook embed format: https://www.facebook.com/plugins/post.php?href=POST_URL
+        const encodedUrl = encodeURIComponent(url);
+        return `https://www.facebook.com/plugins/post.php?href=${encodedUrl}&show_text=true&width=500`;
+    }
+
+    // Convert TikTok video URL to embed format
+    convertTikTokToEmbed(url) {
+        // TikTok embed format: https://www.tiktok.com/embed/video/VIDEO_ID
+        const videoIdMatch = url.match(/\/video\/(\d+)/);
+        if (videoIdMatch) {
+            return `https://www.tiktok.com/embed/video/${videoIdMatch[1]}`;
+        }
+        return url; // Fallback to original URL
+    }
+
+    // Convert YouTube video URL to embed format
+    convertYouTubeToEmbed(url) {
+        let videoId = '';
+        
+        // Handle different YouTube URL formats
+        if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1].split('&')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        }
+        
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url; // Fallback to original URL
+    }
+
+    // Convert Instagram post URL to embed format
+    convertInstagramToEmbed(url) {
+        // Instagram embed format: https://www.instagram.com/p/POST_ID/embed/
+        const postIdMatch = url.match(/\/p\/([^\/]+)/);
+        if (postIdMatch) {
+            return `https://www.instagram.com/p/${postIdMatch[1]}/embed/`;
+        }
+        return url; // Fallback to original URL
+    }
+
+    // Convert Twitter/X post URL to embed format
+    convertTwitterToEmbed(url) {
+        // Twitter embed format: https://platform.twitter.com/embed/Tweet.html?id=TWEET_ID
+        const tweetIdMatch = url.match(/\/status\/(\d+)/);
+        if (tweetIdMatch) {
+            return `https://platform.twitter.com/embed/Tweet.html?id=${tweetIdMatch[1]}`;
+        }
+        return url; // Fallback to original URL
+    }
+
+    // Create social media embed
+    createSocialMediaEmbed(container, mediaData, title) {
+        console.log('Creating social media embed:', mediaData);
+        
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create iframe for embed
+        const iframe = document.createElement('iframe');
+        iframe.src = mediaData.embedUrl;
+        iframe.width = '100%';
+        iframe.height = '400px';
+        iframe.frameBorder = '0';
+        iframe.allowFullscreen = true;
+        iframe.style.borderRadius = '12px';
+        iframe.style.border = 'none';
+        
+        // Platform-specific settings
+        switch (mediaData.platform) {
+            case 'facebook':
+                iframe.allow = 'encrypted-media';
+                break;
+            case 'tiktok':
+                iframe.allow = 'encrypted-media';
+                break;
+            case 'youtube':
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                break;
+            case 'instagram':
+                iframe.allow = 'encrypted-media';
+                break;
+            case 'twitter':
+                iframe.allow = 'encrypted-media';
+                break;
+        }
+        
+        // Add fallback content
+        const fallback = document.createElement('div');
+        fallback.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            text-align: center;
+        `;
+        
+        fallback.innerHTML = `
+            <h3>${mediaData.platform.charAt(0).toUpperCase() + mediaData.platform.slice(1)} Content</h3>
+            <p>Loading ${mediaData.platform} content...</p>
+            <a href="${mediaData.url}" target="_blank" rel="noopener noreferrer" 
+               style="color: var(--glow-color); text-decoration: none; margin-top: 1rem;">
+                View on ${mediaData.platform.charAt(0).toUpperCase() + mediaData.platform.slice(1)}
+            </a>
+        `;
+        
+        // Add iframe to container
+        container.appendChild(iframe);
+        
+        // Hide placeholder
+        const placeholder = document.getElementById('image-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+        
+        // Handle iframe load error
+        iframe.onerror = () => {
+            console.log('Iframe failed to load, showing fallback');
+            container.innerHTML = '';
+            container.appendChild(fallback);
+        };
+        
+        console.log('Social media embed created for:', mediaData.platform);
     }
 
     updateNoticeContent() {
@@ -730,10 +937,20 @@ window.updateHomeMedia = async (mediaUrl, mediaType = 'image', description = nul
         
         const { db, doc, updateDoc } = window.firebaseApp;
         
+        // Check if it's a social media URL and set appropriate media type
+        let finalMediaType = mediaType;
+        if (mediaUrl.includes('facebook.com') || mediaUrl.includes('fb.com') ||
+            mediaUrl.includes('tiktok.com') || mediaUrl.includes('youtube.com') ||
+            mediaUrl.includes('youtu.be') || mediaUrl.includes('instagram.com') ||
+            mediaUrl.includes('twitter.com') || mediaUrl.includes('x.com')) {
+            finalMediaType = 'image'; // Social media embeds are treated as images in the UI
+            console.log('Detected social media URL, setting media type to image for embed display');
+        }
+        
         const updateData = {
             home: {
-                mediaType: mediaType,
-                [mediaType]: mediaUrl
+                mediaType: finalMediaType,
+                [finalMediaType]: mediaUrl
             }
         };
         
@@ -742,7 +959,7 @@ window.updateHomeMedia = async (mediaUrl, mediaType = 'image', description = nul
         }
         
         await updateDoc(doc(db, 'website', 'content'), updateData);
-        console.log(`Home ${mediaType} updated to:`, mediaUrl);
+        console.log(`Home ${finalMediaType} updated to:`, mediaUrl);
         
         // Force refresh content
         if (window.firebaseContentManager) {
@@ -844,4 +1061,24 @@ window.showCurrentMedia = () => {
     } else {
         console.log('❌ No content data available');
     }
+};
+
+// Function to test social media URL processing
+window.testSocialMediaUrl = (url) => {
+    if (window.firebaseContentManager) {
+        const processed = window.firebaseContentManager.processSocialMediaUrl(url, 'image');
+        console.log('🔍 Social Media URL Test:');
+        console.log('Original URL:', url);
+        console.log('Processed:', processed);
+        return processed;
+    } else {
+        console.log('❌ Firebase content manager not available');
+        return null;
+    }
+};
+
+// Function to set social media content
+window.setSocialMediaContent = async (url, description = null) => {
+    console.log('📱 Setting social media content:', url);
+    return await window.updateHomeMedia(url, 'image', description);
 };

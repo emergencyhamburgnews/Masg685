@@ -159,6 +159,56 @@ window.forceUpdateThemeColor = function() {
     console.log('Theme color force updated');
 };
 
+// Global function to force refresh navbar (can be called from anywhere)
+window.forceRefreshNavbar = function() {
+    const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
+    const savedGlowColor = localStorage.getItem('glowColor') || 'blue';
+    
+    // Force reapply navbar color
+    document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+    document.documentElement.setAttribute('data-glow-color', savedGlowColor);
+    
+    // Force update theme color
+    updateThemeColor();
+    
+    console.log('Navbar force refreshed:', { navbarColor: savedNavbarColor, glowColor: savedGlowColor });
+};
+
+// Function to check and fix navbar issues
+window.checkNavbarIssues = function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const glowColor = localStorage.getItem('glowColor') || 'blue';
+    
+    console.log('=== NAVBAR DIAGNOSTICS ===');
+    console.log('Navbar element found:', !!navbar);
+    console.log('Current navbar color setting:', navbarColor);
+    console.log('Current glow color setting:', glowColor);
+    console.log('Document data-navbar-color:', document.documentElement.getAttribute('data-navbar-color'));
+    console.log('Document data-glow-color:', document.documentElement.getAttribute('data-glow-color'));
+    
+    if (navbar) {
+        const computedStyle = window.getComputedStyle(navbar);
+        console.log('Navbar computed background-color:', computedStyle.backgroundColor);
+        console.log('Navbar computed position:', computedStyle.position);
+        console.log('Navbar computed z-index:', computedStyle.zIndex);
+    }
+    
+    // Check mobile menu
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.querySelector('.hamburger');
+    console.log('Mobile menu found:', !!mobileMenu);
+    console.log('Hamburger found:', !!hamburger);
+    
+    if (mobileMenu) {
+        const mobileMenuStyle = window.getComputedStyle(mobileMenu);
+        console.log('Mobile menu computed position:', mobileMenuStyle.position);
+        console.log('Mobile menu computed top:', mobileMenuStyle.top);
+    }
+    
+    console.log('=== END DIAGNOSTICS ===');
+};
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
@@ -177,6 +227,13 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         updateThemeColor();
     }, 100);
+    
+    // Force refresh navbar after a longer delay to ensure all styles are loaded
+    setTimeout(() => {
+        if (typeof window.forceRefreshNavbar === 'function') {
+            window.forceRefreshNavbar();
+        }
+    }, 500);
 });
 
 // Load data from Firebase
@@ -587,8 +644,22 @@ function toggleMobileMenu() {
     const hamburger = document.querySelector('.hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
     
+    if (!hamburger || !mobileMenu) {
+        console.error('Mobile menu elements not found:', { hamburger: !!hamburger, mobileMenu: !!mobileMenu });
+        return;
+    }
+    
     hamburger.classList.toggle('active');
     mobileMenu.classList.toggle('active');
+    
+    // Prevent body scroll when menu is open
+    if (mobileMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+    
+    console.log('Mobile menu toggled:', mobileMenu.classList.contains('active'));
 }
 
 // Close mobile menu when clicking on a link
@@ -596,13 +667,42 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileLinks = document.querySelectorAll('.mobile-menu .nav-link');
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
-            const hamburger = document.querySelector('.hamburger');
-            const mobileMenu = document.getElementById('mobile-menu');
-            hamburger.classList.remove('active');
-            mobileMenu.classList.remove('active');
+            closeMobileMenu();
         });
     });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburger = document.querySelector('.hamburger');
+        
+        if (mobileMenu && mobileMenu.classList.contains('active')) {
+            if (!mobileMenu.contains(event.target) && !hamburger.contains(event.target)) {
+                closeMobileMenu();
+            }
+        }
+    });
+    
+    // Close mobile menu on escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeMobileMenu();
+        }
+    });
 });
+
+// Function to close mobile menu
+function closeMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (hamburger && mobileMenu) {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+        console.log('Mobile menu closed');
+    }
+}
 
 // Theme functionality
 function initializeTheme() {
@@ -751,6 +851,12 @@ function removeWebsiteNotice() {
 function initializeNavbarColor() {
     const savedNavbarColor = localStorage.getItem('navbarColor') || 'black';
     document.documentElement.setAttribute('data-navbar-color', savedNavbarColor);
+    console.log('Navbar color initialized:', savedNavbarColor);
+    
+    // Force update theme color after navbar color is set
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
 }
 
 // Initialize glow color on page load
