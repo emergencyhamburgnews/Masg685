@@ -261,6 +261,63 @@ window.emergencyFixAll = function() {
     console.log('Please refresh the page if issues persist.');
 };
 
+// Function to test notice banner toggle
+window.testNoticeToggle = function() {
+    console.log('🧪 Testing notice banner toggle...');
+    
+    const noticeBanner = document.getElementById('website-notice');
+    const noticeEnabled = localStorage.getItem('noticeEnabled');
+    
+    console.log('Current notice enabled:', noticeEnabled);
+    console.log('Notice banner found:', !!noticeBanner);
+    
+    if (noticeBanner) {
+        console.log('Notice banner display:', noticeBanner.style.display);
+        console.log('Notice banner classes:', noticeBanner.className);
+    }
+    
+    // Toggle the notice
+    if (noticeEnabled === 'false') {
+        localStorage.setItem('noticeEnabled', 'true');
+        if (typeof showNoticeBanner === 'function') {
+            showNoticeBanner();
+        }
+        console.log('Notice enabled');
+    } else {
+        localStorage.setItem('noticeEnabled', 'false');
+        if (typeof hideNoticeBanner === 'function') {
+            hideNoticeBanner();
+        }
+        console.log('Notice disabled');
+    }
+};
+
+// Function to test mobile menu connection
+window.testMobileMenu = function() {
+    console.log('🧪 Testing mobile menu connection...');
+    
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.querySelector('.hamburger');
+    const navbar = document.querySelector('.navbar');
+    
+    console.log('Mobile menu found:', !!mobileMenu);
+    console.log('Hamburger found:', !!hamburger);
+    console.log('Navbar found:', !!navbar);
+    
+    if (mobileMenu) {
+        const mobileMenuStyle = window.getComputedStyle(mobileMenu);
+        console.log('Mobile menu position:', mobileMenuStyle.position);
+        console.log('Mobile menu top:', mobileMenuStyle.top);
+        console.log('Mobile menu parent:', mobileMenu.parentElement);
+    }
+    
+    // Test toggle
+    if (typeof toggleMobileMenu === 'function') {
+        toggleMobileMenu();
+        console.log('Mobile menu toggled');
+    }
+};
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();

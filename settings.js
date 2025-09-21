@@ -132,6 +132,8 @@ function showNoticeBanner() {
     const noticeBanner = document.getElementById('website-notice');
     if (noticeBanner) {
         noticeBanner.classList.remove('hidden');
+        noticeBanner.style.display = 'block';
+        console.log('Notice banner shown');
     }
     
     // Update theme color when notice banner is shown
@@ -145,6 +147,8 @@ function hideNoticeBanner() {
     const noticeBanner = document.getElementById('website-notice');
     if (noticeBanner) {
         noticeBanner.classList.add('hidden');
+        noticeBanner.style.display = 'none';
+        console.log('Notice banner hidden');
     }
     
     // Update theme color when notice banner is hidden
@@ -245,8 +249,12 @@ function applyNoticeSetting() {
     if (noticeBanner) {
         if (noticeEnabled === 'false') {
             noticeBanner.classList.add('hidden');
+            noticeBanner.style.display = 'none';
+            console.log('Notice banner disabled on page load');
         } else {
             noticeBanner.classList.remove('hidden');
+            noticeBanner.style.display = 'block';
+            console.log('Notice banner enabled on page load');
         }
     }
     

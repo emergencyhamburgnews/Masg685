@@ -833,8 +833,8 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
 /* Mobile menu */
 .mobile-menu {
     display: none;
-    position: fixed;
-    top: 80px;
+    position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
     background: var(--navbar-bg);
@@ -1997,8 +1997,8 @@ input:checked + .toggle-slider:before {
     
     /* Fix mobile menu positioning */
     .mobile-menu {
-        top: 80px;
-        position: fixed;
+        top: 100%;
+        position: absolute;
         width: 100%;
         max-height: calc(100vh - 80px);
     }
