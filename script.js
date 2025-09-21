@@ -150,6 +150,29 @@ function updateThemeColor() {
         themeColorMeta.setAttribute('content', themeColor);
     }
     
+    // Update additional mobile status bar meta tags
+    const msNavButtonMeta = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    if (msNavButtonMeta) {
+        msNavButtonMeta.setAttribute('content', themeColor);
+    }
+    
+    // Update Apple mobile web app status bar style
+    const appleStatusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleStatusBarMeta) {
+        // For light colors, use black content; for dark colors, use white content
+        const isLightColor = themeColor === '#ffa726' || themeColor === '#8bc34a' || themeColor === '#00bcd4' || themeColor === '#f39c12' || themeColor === '#ffc107';
+        appleStatusBarMeta.setAttribute('content', isLightColor ? 'black-translucent' : 'white-translucent');
+    }
+    
+    // Force mobile browsers to recognize the theme color change
+    // This is especially important for iOS Safari and Android Chrome
+    if (window.navigator && window.navigator.standalone !== undefined) {
+        // For iOS web apps, force a visual refresh
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.display = '';
+    }
+    
     console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'gradient:', navbarGradient, 'theme:', theme);
 }
 
