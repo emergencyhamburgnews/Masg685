@@ -146,28 +146,44 @@ function updateThemeColor() {
         console.log('updateThemeColor: Using solid color:', themeColor, 'for navbar:', navbarColor);
     }
     
-    // Update the theme-color meta tag
-    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeColorMeta) {
-        themeColorMeta.setAttribute('content', themeColor);
-    }
+    // AGGRESSIVE mobile status bar update - remove and recreate meta tags
+    forceMobileStatusBarUpdate(themeColor);
     
-    // Update additional mobile status bar meta tags
-    const msNavButtonMeta = document.querySelector('meta[name="msapplication-navbutton-color"]');
-    if (msNavButtonMeta) {
-        msNavButtonMeta.setAttribute('content', themeColor);
-    }
+    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'gradient:', navbarGradient, 'theme:', theme);
+}
+
+// AGGRESSIVE mobile status bar update function
+function forceMobileStatusBarUpdate(themeColor) {
+    console.log('FORCE updating mobile status bar to:', themeColor);
     
-    // Update Apple mobile web app status bar style
-    const appleStatusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleStatusBarMeta) {
-        // For light colors, use black content; for dark colors, use white content
-        const isLightColor = themeColor === '#ffa726' || themeColor === '#8bc34a' || themeColor === '#00bcd4' || themeColor === '#f39c12' || themeColor === '#ffc107';
-        appleStatusBarMeta.setAttribute('content', isLightColor ? 'black-translucent' : 'white-translucent');
-    }
+    // Remove existing meta tags
+    const existingThemeColor = document.querySelector('meta[name="theme-color"]');
+    const existingMsNavButton = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    const existingAppleStatusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     
-    // Force mobile browsers to recognize the theme color change
-    // This is especially important for iOS Safari and Android Chrome
+    if (existingThemeColor) existingThemeColor.remove();
+    if (existingMsNavButton) existingMsNavButton.remove();
+    if (existingAppleStatusBar) existingAppleStatusBar.remove();
+    
+    // Create new meta tags
+    const themeColorMeta = document.createElement('meta');
+    themeColorMeta.name = 'theme-color';
+    themeColorMeta.content = themeColor;
+    document.head.appendChild(themeColorMeta);
+    
+    const msNavButtonMeta = document.createElement('meta');
+    msNavButtonMeta.name = 'msapplication-navbutton-color';
+    msNavButtonMeta.content = themeColor;
+    document.head.appendChild(msNavButtonMeta);
+    
+    const appleStatusBarMeta = document.createElement('meta');
+    appleStatusBarMeta.name = 'apple-mobile-web-app-status-bar-style';
+    // For light colors, use black content; for dark colors, use white content
+    const isLightColor = themeColor === '#ff6b6b' || themeColor === '#2196f3' || themeColor === '#4caf50' || themeColor === '#f39c12' || themeColor === '#ffc107';
+    appleStatusBarMeta.content = isLightColor ? 'black-translucent' : 'white-translucent';
+    document.head.appendChild(appleStatusBarMeta);
+    
+    // Force mobile browsers to recognize the change
     if (window.navigator && window.navigator.standalone !== undefined) {
         // For iOS web apps, force a visual refresh
         document.body.style.display = 'none';
@@ -175,7 +191,53 @@ function updateThemeColor() {
         document.body.style.display = '';
     }
     
-    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'gradient:', navbarGradient, 'theme:', theme);
+    // Additional force update for Android Chrome
+    if (window.chrome && window.chrome.webview) {
+        window.chrome.webview.postMessage({type: 'theme-color', color: themeColor});
+    }
+    
+    console.log('Mobile status bar FORCE updated to:', themeColor);
+}
+
+// Debug function to check current mobile status bar state
+function debugMobileStatusBar() {
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
+    const noticeEnabled = localStorage.getItem('noticeEnabled');
+    
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const currentThemeColor = themeColorMeta ? themeColorMeta.getAttribute('content') : 'not found';
+    
+    console.log('=== MOBILE STATUS BAR DEBUG ===');
+    console.log('Navbar Color:', navbarColor);
+    console.log('Navbar Gradient:', navbarGradient);
+    console.log('Notice Enabled:', noticeEnabled);
+    console.log('Current Theme Color Meta:', currentThemeColor);
+    console.log('Expected Theme Color:', getExpectedThemeColor());
+    console.log('================================');
+}
+
+// Helper function to get expected theme color
+function getExpectedThemeColor() {
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const navbarGradient = localStorage.getItem('navbarGradient') || 'none';
+    
+    if (navbarGradient && navbarGradient !== 'none') {
+        switch (navbarGradient) {
+            case 'sunset': return '#ff6b6b';
+            case 'ocean': return '#2196f3';
+            case 'forest': return '#4caf50';
+            default: return '#000000';
+        }
+    } else {
+        switch (navbarColor) {
+            case 'red': return '#dc3545';
+            case 'blue': return '#4a90e2';
+            case 'green': return '#27ae60';
+            case 'yellow': return '#f39c12';
+            default: return '#000000';
+        }
+    }
 }
 
 // Initialize the website when DOM is loaded
@@ -193,7 +255,16 @@ document.addEventListener('DOMContentLoaded', function() {
     applyNavbarGradientSetting(); // Apply navbar gradient setting on all pages
     initializeSearch();
     updateThemeColor(); // Update theme color on page load
+    
+    // Debug mobile status bar on page load
+    setTimeout(() => {
+        debugMobileStatusBar();
+    }, 2000);
 });
+
+// Make debug function globally available
+window.debugMobileStatusBar = debugMobileStatusBar;
+window.forceMobileStatusBarUpdate = forceMobileStatusBarUpdate;
 
 // Load data from Firebase
 async function loadWebsiteData() {

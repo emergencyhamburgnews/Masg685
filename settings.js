@@ -368,28 +368,15 @@ function forceMobileStatusBarUpdate() {
         console.log('Using solid color:', themeColor, 'for navbar:', navbarColor);
     }
     
-    // Force update all mobile status bar meta tags
-    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeColorMeta) {
-        themeColorMeta.setAttribute('content', themeColor);
-    }
-    
-    const msNavButtonMeta = document.querySelector('meta[name="msapplication-navbutton-color"]');
-    if (msNavButtonMeta) {
-        msNavButtonMeta.setAttribute('content', themeColor);
-    }
-    
-    const appleStatusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleStatusBarMeta) {
-        const isLightColor = themeColor === '#ffa726' || themeColor === '#8bc34a' || themeColor === '#00bcd4' || themeColor === '#f39c12' || themeColor === '#ffc107';
-        appleStatusBarMeta.setAttribute('content', isLightColor ? 'black-translucent' : 'white-translucent');
-    }
-    
-    // Force mobile browsers to recognize the change
-    if (window.navigator && window.navigator.standalone !== undefined) {
-        document.body.style.display = 'none';
-        document.body.offsetHeight; // Trigger reflow
-        document.body.style.display = '';
+    // Use the aggressive force update function from script.js
+    if (typeof forceMobileStatusBarUpdate === 'function') {
+        forceMobileStatusBarUpdate(themeColor);
+    } else {
+        // Fallback to basic update
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute('content', themeColor);
+        }
     }
     
     console.log('Mobile status bar forced to update to:', themeColor);
