@@ -123,8 +123,8 @@ function updateThemeColor() {
     
     let themeColor;
     
-    // Check if gradient is active first
-    if (navbarGradient !== 'none') {
+    // ALWAYS check gradient first - gradient takes priority over solid colors
+    if (navbarGradient && navbarGradient !== 'none') {
         // Use representative colors from gradients for mobile status bar
         switch (navbarGradient) {
             case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
@@ -132,6 +132,7 @@ function updateThemeColor() {
             case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
             default: themeColor = '#000000'; break;
         }
+        console.log('updateThemeColor: Using gradient color:', themeColor, 'for gradient:', navbarGradient);
     } else {
         // Set theme color to match navbar colors exactly (copy from CSS)
         switch (navbarColor) {
@@ -142,6 +143,7 @@ function updateThemeColor() {
             case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
             default: themeColor = '#000000'; // Default to black
         }
+        console.log('updateThemeColor: Using solid color:', themeColor, 'for navbar:', navbarColor);
     }
     
     // Update the theme-color meta tag

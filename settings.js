@@ -332,8 +332,8 @@ function forceMobileStatusBarUpdate() {
     
     let themeColor;
     
-    // Check if gradient is active first
-    if (navbarGradient !== 'none') {
+    // ALWAYS check gradient first - gradient takes priority over solid colors
+    if (navbarGradient && navbarGradient !== 'none') {
         // Use representative colors from gradients for mobile status bar
         switch (navbarGradient) {
             case 'sunset': themeColor = '#ffa726'; break;  // Middle color of sunset gradient (orange)
@@ -341,8 +341,9 @@ function forceMobileStatusBarUpdate() {
             case 'forest': themeColor = '#8bc34a'; break;  // Middle color of forest gradient (light green)
             default: themeColor = '#000000'; break;
         }
+        console.log('Using gradient color:', themeColor, 'for gradient:', navbarGradient);
     } else {
-        // Use solid navbar colors
+        // Use solid navbar colors only when no gradient is active
         switch (navbarColor) {
             case 'red': themeColor = '#dc3545'; break;
             case 'blue': themeColor = '#007bff'; break;
@@ -354,6 +355,7 @@ function forceMobileStatusBarUpdate() {
             case 'yellow': themeColor = '#ffc107'; break;
             default: themeColor = '#000000';
         }
+        console.log('Using solid color:', themeColor, 'for navbar:', navbarColor);
     }
     
     // Force update all mobile status bar meta tags

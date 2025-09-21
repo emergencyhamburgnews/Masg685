@@ -362,6 +362,12 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     z-index: 1000;
     border-bottom: 2px solid #c0c0c0;
     transition: background 0.3s ease;
+    /* Ensure navbar stays fixed on mobile */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
 }
 
 /* Make notice banner part of navbar */
@@ -1925,6 +1931,20 @@ input:checked + .toggle-slider:before {
 }
 
 @media (max-width: 768px) {
+    /* Fix navbar position on mobile */
+    .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1000 !important;
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        -webkit-backface-visibility: hidden !important;
+        backface-visibility: hidden !important;
+        will-change: transform !important;
+    }
+    
     .nav-container {
         padding: 0 1rem;
     }
