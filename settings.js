@@ -65,6 +65,11 @@ function setupEventListeners() {
             noticeStatus.textContent = 'Disabled';
             hideNoticeBanner();
         }
+        
+        // Update theme color when notice banner is toggled
+        if (typeof updateThemeColor === 'function') {
+            updateThemeColor();
+        }
     });
     
     // Theme selector
@@ -128,6 +133,11 @@ function showNoticeBanner() {
     if (noticeBanner) {
         noticeBanner.classList.remove('hidden');
     }
+    
+    // Update theme color when notice banner is shown
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
 }
 
 // Hide notice banner
@@ -135,6 +145,11 @@ function hideNoticeBanner() {
     const noticeBanner = document.getElementById('website-notice');
     if (noticeBanner) {
         noticeBanner.classList.add('hidden');
+    }
+    
+    // Update theme color when notice banner is hidden
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
     }
 }
 
@@ -206,6 +221,11 @@ function resetAllSettings() {
     glowColorSelector.value = 'blue';
     setGlowColor('blue');
     
+    // Update theme color after reset
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
+    
     // Show confirmation
     playSuccessSound();
     alert('All settings have been reset to their default values!');
@@ -222,6 +242,11 @@ function applyNoticeSetting() {
         } else {
             noticeBanner.classList.remove('hidden');
         }
+    }
+    
+    // Update theme color after applying notice setting
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
     }
 }
 

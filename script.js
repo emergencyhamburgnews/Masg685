@@ -119,17 +119,29 @@ function playSuccessSound() {
 function updateThemeColor() {
     const navbarColor = localStorage.getItem('navbarColor') || 'black';
     const theme = localStorage.getItem('theme') || 'light';
+    const noticeEnabled = localStorage.getItem('noticeEnabled') !== 'false';
     
     let themeColor;
     
-    // Set theme color to match navbar colors exactly (copy from CSS)
-    switch (navbarColor) {
-        case 'black': themeColor = '#000000'; break;  // Exact match from CSS
-        case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
-        case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
-        case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
-        case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
-        default: themeColor = '#000000'; // Default to black
+    // Check if notice banner is enabled and visible
+    const noticeBanner = document.getElementById('website-notice');
+    const isNoticeVisible = noticeBanner && !noticeBanner.classList.contains('hidden') && noticeEnabled;
+    
+    if (isNoticeVisible) {
+        // Use notice banner color when it's visible
+        themeColor = '#dc3545'; // Red color for notice banner
+        console.log('Using notice banner color for status bar:', themeColor);
+    } else {
+        // Set theme color to match navbar colors exactly (copy from CSS)
+        switch (navbarColor) {
+            case 'black': themeColor = '#000000'; break;  // Exact match from CSS
+            case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
+            case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
+            case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
+            case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
+            default: themeColor = '#000000'; // Default to black
+        }
+        console.log('Using navbar color for status bar:', themeColor, 'navbar:', navbarColor);
     }
     
     // Update the theme-color meta tag
@@ -138,8 +150,14 @@ function updateThemeColor() {
         themeColorMeta.setAttribute('content', themeColor);
     }
     
-    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme);
+    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme, 'notice visible:', isNoticeVisible);
 }
+
+// Global function to force update theme color (can be called from anywhere)
+window.forceUpdateThemeColor = function() {
+    updateThemeColor();
+    console.log('Theme color force updated');
+};
 
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -154,6 +172,11 @@ document.addEventListener('DOMContentLoaded', function() {
     applyGlowColorSetting();
     initializeSearch();
     updateThemeColor(); // Update theme color on page load
+    
+    // Force update theme color after a short delay to ensure DOM is ready
+    setTimeout(() => {
+        updateThemeColor();
+    }, 100);
 });
 
 // Load data from Firebase
@@ -904,21 +927,312 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
     ];
     
     // Search function
-    function performSearch(query) {
+    async function performSearch(query) {
         if (!query || query.trim().length < 2) {
             searchResults.classList.remove('show');
             return;
         }
         
         const searchTerm = query.toLowerCase().trim();
-        const results = searchData.filter(item => {
+        
+        // Search predefined data first
+        const predefinedResults = searchData.filter(item => {
             const titleMatch = item.title.toLowerCase().includes(searchTerm);
             const descMatch = item.description.toLowerCase().includes(searchTerm);
             const keywordMatch = item.keywords.some(keyword => keyword.includes(searchTerm));
             return titleMatch || descMatch || keywordMatch;
         });
         
-        displaySearchResults(results, searchTerm);
+        // Search all text content on the page and other pages
+        const pageResults = searchPageContent(searchTerm);
+        const allPageResults = await searchAllPages(searchTerm);
+        
+        // Combine and prioritize results
+        const allResults = [...predefinedResults, ...pageResults, ...allPageResults];
+        
+        // Sort results by relevance
+        const sortedResults = allResults.sort((a, b) => {
+            // Predefined results first
+            if (!a.isPageContent && b.isPageContent) return -1;
+            if (a.isPageContent && !b.isPageContent) return 1;
+            
+            // Then by title match (exact matches first)
+            const aTitleMatch = a.title.toLowerCase().includes(searchTerm);
+            const bTitleMatch = b.title.toLowerCase().includes(searchTerm);
+            if (aTitleMatch && !bTitleMatch) return -1;
+            if (!aTitleMatch && bTitleMatch) return 1;
+            
+            // Then by element type priority (headings first)
+            const elementPriority = {
+                'h1': 1, 'h2': 2, 'h3': 3, 'h4': 4, 'h5': 5, 'h6': 6,
+                'a': 7, 'button': 8, 'label': 9, 'p': 10, 'span': 11, 'div': 12
+            };
+            
+            const aPriority = elementPriority[a.elementType] || 99;
+            const bPriority = elementPriority[b.elementType] || 99;
+            
+            return aPriority - bPriority;
+        });
+        
+        // Remove duplicates
+        const uniqueResults = sortedResults.filter((result, index, self) => 
+            index === self.findIndex(r => r.title === result.title && r.page === result.page)
+        );
+        
+        displaySearchResults(uniqueResults, searchTerm);
+    }
+    
+    // Function to search all text content on the page
+    function searchPageContent(searchTerm) {
+        const results = [];
+        const searchableElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a, button, label, strong, em, b, i, small, mark, code, pre, blockquote, figcaption, caption, legend, dt, dd, address, cite, q, abbr, time, data, var, samp, kbd, sub, sup, del, ins, s, u');
+        
+        // Also search in input placeholders and alt texts
+        const inputElements = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+        const imageElements = document.querySelectorAll('img[alt]');
+        
+        // Search in regular text elements
+        searchableElements.forEach(element => {
+            const text = element.textContent.toLowerCase();
+            if (text.includes(searchTerm) && text.trim().length > 0) {
+                // Skip if element is hidden or in a hidden container
+                if (element.offsetParent === null) return;
+                
+                // Skip very short text matches (less than 3 characters)
+                if (text.trim().length < 3) return;
+                
+                // Skip if it's just the search term itself
+                if (text.trim() === searchTerm) return;
+                
+                // Get the page name
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                
+                // Create a more descriptive title
+                let title = '';
+                if (element.tagName.toLowerCase().startsWith('h')) {
+                    title = element.textContent.trim();
+                } else if (element.tagName.toLowerCase() === 'a') {
+                    title = `Link: ${element.textContent.trim()}`;
+                } else if (element.tagName.toLowerCase() === 'button') {
+                    title = `Button: ${element.textContent.trim()}`;
+                } else if (element.tagName.toLowerCase() === 'label') {
+                    title = `Label: ${element.textContent.trim()}`;
+                } else {
+                    // For other elements, try to get a meaningful title
+                    const parentHeading = element.closest('section, article, div').querySelector('h1, h2, h3, h4, h5, h6');
+                    if (parentHeading) {
+                        title = `${parentHeading.textContent.trim()} - Text content`;
+                    } else {
+                        title = `Text containing "${searchTerm}"`;
+                    }
+                }
+                
+                // Create a result for this text match
+                const result = {
+                    title: title,
+                    description: element.textContent.trim().substring(0, 150) + (element.textContent.length > 150 ? '...' : ''),
+                    page: currentPage,
+                    elementId: element.id || null,
+                    element: element,
+                    keywords: [searchTerm],
+                    isPageContent: true,
+                    elementType: element.tagName.toLowerCase()
+                };
+                
+                results.push(result);
+            }
+        });
+        
+        // Search in input placeholders
+        inputElements.forEach(element => {
+            const placeholder = element.placeholder.toLowerCase();
+            if (placeholder.includes(searchTerm) && placeholder.trim().length > 0) {
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                
+                const result = {
+                    title: `Input field: ${element.placeholder}`,
+                    description: `Form input with placeholder text containing "${searchTerm}"`,
+                    page: currentPage,
+                    elementId: element.id || null,
+                    element: element,
+                    keywords: [searchTerm],
+                    isPageContent: true,
+                    elementType: 'input'
+                };
+                
+                results.push(result);
+            }
+        });
+        
+        // Search in image alt texts
+        imageElements.forEach(element => {
+            const altText = element.alt.toLowerCase();
+            if (altText.includes(searchTerm) && altText.trim().length > 0) {
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                
+                const result = {
+                    title: `Image: ${element.alt}`,
+                    description: `Image with alt text containing "${searchTerm}"`,
+                    page: currentPage,
+                    elementId: element.id || null,
+                    element: element,
+                    keywords: [searchTerm],
+                    isPageContent: true,
+                    elementType: 'img'
+                };
+                
+                results.push(result);
+            }
+        });
+        
+        // Remove duplicates based on element and text content
+        const uniqueResults = results.filter((result, index, self) => 
+            index === self.findIndex(r => 
+                r.element === result.element && 
+                r.description === result.description
+            )
+        );
+        
+        return uniqueResults;
+    }
+
+    // Function to search across all website pages (comprehensive search)
+    async function searchAllPages(searchTerm) {
+        const allPageResults = [];
+        
+        // Define all pages to search
+        const pagesToSearch = [
+            'index.html',
+            'about.html', 
+            'shop.html',
+            'settings.html',
+            'update.html',
+            'live-chat.html',
+            'chat-signup.html',
+            'MyRoblox.html',
+            'MyRoblox-Simple.html'
+        ];
+        
+        // Get current page
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
+        // Search current page (already done in searchPageContent)
+        const currentPageResults = searchPageContent(searchTerm);
+        allPageResults.push(...currentPageResults);
+        
+        // For other pages, we'll create searchable content based on known page content
+        // This is a simplified approach - in a real implementation, you might want to
+        // fetch page content dynamically or maintain a search index
+        
+        const pageContent = {
+            'index.html': {
+                title: 'Home - Masg685',
+                content: [
+                    'Welcome to Masg685 website',
+                    'Emergency Hamburg Player',
+                    'Social Media Links',
+                    'Rate & Comment',
+                    'TikTok Roblox Emergency Hamburg'
+                ]
+            },
+            'about.html': {
+                title: 'About - Masg685',
+                content: [
+                    'About Me',
+                    'Emergency Hamburg',
+                    'Police XP Stats',
+                    'Fire Medical XP',
+                    'Truck XP',
+                    'ADAC XP',
+                    'Bus Driver XP',
+                    'Favourite Games',
+                    'Q&A Section'
+                ]
+            },
+            'shop.html': {
+                title: 'Shop - Masg685',
+                content: [
+                    'Roblox Clothing',
+                    'Shop Items',
+                    'Buy Robux',
+                    'Cool Blue Shirt',
+                    'Classic Black Pants',
+                    'Red Gaming Hoodie'
+                ]
+            },
+            'settings.html': {
+                title: 'Settings - Masg685',
+                content: [
+                    'Website Notice',
+                    'Theme Preference',
+                    'Navbar Background Color',
+                    'Navbar Link Glow Color',
+                    'Reset Settings',
+                    'Dark Mode Light Mode'
+                ]
+            },
+            'update.html': {
+                title: 'Updates - Masg685',
+                content: [
+                    'Website Updates',
+                    'Version History',
+                    'New Features',
+                    'Bug Fixes',
+                    'Changelog'
+                ]
+            },
+            'live-chat.html': {
+                title: 'Live Chat - Masg685',
+                content: [
+                    'Group Chat',
+                    'Live Chat',
+                    'Real-time Messages',
+                    'Chat System',
+                    'Connect with Users'
+                ]
+            },
+            'MyRoblox.html': {
+                title: 'My Roblox - Masg685',
+                content: [
+                    'Roblox Profile',
+                    'Roblox Avatar',
+                    'Roblox Stats',
+                    'Roblox Games',
+                    'Roblox Friends'
+                ]
+            }
+        };
+        
+        // Search other pages
+        pagesToSearch.forEach(page => {
+            if (page !== currentPage && pageContent[page]) {
+                const pageData = pageContent[page];
+                
+                // Check if search term matches page title or content
+                const titleMatch = pageData.title.toLowerCase().includes(searchTerm);
+                const contentMatch = pageData.content.some(content => 
+                    content.toLowerCase().includes(searchTerm)
+                );
+                
+                if (titleMatch || contentMatch) {
+                    const result = {
+                        title: pageData.title,
+                        description: pageData.content.join(', '),
+                        page: page,
+                        elementId: null,
+                        element: null,
+                        keywords: [searchTerm],
+                        isPageContent: true,
+                        elementType: 'page',
+                        isOtherPage: true
+                    };
+                    
+                    allPageResults.push(result);
+                }
+            }
+        });
+        
+        return allPageResults;
     }
     
     // Display search results
@@ -928,12 +1242,36 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
         if (results.length === 0) {
             searchResults.innerHTML = '<div class="search-no-results">No results found for "' + searchTerm + '"</div>';
         } else {
-            results.forEach(result => {
+            // Limit results to prevent overwhelming the user
+            const limitedResults = results.slice(0, 20);
+            
+            limitedResults.forEach(result => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'search-result-item';
+                
+                // Add a visual indicator for page content results
+                let resultType = 'predefined';
+                if (result.isOtherPage) {
+                    resultType = 'other-page';
+                } else if (result.isPageContent) {
+                    resultType = 'page-content';
+                }
+                resultItem.classList.add(resultType);
+                
+                // Determine result type label
+                let typeLabel = '';
+                if (result.isOtherPage) {
+                    typeLabel = '<div class="search-result-type">Other Page</div>';
+                } else if (result.isPageContent) {
+                    typeLabel = '<div class="search-result-type">Page Content</div>';
+                } else {
+                    typeLabel = '<div class="search-result-type">Website Section</div>';
+                }
+                
                 resultItem.innerHTML = `
                     <div class="search-result-title">${highlightSearchTerm(result.title, searchTerm)}</div>
                     <div class="search-result-description">${highlightSearchTerm(result.description, searchTerm)}</div>
+                    ${typeLabel}
                 `;
                 
                 resultItem.addEventListener('click', () => {
@@ -945,7 +1283,11 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
                         window.location.href = result.page;
                     } else {
                         // Same page - scroll to element with search term highlighting
+                        if (result.isPageContent && result.element) {
+                            scrollToElementDirect(result.element, searchTerm);
+                        } else {
                         scrollToElement(result.elementId, searchTerm);
+                        }
                     }
                     
                     searchResults.classList.remove('show');
@@ -954,6 +1296,14 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
                 
                 searchResults.appendChild(resultItem);
             });
+            
+            // Show count if there are more results
+            if (results.length > 20) {
+                const moreResults = document.createElement('div');
+                moreResults.className = 'search-more-results';
+                moreResults.innerHTML = `... and ${results.length - 20} more results`;
+                searchResults.appendChild(moreResults);
+            }
         }
         
         searchResults.classList.add('show');
@@ -969,6 +1319,13 @@ function initializeSearchBar(searchInput, searchBtn, searchResults) {
     // Event listeners
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
+        
+        // Show loading indicator for longer searches
+        if (e.target.value.trim().length >= 2) {
+            searchResults.innerHTML = '<div class="search-loading">Searching all website content...</div>';
+            searchResults.classList.add('show');
+        }
+        
         searchTimeout = setTimeout(() => {
             performSearch(e.target.value);
         }, 300);
@@ -1027,6 +1384,14 @@ function scrollToElement(elementId, searchTerm = '') {
     
     const element = document.getElementById(elementId);
     if (element) {
+        scrollToElementDirect(element, searchTerm);
+    }
+}
+
+// Function to scroll to a direct element reference
+function scrollToElementDirect(element, searchTerm = '') {
+    if (!element) return;
+    
         // Highlight search terms in the element's text content
         if (searchTerm && searchTerm.trim().length > 1) {
             highlightSearchTermsInElement(element, searchTerm);
@@ -1051,7 +1416,6 @@ function scrollToElement(elementId, searchTerm = '') {
             // Remove text highlighting
             removeTextHighlighting(element);
         }, 3000);
-    }
 }
 
 // Function to highlight search terms in element text

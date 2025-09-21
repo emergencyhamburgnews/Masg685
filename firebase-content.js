@@ -65,7 +65,9 @@ class FirebaseContentManager {
                 home: {
                     title: "Masg685 - Home",
                     description: "Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!",
-                    image: "img4.jpg"
+                    image: "img4.jpg",
+                    video: null,
+                    mediaType: "image" // "image" or "video"
                 },
                 about: {
                     title: "About Me",
@@ -179,7 +181,9 @@ class FirebaseContentManager {
             home: {
                 title: "Masg685 - Home",
                 description: "Join my RP private server in Emergency Hamburg. Experience the best roleplay with over 300,000 XP as police officer!",
-                image: "img4.jpg"
+                image: "img4.jpg",
+                video: null,
+                mediaType: "image"
             },
             notice: {
                 enabled: true,
@@ -221,15 +225,56 @@ class FirebaseContentManager {
             if (contentData && contentData.home) {
                 const heroDescription = document.getElementById('hero-description');
                 const heroImage = document.getElementById('hero-image');
+                const heroImageContainer = document.querySelector('.hero-image');
                 
                 if (heroDescription) {
                     heroDescription.textContent = contentData.home.description;
                     console.log('DIRECT UPDATE: Description set to:', contentData.home.description);
                 }
                 
-                if (heroImage) {
-                    heroImage.src = contentData.home.image;
-                    console.log('DIRECT UPDATE: Image set to:', contentData.home.image);
+                // Handle media (image or video)
+                if (heroImageContainer && (contentData.home.image || contentData.home.video)) {
+                    const mediaType = contentData.home.mediaType || 'image';
+                    const mediaUrl = mediaType === 'video' ? contentData.home.video : contentData.home.image;
+                    
+                    if (mediaUrl) {
+                        if (mediaType === 'video') {
+                            // Create video element
+                            const video = document.createElement('video');
+                            video.id = 'hero-video';
+                            video.src = mediaUrl;
+                            video.controls = true;
+                            video.autoplay = false;
+                            video.loop = true;
+                            video.muted = true;
+                            video.style.width = '100%';
+                            video.style.height = '100%';
+                            video.style.objectFit = 'cover';
+                            video.style.borderRadius = '12px';
+                            
+                            // Clear container and add video
+                            heroImageContainer.innerHTML = '';
+                            heroImageContainer.appendChild(video);
+                            
+                            // Hide placeholder
+                            const placeholder = document.getElementById('image-placeholder');
+                            if (placeholder) placeholder.style.display = 'none';
+                            
+                            console.log('DIRECT UPDATE: Video set to:', mediaUrl);
+                        } else {
+                            // Handle image
+                            if (heroImage) {
+                                heroImage.src = mediaUrl;
+                                heroImage.style.display = 'block';
+                                
+                                // Hide placeholder
+                                const placeholder = document.getElementById('image-placeholder');
+                                if (placeholder) placeholder.style.display = 'none';
+                                
+                                console.log('DIRECT UPDATE: Image set to:', mediaUrl);
+                            }
+                        }
+                    }
                 }
             }
             
@@ -249,6 +294,11 @@ class FirebaseContentManager {
                         noticeIcon.textContent = noticeData.icon;
                         console.log('DIRECT UPDATE: Notice icon set to:', noticeData.icon);
                     }
+                }
+                
+                // Update theme color after direct notice update
+                if (typeof updateThemeColor === 'function') {
+                    updateThemeColor();
                 }
             }
             
@@ -297,10 +347,12 @@ class FirebaseContentManager {
         // Update hero section - use correct IDs
         const heroDescription = document.getElementById('hero-description');
         const heroImage = document.getElementById('hero-image');
+        const heroImageContainer = document.querySelector('.hero-image');
         
         console.log('Hero elements found:', {
             description: !!heroDescription,
-            image: !!heroImage
+            image: !!heroImage,
+            container: !!heroImageContainer
         });
         
         if (heroDescription && home.description) {
@@ -308,10 +360,53 @@ class FirebaseContentManager {
             console.log('Updated hero description to:', home.description);
         }
         
-        if (heroImage && home.image) {
-            heroImage.src = home.image;
-            heroImage.alt = home.title || 'Hero Image';
-            console.log('Updated hero image to:', home.image);
+        // Handle media (image or video)
+        if (heroImageContainer && (home.image || home.video)) {
+            const mediaType = home.mediaType || 'image';
+            const mediaUrl = mediaType === 'video' ? home.video : home.image;
+            
+            if (mediaUrl) {
+                console.log(`Updating hero ${mediaType} to:`, mediaUrl);
+                
+                if (mediaType === 'video') {
+                    // Create video element
+                    const video = document.createElement('video');
+                    video.id = 'hero-video';
+                    video.src = mediaUrl;
+                    video.controls = true;
+                    video.autoplay = false;
+                    video.loop = true;
+                    video.muted = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.objectFit = 'cover';
+                    video.style.borderRadius = '12px';
+                    video.alt = home.title || 'Hero Video';
+                    
+                    // Clear container and add video
+                    heroImageContainer.innerHTML = '';
+                    heroImageContainer.appendChild(video);
+                    
+                    // Hide placeholder
+                    const placeholder = document.getElementById('image-placeholder');
+                    if (placeholder) placeholder.style.display = 'none';
+                    
+                    console.log('Updated hero video to:', mediaUrl);
+                } else {
+                    // Handle image (existing functionality)
+                    if (heroImage) {
+                        heroImage.src = mediaUrl;
+                        heroImage.alt = home.title || 'Hero Image';
+                        heroImage.style.display = 'block';
+                        
+                        // Hide placeholder
+                        const placeholder = document.getElementById('image-placeholder');
+                        if (placeholder) placeholder.style.display = 'none';
+                        
+                        console.log('Updated hero image to:', mediaUrl);
+                    }
+                }
+            }
         }
 
         // Update meta tags
@@ -328,9 +423,11 @@ class FirebaseContentManager {
             if (ogDescription) ogDescription.content = home.description;
         }
         
-        if (home.image) {
+        // Update meta image/video
+        const mediaUrl = home.mediaType === 'video' ? home.video : home.image;
+        if (mediaUrl) {
             const ogImage = document.querySelector('meta[property="og:image"]');
-            if (ogImage) ogImage.content = home.image;
+            if (ogImage) ogImage.content = mediaUrl;
         }
     }
 
@@ -369,6 +466,11 @@ class FirebaseContentManager {
             noticeBanner.style.display = 'none';
             noticeBanner.classList.add('hidden');
             console.log('Notice disabled or not found');
+        }
+        
+        // Update theme color when notice content changes
+        if (typeof updateThemeColor === 'function') {
+            updateThemeColor();
         }
     }
 
@@ -410,6 +512,11 @@ class FirebaseContentManager {
                     console.log('Force updated notice with:', noticeData.text);
                 } else {
                     noticeBanner.style.display = 'none';
+                }
+                
+                // Update theme color after force updating notice
+                if (typeof updateThemeColor === 'function') {
+                    updateThemeColor();
                 }
             } else {
                 console.log('Notice document not found in website collection');
@@ -610,5 +717,131 @@ window.createNoticeDocument = async () => {
         
     } catch (error) {
         console.error('Error creating notice document:', error);
+    }
+};
+
+// Helper function to update home page image/video from external URL
+window.updateHomeMedia = async (mediaUrl, mediaType = 'image', description = null) => {
+    try {
+        if (!window.firebaseApp) {
+            console.error('Firebase not available');
+            return;
+        }
+        
+        const { db, doc, updateDoc } = window.firebaseApp;
+        
+        const updateData = {
+            home: {
+                mediaType: mediaType,
+                [mediaType]: mediaUrl
+            }
+        };
+        
+        if (description) {
+            updateData.home.description = description;
+        }
+        
+        await updateDoc(doc(db, 'website', 'content'), updateData);
+        console.log(`Home ${mediaType} updated to:`, mediaUrl);
+        
+        // Force refresh content
+        if (window.firebaseContentManager) {
+            await window.firebaseContentManager.refreshContent();
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error updating home media:', error);
+        return false;
+    }
+};
+
+// Helper function to update home page description
+window.updateHomeDescription = async (description) => {
+    try {
+        if (!window.firebaseApp) {
+            console.error('Firebase not available');
+            return;
+        }
+        
+        const { db, doc, updateDoc } = window.firebaseApp;
+        
+        await updateDoc(doc(db, 'website', 'content'), {
+            'home.description': description
+        });
+        
+        console.log('Home description updated to:', description);
+        
+        // Force refresh content
+        if (window.firebaseContentManager) {
+            await window.firebaseContentManager.refreshContent();
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error updating home description:', error);
+        return false;
+    }
+};
+
+// Helper function to set external image URL
+window.setExternalImage = async (imageUrl, description = null) => {
+    return await window.updateHomeMedia(imageUrl, 'image', description);
+};
+
+// Helper function to set external video URL
+window.setExternalVideo = async (videoUrl, description = null) => {
+    return await window.updateHomeMedia(videoUrl, 'video', description);
+};
+
+// Example usage functions for common social media platforms
+window.setFacebookImage = async (facebookImageUrl, description = null) => {
+    console.log('Setting Facebook image:', facebookImageUrl);
+    return await window.setExternalImage(facebookImageUrl, description);
+};
+
+window.setInstagramImage = async (instagramImageUrl, description = null) => {
+    console.log('Setting Instagram image:', instagramImageUrl);
+    return await window.setExternalImage(instagramImageUrl, description);
+};
+
+window.setTikTokVideo = async (tiktokVideoUrl, description = null) => {
+    console.log('Setting TikTok video:', tiktokVideoUrl);
+    return await window.setExternalVideo(tiktokVideoUrl, description);
+};
+
+window.setYouTubeVideo = async (youtubeVideoUrl, description = null) => {
+    console.log('Setting YouTube video:', youtubeVideoUrl);
+    return await window.setExternalVideo(youtubeVideoUrl, description);
+};
+
+// Function to test external media URLs
+window.testExternalMedia = async () => {
+    console.log('🧪 Testing external media functionality...');
+    
+    // Test with a sample external image
+    const testImageUrl = 'https://via.placeholder.com/800x400/4a90e2/ffffff?text=External+Image+Test';
+    const success = await window.setExternalImage(testImageUrl, 'Test external image from placeholder service');
+    
+    if (success) {
+        console.log('✅ External image test successful!');
+    } else {
+        console.log('❌ External image test failed!');
+    }
+    
+    return success;
+};
+
+// Function to show current media settings
+window.showCurrentMedia = () => {
+    if (window.firebaseContentManager && window.firebaseContentManager.content.home) {
+        const home = window.firebaseContentManager.content.home;
+        console.log('📊 Current home media settings:');
+        console.log('Media Type:', home.mediaType || 'image');
+        console.log('Image URL:', home.image || 'Not set');
+        console.log('Video URL:', home.video || 'Not set');
+        console.log('Description:', home.description || 'Not set');
+    } else {
+        console.log('❌ No content data available');
     }
 };

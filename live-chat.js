@@ -442,6 +442,96 @@ class LiveChat {
         return filteredText;
     }
 
+    // Function to block external links and domains
+    blockExternalLinks(text) {
+        // List of blocked domains and link patterns
+        const blockedPatterns = [
+            // Common TLDs that should be blocked
+            /\b\w+\.com\b/gi,
+            /\b\w+\.net\b/gi,
+            /\b\w+\.org\b/gi,
+            /\b\w+\.info\b/gi,
+            /\b\w+\.biz\b/gi,
+            /\b\w+\.co\b/gi,
+            /\b\w+\.io\b/gi,
+            /\b\w+\.me\b/gi,
+            /\b\w+\.tv\b/gi,
+            /\b\w+\.cc\b/gi,
+            /\b\w+\.tk\b/gi,
+            /\b\w+\.ml\b/gi,
+            /\b\w+\.ga\b/gi,
+            /\b\w+\.cf\b/gi,
+            
+            // Full URL patterns
+            /https?:\/\/[^\s]+/gi,
+            /www\.[^\s]+/gi,
+            
+            // Social media links
+            /youtube\.com[^\s]*/gi,
+            /youtu\.be[^\s]*/gi,
+            /facebook\.com[^\s]*/gi,
+            /twitter\.com[^\s]*/gi,
+            /x\.com[^\s]*/gi,
+            /instagram\.com[^\s]*/gi,
+            /tiktok\.com[^\s]*/gi,
+            /discord\.gg[^\s]*/gi,
+            /discord\.com[^\s]*/gi,
+            /reddit\.com[^\s]*/gi,
+            /twitch\.tv[^\s]*/gi,
+            /snapchat\.com[^\s]*/gi,
+            /linkedin\.com[^\s]*/gi,
+            /pinterest\.com[^\s]*/gi,
+            /telegram\.me[^\s]*/gi,
+            /whatsapp\.com[^\s]*/gi,
+            /viber\.com[^\s]*/gi,
+            /skype\.com[^\s]*/gi,
+            /zoom\.us[^\s]*/gi,
+            /meet\.google\.com[^\s]*/gi,
+            
+            // File sharing and cloud services
+            /drive\.google\.com[^\s]*/gi,
+            /dropbox\.com[^\s]*/gi,
+            /onedrive\.live\.com[^\s]*/gi,
+            /mega\.nz[^\s]*/gi,
+            /mediafire\.com[^\s]*/gi,
+            /wetransfer\.com[^\s]*/gi,
+            
+            // Gaming platforms
+            /steamcommunity\.com[^\s]*/gi,
+            /steam\.com[^\s]*/gi,
+            /epicgames\.com[^\s]*/gi,
+            /origin\.com[^\s]*/gi,
+            /uplay\.com[^\s]*/gi,
+            /battle\.net[^\s]*/gi,
+            
+            // Other common domains
+            /amazon\.com[^\s]*/gi,
+            /ebay\.com[^\s]*/gi,
+            /paypal\.com[^\s]*/gi,
+            /stripe\.com[^\s]*/gi,
+            /github\.com[^\s]*/gi,
+            /stackoverflow\.com[^\s]*/gi,
+            /wikipedia\.org[^\s]*/gi,
+            /wikia\.com[^\s]*/gi,
+            /fandom\.com[^\s]*/gi
+        ];
+
+        let blockedText = text;
+        let hasBlockedContent = false;
+
+        blockedPatterns.forEach(pattern => {
+            if (pattern.test(blockedText)) {
+                hasBlockedContent = true;
+                blockedText = blockedText.replace(pattern, '[LINK BLOCKED]');
+            }
+        });
+
+        return {
+            text: blockedText,
+            hasBlockedContent: hasBlockedContent
+        };
+    }
+
     // Test function to verify filtering works correctly (can be removed in production)
     testWordFiltering() {
         const testCases = [
@@ -461,6 +551,25 @@ class LiveChat {
         });
     }
 
+    // Test function to verify link blocking works correctly (can be removed in production)
+    testLinkBlocking() {
+        const testCases = [
+            { input: 'Check out google.com', expected: 'Check out [LINK BLOCKED]' },
+            { input: 'Visit https://youtube.com/watch?v=123', expected: 'Visit [LINK BLOCKED]' },
+            { input: 'Go to www.facebook.com', expected: 'Go to [LINK BLOCKED]' },
+            { input: 'My discord is discord.gg/abc123', expected: 'My discord is [LINK BLOCKED]' },
+            { input: 'Hello world', expected: 'Hello world' },
+            { input: 'Check example.com and test.net', expected: 'Check [LINK BLOCKED] and [LINK BLOCKED]' }
+        ];
+
+        console.log('Testing link blocking:');
+        testCases.forEach(test => {
+            const result = this.blockExternalLinks(test.input);
+            console.log(`Input: "${test.input}" -> Output: "${result.text}" (Expected: "${test.expected}")`);
+            console.log(`Has blocked content: ${result.hasBlockedContent}`);
+        });
+    }
+
     async sendMessage() {
         if (this.isSubmitting) return;
 
@@ -472,8 +581,17 @@ class LiveChat {
         this.isSubmitting = true;
 
         try {
-            // Filter inappropriate words
-            const filteredText = this.filterInappropriateWords(messageText);
+            // First block external links
+            const linkBlockResult = this.blockExternalLinks(messageText);
+            
+            // Show warning if links were blocked
+            if (linkBlockResult.hasBlockedContent) {
+                // Show a temporary warning message
+                this.showTemporaryMessage('⚠️ External links are not allowed in chat!', 'warning');
+            }
+
+            // Then filter inappropriate words
+            const filteredText = this.filterInappropriateWords(linkBlockResult.text);
 
             const { db, collection, addDoc } = window.firebaseApp;
             const messageData = {
@@ -826,6 +944,69 @@ class LiveChat {
                 this.originalScrollToBottom();
             }
         };
+    }
+
+    // Function to show temporary warning messages
+    showTemporaryMessage(message, type = 'warning') {
+        // Remove any existing temporary message
+        const existingMessage = document.querySelector('.temporary-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create temporary message element
+        const tempMessage = document.createElement('div');
+        tempMessage.className = 'temporary-message';
+        tempMessage.textContent = message;
+        
+        // Style based on type
+        const styles = {
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: '10000',
+            padding: '12px 20px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            animation: 'slideDown 0.3s ease-out',
+            maxWidth: '90%',
+            textAlign: 'center'
+        };
+
+        if (type === 'warning') {
+            styles.backgroundColor = '#ff9800';
+            styles.color = '#ffffff';
+            styles.border = '2px solid #f57c00';
+        } else if (type === 'error') {
+            styles.backgroundColor = '#f44336';
+            styles.color = '#ffffff';
+            styles.border = '2px solid #d32f2f';
+        } else if (type === 'success') {
+            styles.backgroundColor = '#4caf50';
+            styles.color = '#ffffff';
+            styles.border = '2px solid #388e3c';
+        }
+
+        // Apply styles
+        Object.assign(tempMessage.style, styles);
+
+        // Add to document
+        document.body.appendChild(tempMessage);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (tempMessage && tempMessage.parentNode) {
+                tempMessage.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    if (tempMessage && tempMessage.parentNode) {
+                        tempMessage.parentNode.removeChild(tempMessage);
+                    }
+                }, 300);
+            }
+        }, 3000);
     }
 }
 
