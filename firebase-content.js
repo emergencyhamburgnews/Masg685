@@ -294,7 +294,8 @@ class FirebaseContentManager {
                 if (noticeBanner && noticeData.enabled) {
                     noticeBanner.style.display = 'block';
                     if (noticeText) {
-                        noticeText.textContent = noticeData.text;
+                        // Use innerHTML to support HTML links
+                        noticeText.innerHTML = noticeData.text;
                         console.log('DIRECT UPDATE: Notice text set to:', noticeData.text);
                     }
                     if (noticeIcon) {
@@ -666,7 +667,8 @@ class FirebaseContentManager {
             }
             
             if (noticeText && notice.text) {
-                noticeText.textContent = notice.text;
+                // Use innerHTML to support HTML links
+                noticeText.innerHTML = notice.text;
                 console.log('Updated notice text to:', notice.text);
             }
         } else {
@@ -715,7 +717,7 @@ class FirebaseContentManager {
                 if (noticeData.enabled) {
                     noticeBanner.style.display = 'block';
                     if (noticeIcon) noticeIcon.textContent = noticeData.icon || '⚠️';
-                    if (noticeText) noticeText.textContent = noticeData.text || 'Loading...';
+                    if (noticeText) noticeText.innerHTML = noticeData.text || 'Loading...';
                     console.log('Force updated notice with:', noticeData.text);
                 } else {
                     noticeBanner.style.display = 'none';
@@ -1081,4 +1083,41 @@ window.testSocialMediaUrl = (url) => {
 window.setSocialMediaContent = async (url, description = null) => {
     console.log('📱 Setting social media content:', url);
     return await window.updateHomeMedia(url, 'image', description);
+};
+
+// Function to set notice banner with HTML support (including links)
+window.setNoticeBanner = async (text, icon = '⚠️', enabled = true) => {
+    try {
+        if (!window.firebaseApp) {
+            console.error('Firebase not available');
+            return false;
+        }
+        
+        const { db, doc, setDoc } = window.firebaseApp;
+        
+        const noticeData = {
+            enabled: enabled,
+            text: text, // Can include HTML like <a href="...">Link</a>
+            icon: icon
+        };
+        
+        await setDoc(doc(db, 'website', 'notice'), noticeData);
+        console.log('Notice banner updated with HTML support:', noticeData);
+        
+        // Force refresh content
+        if (window.firebaseContentManager) {
+            await window.firebaseContentManager.refreshContent();
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error updating notice banner:', error);
+        return false;
+    }
+};
+
+// Function to test notice banner with links
+window.testNoticeWithLinks = async () => {
+    const testText = 'Check out my latest <a href="https://facebook.com/posts/123" target="_blank">Facebook post</a> and <a href="https://tiktok.com/@user/video/123" target="_blank">TikTok video</a>!';
+    return await window.setNoticeBanner(testText, '🔗', true);
 };

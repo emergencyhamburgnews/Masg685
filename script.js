@@ -209,6 +209,58 @@ window.checkNavbarIssues = function() {
     console.log('=== END DIAGNOSTICS ===');
 };
 
+// EMERGENCY FIX FUNCTION - Force fix all issues
+window.emergencyFixAll = function() {
+    console.log('🚨 EMERGENCY FIX STARTING...');
+    
+    // Force apply navbar color
+    const navbarColor = localStorage.getItem('navbarColor') || 'black';
+    const glowColor = localStorage.getItem('glowColor') || 'blue';
+    const theme = localStorage.getItem('theme') || 'light';
+    const noticeEnabled = localStorage.getItem('noticeEnabled') !== 'false';
+    
+    console.log('Applying settings:', { navbarColor, glowColor, theme, noticeEnabled });
+    
+    // Force set attributes
+    document.documentElement.setAttribute('data-navbar-color', navbarColor);
+    document.documentElement.setAttribute('data-glow-color', glowColor);
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Force update theme color
+    if (typeof updateThemeColor === 'function') {
+        updateThemeColor();
+    }
+    
+    // Force apply notice setting
+    const noticeBanner = document.getElementById('website-notice');
+    if (noticeBanner) {
+        if (noticeEnabled) {
+            noticeBanner.classList.remove('hidden');
+            noticeBanner.style.display = 'block';
+        } else {
+            noticeBanner.classList.add('hidden');
+            noticeBanner.style.display = 'none';
+        }
+    }
+    
+    // Force close mobile menu if open
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.querySelector('.hamburger');
+    if (mobileMenu && hamburger) {
+        mobileMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Force refresh navbar
+    if (typeof window.forceRefreshNavbar === 'function') {
+        window.forceRefreshNavbar();
+    }
+    
+    console.log('🚨 EMERGENCY FIX COMPLETE!');
+    console.log('Please refresh the page if issues persist.');
+};
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadWebsiteData();
@@ -234,6 +286,20 @@ document.addEventListener('DOMContentLoaded', function() {
             window.forceRefreshNavbar();
         }
     }, 500);
+    
+    // EMERGENCY FIX - Multiple attempts to ensure everything works
+    setTimeout(() => {
+        if (typeof window.emergencyFixAll === 'function') {
+            window.emergencyFixAll();
+        }
+    }, 1000);
+    
+    // Final attempt after 2 seconds
+    setTimeout(() => {
+        if (typeof window.emergencyFixAll === 'function') {
+            window.emergencyFixAll();
+        }
+    }, 2000);
 });
 
 // Load data from Firebase
@@ -649,14 +715,25 @@ function toggleMobileMenu() {
         return;
     }
     
+    console.log('🍔 Toggling mobile menu...');
+    console.log('Hamburger found:', !!hamburger);
+    console.log('Mobile menu found:', !!mobileMenu);
+    
     hamburger.classList.toggle('active');
     mobileMenu.classList.toggle('active');
     
     // Prevent body scroll when menu is open
     if (mobileMenu.classList.contains('active')) {
         document.body.style.overflow = 'hidden';
+        console.log('📱 Mobile menu opened');
     } else {
         document.body.style.overflow = '';
+        console.log('📱 Mobile menu closed');
+    }
+    
+    // Force apply navbar color when menu is toggled
+    if (typeof window.forceRefreshNavbar === 'function') {
+        window.forceRefreshNavbar();
     }
     
     console.log('Mobile menu toggled:', mobileMenu.classList.contains('active'));

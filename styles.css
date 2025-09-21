@@ -305,6 +305,23 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     font-family: 'Poppins', Arial, sans-serif;
 }
 
+/* Notice banner link styles */
+.notice-text a {
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.notice-text a:hover {
+    color: #ffeb3b;
+    text-decoration: none;
+}
+
+.notice-text a:visited {
+    color: #e1f5fe;
+}
+
 @keyframes pulse {
     0%, 100% {
         opacity: 1;
@@ -324,7 +341,7 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     right: 0;
     z-index: 1000;
     border-bottom: 2px solid #c0c0c0;
-    /* Hardware acceleration for smooth performance */
+    /* Hardware acceleration for smooth performance - PREVENT MOVEMENT */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     will-change: transform;
@@ -333,6 +350,11 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     -webkit-perspective: 1000;
     perspective: 1000;
     transition: background-color 0.3s ease;
+    /* Force stable positioning */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
 }
 
 /* Make notice banner part of navbar */
@@ -812,7 +834,7 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
 .mobile-menu {
     display: none;
     position: fixed;
-    top: 80px; /* Fixed position below navbar */
+    top: 80px;
     left: 0;
     right: 0;
     background: var(--navbar-bg);
@@ -823,7 +845,7 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     max-height: calc(100vh - 80px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    z-index: 999;
+    z-index: 1001;
 }
 
 .mobile-menu.active {
@@ -1957,11 +1979,25 @@ input:checked + .toggle-slider:before {
         display: flex;
     }
     
-    /* Navbar hardware acceleration already applied in main .navbar rule */
+    /* Prevent navbar movement on mobile scroll - ENHANCED */
+    .navbar {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-perspective: 1000;
+        perspective: 1000;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
     
     /* Fix mobile menu positioning */
     .mobile-menu {
-        top: 80px; /* Fixed position below navbar */
+        top: 80px;
         position: fixed;
         width: 100%;
         max-height: calc(100vh - 80px);
