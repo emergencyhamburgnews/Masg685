@@ -115,7 +115,7 @@ function playSuccessSound() {
     successSoundSystem.playSuccessSound();
 }
 
-// Dynamic Theme Color System
+// Dynamic Theme Color System - FIXED
 function updateThemeColor() {
     const navbarColor = localStorage.getItem('navbarColor') || 'black';
     const theme = localStorage.getItem('theme') || 'light';
@@ -128,50 +128,85 @@ function updateThemeColor() {
     const isNoticeVisible = noticeBanner && !noticeBanner.classList.contains('hidden') && noticeEnabled;
     
     if (isNoticeVisible) {
-        // Use notice banner color when it's visible - now using proper bright red
-        themeColor = '#ff0000'; // Bright red color for notice banner
-        console.log('Using notice banner color for status bar:', themeColor);
+        // Use notice banner color when it's visible - bright red
+        themeColor = '#ff0000';
+        console.log('Status bar using notice banner color:', themeColor);
     } else {
-        // Set theme color to match navbar colors exactly (copy from CSS)
+        // Use navbar color when notice banner is disabled
         switch (navbarColor) {
-            case 'black': themeColor = '#000000'; break;  // Exact match from CSS
-            case 'red': themeColor = '#dc3545'; break;    // Exact match from CSS
-            case 'blue': themeColor = '#4a90e2'; break;   // Exact match from CSS
-            case 'green': themeColor = '#27ae60'; break;  // Exact match from CSS
-            case 'yellow': themeColor = '#f39c12'; break; // Exact match from CSS
-            default: themeColor = '#000000'; // Default to black
+            case 'black': themeColor = '#000000'; break;
+            case 'red': themeColor = '#dc3545'; break;
+            case 'blue': themeColor = '#4a90e2'; break;
+            case 'green': themeColor = '#27ae60'; break;
+            case 'yellow': themeColor = '#f39c12'; break;
+            default: themeColor = '#000000';
         }
-        console.log('Using navbar color for status bar:', themeColor, 'navbar:', navbarColor);
+        console.log('Status bar using navbar color:', themeColor, 'navbar:', navbarColor);
     }
     
-    // Update the theme-color meta tag
+    // Update theme-color meta tag
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (themeColorMeta) {
         themeColorMeta.setAttribute('content', themeColor);
     }
     
-    // Also update the apple-mobile-web-app-status-bar-style for iOS
+    // Update iOS status bar style
     const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (statusBarMeta) {
-        // For dark colors, use light content; for light colors, use dark content
-        const isDarkColor = themeColor === '#000000' || themeColor === '#dc3545' || themeColor === '#27ae60';
+        const isDarkColor = themeColor === '#000000' || themeColor === '#dc3545' || themeColor === '#27ae60' || themeColor === '#ff0000';
         statusBarMeta.setAttribute('content', isDarkColor ? 'light-content' : 'dark-content');
     }
     
-    // Force update the viewport meta tag for better mobile support
-    const viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta) {
-        // Trigger a reflow to ensure the status bar updates
-        viewportMeta.setAttribute('content', viewportMeta.getAttribute('content'));
+    // Force mobile status bar update
+    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
+        // Force viewport update for mobile
+        const viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            const currentContent = viewportMeta.getAttribute('content');
+            viewportMeta.setAttribute('content', currentContent + '&theme-color=' + themeColor);
+            setTimeout(() => {
+                viewportMeta.setAttribute('content', currentContent);
+            }, 100);
+        }
     }
     
-    console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme, 'notice visible:', isNoticeVisible);
+    console.log('Status bar color updated:', themeColor, 'notice enabled:', isNoticeVisible);
 }
 
 // Global function to force update theme color (can be called from anywhere)
 window.forceUpdateThemeColor = function() {
     updateThemeColor();
     console.log('Theme color force updated');
+};
+
+// Function to handle notice banner toggle and status bar sync
+window.toggleNoticeBanner = function() {
+    const noticeBanner = document.getElementById('website-notice');
+    const noticeEnabled = localStorage.getItem('noticeEnabled') !== 'false';
+    
+    if (noticeEnabled) {
+        // Disable notice banner
+        localStorage.setItem('noticeEnabled', 'false');
+        if (noticeBanner) {
+            noticeBanner.classList.add('hidden');
+        }
+        console.log('Notice banner disabled');
+    } else {
+        // Enable notice banner
+        localStorage.setItem('noticeEnabled', 'true');
+        if (noticeBanner) {
+            noticeBanner.classList.remove('hidden');
+        }
+        console.log('Notice banner enabled');
+    }
+    
+    // Update status bar color immediately
+    updateThemeColor();
+    
+    // Force refresh after a short delay
+    setTimeout(() => {
+        updateThemeColor();
+    }, 100);
 };
 
 // Global function to force refresh navbar (can be called from anywhere)
@@ -210,6 +245,13 @@ window.updateNavbarColor = function(newColor) {
     setTimeout(() => {
         updateThemeColor();
     }, 100);
+    
+    // Force status bar update on mobile
+    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
+        setTimeout(() => {
+            updateThemeColor();
+        }, 200);
+    }
     
     console.log('Navbar color updated to:', newColor);
 };

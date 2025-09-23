@@ -1459,23 +1459,31 @@ body:has(.navbar) .notice-banner:not(.navbar .notice-banner) {
     z-index: 1;
 }
 
-/* Prevent mobile navbar movement during scroll */
+/* Prevent mobile navbar movement during scroll - FIXED */
 @media (max-width: 768px) {
     .navbar {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
+        width: 100% !important;
         transform: translate3d(0, 0, 0) !important;
         -webkit-transform: translate3d(0, 0, 0) !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
         will-change: auto !important;
+        -webkit-overflow-scrolling: touch;
+        contain: layout style paint;
     }
     
     body {
         -webkit-overflow-scrolling: touch;
         overflow-x: hidden;
+        position: relative;
+    }
+    
+    html {
+        -webkit-overflow-scrolling: touch;
     }
 }
 
@@ -2499,24 +2507,7 @@ input:checked + .toggle-slider:before {
         display: flex;
     }
     
-    /* Prevent navbar movement on mobile scroll - ENHANCED */
-    .navbar {
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        -webkit-perspective: 1000;
-        perspective: 1000;
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-        -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        will-change: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+    /* Mobile navbar is now handled above in the main mobile section */
     
     /* Fix mobile menu positioning */
     .mobile-menu {
