@@ -128,8 +128,8 @@ function updateThemeColor() {
     const isNoticeVisible = noticeBanner && !noticeBanner.classList.contains('hidden') && noticeEnabled;
     
     if (isNoticeVisible) {
-        // Use notice banner color when it's visible
-        themeColor = '#dc3545'; // Red color for notice banner
+        // Use notice banner color when it's visible - now using proper bright red
+        themeColor = '#ff0000'; // Bright red color for notice banner
         console.log('Using notice banner color for status bar:', themeColor);
     } else {
         // Set theme color to match navbar colors exactly (copy from CSS)
@@ -148,6 +148,21 @@ function updateThemeColor() {
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (themeColorMeta) {
         themeColorMeta.setAttribute('content', themeColor);
+    }
+    
+    // Also update the apple-mobile-web-app-status-bar-style for iOS
+    const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (statusBarMeta) {
+        // For dark colors, use light content; for light colors, use dark content
+        const isDarkColor = themeColor === '#000000' || themeColor === '#dc3545' || themeColor === '#27ae60';
+        statusBarMeta.setAttribute('content', isDarkColor ? 'light-content' : 'dark-content');
+    }
+    
+    // Force update the viewport meta tag for better mobile support
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        // Trigger a reflow to ensure the status bar updates
+        viewportMeta.setAttribute('content', viewportMeta.getAttribute('content'));
     }
     
     console.log('Theme color updated to:', themeColor, 'for navbar:', navbarColor, 'theme:', theme, 'notice visible:', isNoticeVisible);
@@ -171,7 +186,32 @@ window.forceRefreshNavbar = function() {
     // Force update theme color
     updateThemeColor();
     
+    // Force a reflow to ensure mobile status bar updates
+    document.body.offsetHeight;
+    
     console.log('Navbar force refreshed:', { navbarColor: savedNavbarColor, glowColor: savedGlowColor });
+};
+
+// Function to handle navbar color changes and update status bar immediately
+window.updateNavbarColor = function(newColor) {
+    // Save the new color
+    localStorage.setItem('navbarColor', newColor);
+    
+    // Apply the color immediately
+    document.documentElement.setAttribute('data-navbar-color', newColor);
+    
+    // Update theme color immediately
+    updateThemeColor();
+    
+    // Force a reflow for mobile status bar
+    document.body.offsetHeight;
+    
+    // Additional mobile status bar update
+    setTimeout(() => {
+        updateThemeColor();
+    }, 100);
+    
+    console.log('Navbar color updated to:', newColor);
 };
 
 // Function to check and fix navbar issues

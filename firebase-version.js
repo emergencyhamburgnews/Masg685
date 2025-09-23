@@ -36,7 +36,10 @@ class VersionManager {
                 const data = versionDoc.data();
                 this.version = data.version || 'Loading...';
                 this.updateTitle = data.updateTitle || `Website Update ${this.version}`;
+                this.updateDescription = data.description || 'No update description available.';
+                this.updateDate = data.lastUpdated || new Date().toISOString();
                 console.log('Version loaded from Firebase:', this.version);
+                console.log('Update description:', this.updateDescription);
             } else {
                 console.log('No version document found, using fallback version');
             }
@@ -66,11 +69,47 @@ class VersionManager {
             }
         });
 
+        // Update version badge if on update page
+        const versionBadge = document.getElementById('version-badge');
+        if (versionBadge) {
+            versionBadge.textContent = this.version;
+            console.log('Updated version badge to:', this.version);
+        }
+
         // Update update page title if on update page
         const updateTitle = document.getElementById('update-title');
         if (updateTitle) {
             updateTitle.textContent = this.updateTitle;
             console.log('Updated update title to:', this.updateTitle);
+        }
+
+        // Update update date if on update page
+        const updateDate = document.getElementById('update-date');
+        if (updateDate && this.updateDate) {
+            const date = new Date(this.updateDate);
+            updateDate.textContent = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            console.log('Updated update date to:', updateDate.textContent);
+        }
+
+        // Update update description if on update page
+        const updateDescription = document.getElementById('update-description');
+        if (updateDescription && this.updateDescription) {
+            // Clear loading content
+            updateDescription.innerHTML = '';
+            
+            // Create description paragraphs
+            const descriptionLines = this.updateDescription.split('\n').filter(line => line.trim());
+            descriptionLines.forEach(line => {
+                const p = document.createElement('p');
+                p.textContent = line.trim();
+                updateDescription.appendChild(p);
+            });
+            
+            console.log('Updated update description');
         }
 
         console.log('Version elements updated to:', this.version);
@@ -86,26 +125,22 @@ class VersionManager {
                     const data = doc.data();
                     const newVersion = data.version || 'Loading...';
                     const newUpdateTitle = data.updateTitle || `Website Update ${newVersion}`;
+                    const newUpdateDescription = data.description || 'No update description available.';
+                    const newUpdateDate = data.lastUpdated || new Date().toISOString();
                     
-                    // Only update if version actually changed
-                    if (newVersion !== this.version) {
-                        console.log('Version updated from', this.version, 'to', newVersion);
-                        this.version = newVersion;
-                        this.updateTitle = newUpdateTitle;
-                        
-                        // Wait a bit for DOM to be ready, then update
-                        setTimeout(() => {
-                            this.updateVersionElements();
-                        }, 100);
-                        
-                        // Show a subtle notification that version was updated
-                        this.showVersionUpdateNotification(newVersion);
-                    } else {
-                        // Even if version didn't change, make sure elements are updated
-                        setTimeout(() => {
-                            this.updateVersionElements();
-                        }, 100);
-                    }
+                    // Update all data
+                    this.version = newVersion;
+                    this.updateTitle = newUpdateTitle;
+                    this.updateDescription = newUpdateDescription;
+                    this.updateDate = newUpdateDate;
+                    
+                    // Wait a bit for DOM to be ready, then update
+                    setTimeout(() => {
+                        this.updateVersionElements();
+                    }, 100);
+                    
+                    // Show a subtle notification that version was updated
+                    this.showVersionUpdateNotification(newVersion);
                 }
             });
             
@@ -157,12 +192,13 @@ class VersionManager {
     }
 
     // Method to manually update version (for admin use)
-    async updateVersion(newVersion, newUpdateTitle = null) {
+    async updateVersion(newVersion, newUpdateTitle = null, newDescription = null) {
         try {
             const { db, collection, doc, setDoc } = window.firebaseApp;
             const versionData = {
                 version: newVersion,
                 updateTitle: newUpdateTitle || `Website Update ${newVersion}`,
+                description: newDescription || 'No update description available.',
                 lastUpdated: new Date().toISOString()
             };
             
@@ -182,9 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Global function to update version (for admin use)
-async function updateWebsiteVersion(newVersion, newUpdateTitle = null) {
+async function updateWebsiteVersion(newVersion, newUpdateTitle = null, newDescription = null) {
     if (window.versionManager) {
-        return await window.versionManager.updateVersion(newVersion, newUpdateTitle);
+        return await window.versionManager.updateVersion(newVersion, newUpdateTitle, newDescription);
     } else {
         console.error('Version manager not initialized');
         return false;
