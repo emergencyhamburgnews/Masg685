@@ -115,10 +115,9 @@ function playSuccessSound() {
     successSoundSystem.playSuccessSound();
 }
 
-// Dynamic Theme Color System - FIXED
+// Dynamic Theme Color System - SIMPLIFIED
 function updateThemeColor() {
     const navbarColor = localStorage.getItem('navbarColor') || 'black';
-    const theme = localStorage.getItem('theme') || 'light';
     const noticeEnabled = localStorage.getItem('noticeEnabled') !== 'false';
     
     let themeColor;
@@ -128,11 +127,9 @@ function updateThemeColor() {
     const isNoticeVisible = noticeBanner && !noticeBanner.classList.contains('hidden') && noticeEnabled;
     
     if (isNoticeVisible) {
-        // Use notice banner color when it's visible - bright red
-        themeColor = '#ff0000';
-        console.log('Status bar using notice banner color:', themeColor);
+        themeColor = '#ff0000'; // Notice banner red
     } else {
-        // Use navbar color when notice banner is disabled
+        // Use navbar color
         switch (navbarColor) {
             case 'black': themeColor = '#000000'; break;
             case 'red': themeColor = '#dc3545'; break;
@@ -141,7 +138,6 @@ function updateThemeColor() {
             case 'yellow': themeColor = '#f39c12'; break;
             default: themeColor = '#000000';
         }
-        console.log('Status bar using navbar color:', themeColor, 'navbar:', navbarColor);
     }
     
     // Update theme-color meta tag
@@ -157,20 +153,7 @@ function updateThemeColor() {
         statusBarMeta.setAttribute('content', isDarkColor ? 'light-content' : 'dark-content');
     }
     
-    // Force mobile status bar update
-    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
-        // Force viewport update for mobile
-        const viewportMeta = document.querySelector('meta[name="viewport"]');
-        if (viewportMeta) {
-            const currentContent = viewportMeta.getAttribute('content');
-            viewportMeta.setAttribute('content', currentContent + '&theme-color=' + themeColor);
-            setTimeout(() => {
-                viewportMeta.setAttribute('content', currentContent);
-            }, 100);
-        }
-    }
-    
-    console.log('Status bar color updated:', themeColor, 'notice enabled:', isNoticeVisible);
+    console.log('Status bar updated:', themeColor, 'notice:', isNoticeVisible);
 }
 
 // Global function to force update theme color (can be called from anywhere)
@@ -185,28 +168,19 @@ window.toggleNoticeBanner = function() {
     const noticeEnabled = localStorage.getItem('noticeEnabled') !== 'false';
     
     if (noticeEnabled) {
-        // Disable notice banner
         localStorage.setItem('noticeEnabled', 'false');
         if (noticeBanner) {
             noticeBanner.classList.add('hidden');
         }
-        console.log('Notice banner disabled');
     } else {
-        // Enable notice banner
         localStorage.setItem('noticeEnabled', 'true');
         if (noticeBanner) {
             noticeBanner.classList.remove('hidden');
         }
-        console.log('Notice banner enabled');
     }
     
-    // Update status bar color immediately
     updateThemeColor();
-    
-    // Force refresh after a short delay
-    setTimeout(() => {
-        updateThemeColor();
-    }, 100);
+    console.log('Notice banner toggled, status bar updated');
 };
 
 // Global function to force refresh navbar (can be called from anywhere)
@@ -229,30 +203,9 @@ window.forceRefreshNavbar = function() {
 
 // Function to handle navbar color changes and update status bar immediately
 window.updateNavbarColor = function(newColor) {
-    // Save the new color
     localStorage.setItem('navbarColor', newColor);
-    
-    // Apply the color immediately
     document.documentElement.setAttribute('data-navbar-color', newColor);
-    
-    // Update theme color immediately
     updateThemeColor();
-    
-    // Force a reflow for mobile status bar
-    document.body.offsetHeight;
-    
-    // Additional mobile status bar update
-    setTimeout(() => {
-        updateThemeColor();
-    }, 100);
-    
-    // Force status bar update on mobile
-    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
-        setTimeout(() => {
-            updateThemeColor();
-        }, 200);
-    }
-    
     console.log('Navbar color updated to:', newColor);
 };
 
@@ -414,31 +367,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSearch();
     updateThemeColor(); // Update theme color on page load
     
+    // Force mobile navbar to stay fixed
+    if (window.innerWidth <= 768) {
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.style.position = 'fixed';
+            navbar.style.top = '0';
+            navbar.style.left = '0';
+            navbar.style.right = '0';
+            navbar.style.zIndex = '9999';
+        }
+    }
+    
     // Force update theme color after a short delay to ensure DOM is ready
     setTimeout(() => {
         updateThemeColor();
     }, 100);
-    
-    // Force refresh navbar after a longer delay to ensure all styles are loaded
-    setTimeout(() => {
-        if (typeof window.forceRefreshNavbar === 'function') {
-            window.forceRefreshNavbar();
-        }
-    }, 500);
-    
-    // EMERGENCY FIX - Multiple attempts to ensure everything works
-    setTimeout(() => {
-        if (typeof window.emergencyFixAll === 'function') {
-            window.emergencyFixAll();
-        }
-    }, 1000);
-    
-    // Final attempt after 2 seconds
-    setTimeout(() => {
-        if (typeof window.emergencyFixAll === 'function') {
-            window.emergencyFixAll();
-        }
-    }, 2000);
 });
 
 // Load data from Firebase
